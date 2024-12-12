@@ -62,11 +62,11 @@ class AppColors {
   }
 
   static List<Map<String, dynamic>> colorWithDefinitions = [
-    {'color': Colors.red, 'definition': 'Stock not available.'},
-    {'color': Colors.orange, 'definition': 'Stock 1% to 49% available.'},
-    {'color': Colors.yellow, 'definition': 'Stock 50% to 99% available.'},
-    {'color': Colors.green, 'definition': 'Stock fully available.'},
-    {'color': Colors.grey, 'definition': 'Required quantity issued.'},
+    {'color': Colors.red[200], 'definition': 'Stock not available.'},
+    {'color': Colors.orange[200], 'definition': 'Stock 1% to 49% available.'},
+    {'color': Colors.yellow[200], 'definition': 'Stock 50% to 99% available.'},
+    {'color': Colors.green[200], 'definition': 'Stock fully available.'},
+    {'color': Colors.grey[300], 'definition': 'Required quantity issued.'},
   ];
 
   Color getColorDependingUponStock(

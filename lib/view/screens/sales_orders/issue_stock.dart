@@ -58,12 +58,16 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
   @override
   Widget build(BuildContext context) {
     final blocProvider = BlocProvider.of<SalesOrderBloc>(context);
-
     Size size = MediaQuery.of(context).size;
     double staticRowHeight = 35,
-        tableHeight =
-            ((widget.selectedAssembliesDataList.length + 1) * staticRowHeight) -
-                20;
+        tableHeight = (size.height - 20) >
+                (((widget.selectedAssembliesDataList.length + 2) *
+                        staticRowHeight) -
+                    20)
+            ? (((widget.selectedAssembliesDataList.length + 2) *
+                    staticRowHeight) -
+                20)
+            : (size.height - 20);
     NavigatorState navigator = Navigator.of(context);
     return StreamBuilder<bool>(
         stream: screenBackEventController.stream,
@@ -85,7 +89,7 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
             child: Scaffold(
               appBar:
                   CustomAppbar().appbar(context: context, title: 'Issue stock'),
-              body: Center(child: BlocBuilder<SalesOrderBloc, SalesOrderState>(
+              body: BlocBuilder<SalesOrderBloc, SalesOrderState>(
                   builder: (context, state) {
                 if (state is IssueStockForAsssemblyState) {
                   return Stack(
@@ -237,7 +241,7 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
                         ]);
                       }).toList());
                 }
-              })),
+              }),
             ),
           );
         });
@@ -276,22 +280,26 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
       children: [
         CustomPaint(
             painter: HorizontalLinePainter(
-                node: node, context: context, product: parentPart),
+              node: node,
+              context: context,
+              product: parentPart,
+            ),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
-                width: 200,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors().getColorDependingUponStock(
-                            currentStock:
-                                node.buildProductStructure![0].currentstock!,
-                            requiredQuantity: node
-                                .buildProductStructure![0].quantity!
-                                .toDouble(),
-                            issuedQuantity: node
-                                .buildProductStructure![0].issuedquantity!)),
-                    onPressed: () async {
+                width: 220,
+                height: 50,
+                child: InkWell(
+                    // style: ElevatedButton.styleFrom(
+                    // backgroundColor: AppColors().getColorDependingUponStock(
+                    //     currentStock:
+                    //         node.buildProductStructure![0].currentstock!,
+                    //     requiredQuantity: node
+                    //         .buildProductStructure![0].quantity!
+                    //         .toDouble(),
+                    //     issuedQuantity: node
+                    //         .buildProductStructure![0].issuedquantity!)),
+                    onTap: () async {
                       double dialogWidth = 600, rowHeight = 35;
                       List<IssuedStockModel> issuedStock = await PamRepository()
                           .selectedProductIssuedStock(
@@ -315,26 +323,160 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
                           state: state,
                           blocProvider: blocProvider);
                     },
-                    child: Text(
-                      node.buildProductStructure![0].part!,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: Platform.isAndroid
-                              ? size.width < 550
-                                  ? FontWeight.normal
-                                  : FontWeight.bold
-                              : size.width < 1350
-                                  ? FontWeight.normal
-                                  : FontWeight.bold),
-                    )),
+                    child: Container(
+                        decoration: BoxDecoration(
+                            color: AppColors().getColorDependingUponStock(
+                                currentStock: node
+                                    .buildProductStructure![0].currentstock!,
+                                requiredQuantity: node
+                                    .buildProductStructure![0].quantity!
+                                    .toDouble(),
+                                issuedQuantity: node
+                                    .buildProductStructure![0].issuedquantity!),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: ListTile(
+                          title: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Text(
+                                node.buildProductStructure![0].part!,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 13),
+                              )),
+                          trailing: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                  "Required : ${node.buildProductStructure![0].quantity}",
+                                  style: buttonFontSize()),
+                              Text(
+                                  "Issued : ${node.buildProductStructure![0].issuedquantity}",
+                                  style: buttonFontSize()),
+                              Text(
+                                  "Stock : ${node.buildProductStructure![0].currentstock}",
+                                  style: buttonFontSize()),
+                            ],
+                          ),
+                        )
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        //   children: [
+                        //     Container(
+                        //       child: Padding(
+                        //         padding:
+                        //             const EdgeInsets.symmetric(horizontal: 8),
+                        //         child: Text(
+                        //           node.buildProductStructure![0].part!,
+                        //           style: TextStyle(
+                        //               color: Colors.black,
+                        //               fontWeight: Platform.isAndroid
+                        //                   ? size.width < 550
+                        //                       ? FontWeight.normal
+                        //                       : FontWeight.bold
+                        //                   : size.width < 1350
+                        //                       ? FontWeight.normal
+                        //                       : FontWeight.bold),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //     Container(
+                        //       width: 105,
+                        //       child: Column(
+                        //         mainAxisAlignment: MainAxisAlignment.center,
+                        //         crossAxisAlignment: CrossAxisAlignment.start,
+                        //         children: [
+                        // Text(
+                        //     "Required : ${node.buildProductStructure![0].quantity}",
+                        //     style: buttonFontSize()),
+                        // Text(
+                        //     "Issued : ${node.buildProductStructure![0].issuedquantity}",
+                        //     style: buttonFontSize()),
+                        // Text(
+                        //     "Stock : ${node.buildProductStructure![0].currentstock}",
+                        //     style: buttonFontSize()),
+                        //         ],
+                        //       ),
+                        //     )
+                        //   ],
+                        // ),
+                        )),
+                // child: ElevatedButton(
+                //     style: ElevatedButton.styleFrom(
+                //         backgroundColor: AppColors().getColorDependingUponStock(
+                //             currentStock:
+                //                 node.buildProductStructure![0].currentstock!,
+                //             requiredQuantity: node
+                //                 .buildProductStructure![0].quantity!
+                //                 .toDouble(),
+                //             issuedQuantity: node
+                //                 .buildProductStructure![0].issuedquantity!)),
+                //     onPressed: () async {
+                //       double dialogWidth = 600, rowHeight = 35;
+                //       List<IssuedStockModel> issuedStock = await PamRepository()
+                //           .selectedProductIssuedStock(
+                //               token: state.token,
+                //               productId: node.buildProductStructure![0].partId
+                //                   .toString(),
+                //               revision: node.buildProductStructure![0].revision
+                //                   .toString(),
+                //               parentProductId: node
+                //                   .buildProductStructure![0].parentpartId
+                //                   .toString(),
+                //               soDetailsId:
+                //                   state.selectedProduct.sodetailsId.toString());
+
+                //       issueStockDialog(
+                //           context: context,
+                //           dialogWidth: dialogWidth,
+                //           issuedStock: issuedStock,
+                //           rowHeight: rowHeight,
+                //           node: node,
+                //           state: state,
+                //           blocProvider: blocProvider);
+                //     },
+                //     child: Row(
+                //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //       children: [
+                //         Text(
+                //           node.buildProductStructure![0].part!,
+                //           style: TextStyle(
+                //               color: Colors.black,
+                //               fontWeight: Platform.isAndroid
+                //                   ? size.width < 550
+                //                       ? FontWeight.normal
+                //                       : FontWeight.bold
+                //                   : size.width < 1350
+                //                       ? FontWeight.normal
+                //                       : FontWeight.bold),
+                //         ),
+                //         Column(
+                //           mainAxisAlignment: MainAxisAlignment.center,
+                //           crossAxisAlignment: CrossAxisAlignment.start,
+                //           children: [
+                //             Text(
+                //                 "Required : ${node.buildProductStructure![0].quantity}",
+                //                 style: buttonFontSize()),
+                //             Text(
+                //                 "Issued : ${node.buildProductStructure![0].issuedquantity}",
+                //                 style: buttonFontSize()),
+                //             Text(
+                //                 "Stock : ${node.buildProductStructure![0].currentstock}",
+                //                 style: buttonFontSize()),
+                //           ],
+                //         )
+                //       ],
+                //     )),
               ),
             )),
         if (node.buildProductStructure![0].children!.isNotEmpty)
           CustomPaint(
             size: const Size(16, 16),
-            painter: LinePainter(node: node, context: context),
+            painter: LinePainter(
+              node: node,
+              context: context,
+            ),
             child: Container(
-              padding: const EdgeInsets.only(left: 50),
+              padding: const EdgeInsets.only(left: 72), // 50
               child: Column(
                 children: node.buildProductStructure![0].children!
                     .map((child) => buildTree(
@@ -353,6 +495,9 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
     );
   }
 
+  TextStyle buttonFontSize() => const TextStyle(
+      fontSize: 10, fontWeight: FontWeight.w700, color: Colors.black);
+
   Future<dynamic> issueStockDialog(
       {required BuildContext context,
       required double dialogWidth,
@@ -368,9 +513,11 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
             title: dialogTitle(context: context),
             content: Container(
               width: dialogWidth,
-              height: (200 + ((issuedStock.length + 2) * rowHeight)) >= 600
-                  ? 600
-                  : (200 + ((issuedStock.length + 2) * rowHeight)),
+              height: issuedStock.isEmpty
+                  ? 100
+                  : (100 + ((issuedStock.length + 2) * rowHeight)) >= 600
+                      ? 600
+                      : (100 + ((issuedStock.length + 2) * rowHeight)),
               margin: const EdgeInsets.all(1),
               child: ListView(
                 children: [
@@ -381,9 +528,9 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
                       text2: node.buildProductStructure![0].revision.toString(),
                       width: dialogWidth / 2),
                   staticRowWidget(
-                      label1: 'Quantity',
+                      label1: 'Required quantity',
                       text1: node.buildProductStructure![0].quantity.toString(),
-                      label2: 'Current stock',
+                      label2: 'Available stock',
                       text2: node.buildProductStructure![0].currentstock
                           .toString(),
                       width: dialogWidth / 2),
@@ -590,7 +737,7 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
         children: [
           headerText(text: headerTextData),
           SizedBox(
-            width: 120,
+            width: 110,
             height: 50,
             child: Text(text, style: const TextStyle(fontSize: 12)),
           )
@@ -603,7 +750,7 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
     return Row(
       children: [
         SizedBox(
-          width: 110,
+          width: 120,
           height: 50,
           child: Text(text,
               style:
