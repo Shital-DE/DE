@@ -35,13 +35,10 @@ class IssueStockForAsssemblyState extends SalesOrderState {
   String token, userId;
   ProductStructureDetailsModel node;
   SelectedAssembliesComponentRequirements selectedProduct;
-  // List<Map<String, dynamic>> colorWithDefinitions;
 
-  IssueStockForAsssemblyState({
-    required this.node,
-    required this.token,
-    required this.userId,
-    required this.selectedProduct,
-    // required this.colorWithDefinitions
-  });
+  IssueStockForAsssemblyState(
+      {required this.node,
+      required this.token,
+      required this.userId,
+      required this.selectedProduct});
 }

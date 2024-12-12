@@ -54,13 +54,6 @@ class SalesOrderBloc extends Bloc<SalesOrderEvent, SalesOrderState> {
     // Issue stpck for assembly
     on<IssueStockForAsssemblyEvent>((event, emit) async {
       ProductStructureDetailsModel node = ProductStructureDetailsModel();
-      // List<Map<String, dynamic>> colorWithDefinitions = [
-      //   {'color': Colors.red, 'definition': 'Stock not available.'},
-      //   {'color': Colors.orange, 'definition': 'Stock 1% to 49% available.'},
-      //   {'color': Colors.yellow, 'definition': 'Stock 50% to 99% available.'},
-      //   {'color': Colors.green, 'definition': 'Stock fully available.'},
-      //   {'color': Colors.grey, 'definition': 'Required quantity issued.'},
-      // ];
 
       // User data and token
       final saveddata = await UserData.getUserData();
@@ -85,9 +78,6 @@ class SalesOrderBloc extends Bloc<SalesOrderEvent, SalesOrderState> {
         selectedProduct: event.selectedProduct != null
             ? event.selectedProduct!
             : SelectedAssembliesComponentRequirements(),
-        // colorWithDefinitions: colorWithDefinitions
-        // colorList: colorList,
-        // colorDefinitionList: colorDefinitionList
       ));
     });
   }
