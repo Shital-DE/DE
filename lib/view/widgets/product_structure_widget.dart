@@ -5,8 +5,13 @@ import '../../services/model/product/product_structure_model.dart';
 class LinePainter extends CustomPainter {
   final BuildContext context;
   final ProductStructureDetailsModel node;
-
-  LinePainter({required this.context, required this.node});
+  final double androidstartY;
+  final double wendY;
+  LinePainter(
+      {required this.context,
+      required this.node,
+      this.androidstartY = -12,
+      this.wendY = 24});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -16,9 +21,9 @@ class LinePainter extends CustomPainter {
       ..strokeWidth = 2.0;
 
     final x = (size.width / 2) - 85;
-    double startY = Platform.isAndroid ? -12 : -7;
+    double startY = Platform.isAndroid ? androidstartY : -7;
 
-    double endY = size.height - (Platform.isAndroid ? 32 : 24);
+    double endY = size.height - (Platform.isAndroid ? 32 : wendY);
 
     final startPoint = Offset(x, startY);
     final endPoint = Offset(x, endY);
@@ -46,7 +51,7 @@ class HorizontalLinePainter extends CustomPainter {
         ..strokeCap = StrokeCap.round
         ..strokeWidth = 2.0;
       final y = size.height / 2;
-      double startX = Platform.isAndroid ? -2 : -2.5;
+      double startX = Platform.isAndroid ? -2 : -2.2;
       final endX = size.width / 2;
       final startPoint = Offset(startX, y);
       final endPoint = Offset(endX, y);

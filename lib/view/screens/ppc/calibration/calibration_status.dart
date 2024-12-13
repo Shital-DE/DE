@@ -6,6 +6,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:de/utils/app_theme.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -87,20 +88,22 @@ class CalibrationStatus extends StatelessWidget {
                   Row(
                     children: [
                       Container(
-                          width: 300,
+                          width: 200,
+                          height: 40,
                           margin: Platform.isAndroid
-                              ? const EdgeInsets.only(left: 10)
-                              : const EdgeInsets.all(10),
-                          padding: const EdgeInsets.only(left: 10),
-                          decoration:
-                              QuickFixUi().borderContainer(borderThickness: .5),
+                              ? const EdgeInsets.only(left: 5)
+                              : const EdgeInsets.all(5),
                           child: StreamBuilder<List<CalibrationStatusModel>>(
                               stream: selectedInstrumentsListData.stream,
                               builder: (context, selectedsnapshot) {
                                 return TextField(
-                                  decoration: const InputDecoration(
-                                      border: InputBorder.none,
-                                      hintText: 'Search instrument'),
+                                  textAlign: TextAlign.start,
+                                  decoration: InputDecoration(
+                                      border: const OutlineInputBorder(),
+                                      hintText: 'Search instrument',
+                                      hintStyle: AppTheme.labelTextStyle(),
+                                      contentPadding: const EdgeInsets.only(
+                                          bottom: 20, left: 10)),
                                   onChanged: (value) async {
                                     if (value == '') {
                                       searchedString.text = '';
@@ -164,7 +167,9 @@ class CalibrationStatus extends StatelessWidget {
                             Navigator.pushNamed(
                                 context, RouteName.instrumentStore);
                           },
-                          child: const Text('Store')),
+                          child: Text('Store',
+                              style:
+                                  AppTheme.labelTextStyle(isFontBold: true))),
                       StreamBuilder<List<CalibrationStatusModel>>(
                           stream: selectedInstrumentsListData.stream,
                           builder: (context, snapshot) {
@@ -225,7 +230,9 @@ class CalibrationStatus extends StatelessWidget {
                                             arguments: {'outward': false});
                                       }
                                     },
-                                    child: const Text('Calibrate')));
+                                    child: Text('Calibrate',
+                                        style: AppTheme.labelTextStyle(
+                                            isFontBold: true))));
                           }),
                     ],
                   ),
@@ -280,24 +287,27 @@ class CalibrationStatus extends StatelessWidget {
       required StreamController<List<CalibrationStatusModel>>
           searchedInstrumentsListData,
       required StreamController<int> rangeData}) {
+    Size size = MediaQuery.of(context).size;
+    double roHeight = 35;
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height - 233,
-      margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+      width: size.width,
+      height: size.height - 190,
+      margin: const EdgeInsets.only(left: 5, right: 5),
       padding: const EdgeInsets.all(1),
       child: calibrationStatusList.isEmpty
           ? const Center(
               child: Text('No istruments are available with this name.'))
           : CustomTable(
-              tablewidth: MediaQuery.of(context).size.width - 20,
+              tablewidth: size.width - 20,
               tableheight: calibrationStatusList.length < 12
-                  ? ((calibrationStatusList.length + 1) * 45)
-                  : MediaQuery.of(context).size.height - 220,
-              columnWidth: (MediaQuery.of(context).size.width - 20.2) / 8.9,
-              headerStyle: const TextStyle(
-                  fontWeight: FontWeight.bold, color: AppColors.blackColor),
+                  ? ((calibrationStatusList.length + 1) * roHeight)
+                  : size.height,
+              columnWidth:
+                  (size.width - 300) / (size.width > 1300 ? 7.06 : 7.09),
+              headerStyle: AppTheme.labelTextStyle(isFontBold: true),
               tableheaderColor: AppColors.whiteTheme,
-              rowHeight: 45,
+              rowHeight: roHeight,
+              headerHeight: roHeight,
               tableOutsideBorder: true,
               enableRowBottomBorder: true,
               column: [
@@ -322,288 +332,239 @@ class CalibrationStatus extends StatelessWidget {
                               stream: rangeData.stream,
                               builder: (context, rangesnapshot) {
                                 return Text(
-                                  ((rangesnapshot.data == null
-                                              ? 0
-                                              : rangesnapshot.data!) +
-                                          (calibrationStatusList.indexOf(e) +
-                                              1))
-                                      .toString(),
-                                  textAlign: TextAlign.center,
-                                  style: tableTextStyle(),
-                                );
+                                    ((rangesnapshot.data == null
+                                                ? 0
+                                                : rangesnapshot.data!) +
+                                            (calibrationStatusList.indexOf(e) +
+                                                1))
+                                        .toString(),
+                                    textAlign: TextAlign.center,
+                                    style: AppTheme.labelTextStyle());
                               })),
                       TableDataCell(
                           width: 240,
-                          label: Row(children: [
-                            e.startdate.toString() == '0000-00-00'
-                                ? const Text('')
-                                : StreamBuilder<List<CalibrationStatusModel>>(
-                                    stream: selectedInstrumentsListData.stream,
-                                    builder: (context, selectedsnapshot) {
-                                      return Checkbox(
-                                          checkColor: Colors.white,
-                                          activeColor: Colors.black,
-                                          value: isSelected(
-                                              selectedItems:
-                                                  selectedsnapshot.data != null
-                                                      ? selectedsnapshot.data!
-                                                      : [],
-                                              item: e),
-                                          onChanged: (value) {
-                                            selectedInstrumentsList =
-                                                selectedsnapshot.data != null
-                                                    ? selectedsnapshot.data!
-                                                    : [];
-                                            if (selectedsnapshot.data != null &&
-                                                selectedsnapshot.data!.length >
-                                                    14) {
-                                              QuickFixUi.errorMessage(
-                                                  'Challan generation requires only 15 elements.',
-                                                  context);
-                                            } else if (isSelected(
-                                                selectedItems:
+                          label: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                e.startdate.toString() == '0000-00-00'
+                                    ? const Text('')
+                                    : StreamBuilder<
+                                            List<CalibrationStatusModel>>(
+                                        stream:
+                                            selectedInstrumentsListData.stream,
+                                        builder: (context, selectedsnapshot) {
+                                          return Checkbox(
+                                              checkColor: Colors.white,
+                                              activeColor: Colors.black,
+                                              value: isSelected(
+                                                  selectedItems:
+                                                      selectedsnapshot.data !=
+                                                              null
+                                                          ? selectedsnapshot
+                                                              .data!
+                                                          : [],
+                                                  item: e),
+                                              onChanged: (value) {
+                                                selectedInstrumentsList =
                                                     selectedsnapshot.data !=
                                                             null
                                                         ? selectedsnapshot.data!
-                                                        : [],
-                                                item: e)) {
-                                              selectedInstrumentsList
-                                                  .removeWhere((element) =>
-                                                      element.id == e.id);
-                                              selectedInstrumentsListData
-                                                  .add(selectedInstrumentsList);
-                                            } else {
-                                              selectedInstrumentsList.add(e);
-                                              selectedInstrumentsListData
-                                                  .add(selectedInstrumentsList);
-                                            }
-                                          });
-                                    }),
-                            e.startdate.toString() == '0000-00-00'
-                                ? const Text('')
-                                : IconButton(
-                                    onPressed: () async {
-                                      TextEditingController rejectedReason =
-                                          TextEditingController();
-                                      rejectInstrument(
-                                          context: context,
-                                          rejectionReasons:
-                                              state.rejectionReasons,
-                                          rejectedReason: rejectedReason,
-                                          e: e,
-                                          token: state.token,
-                                          userid: state.userId,
-                                          blocProvider: blocProvider);
-                                    },
-                                    icon: Icon(
-                                      Icons.cancel,
-                                      color: Colors.black,
-                                      size: Platform.isAndroid ? 25 : 20,
-                                    )),
-                            e.certificateMdocid != null
-                                ? viewCertificate(
-                                    context: context, e: e, token: state.token)
-                                : e.startdate.toString() == '0000-00-00'
+                                                        : [];
+                                                if (selectedsnapshot.data !=
+                                                        null &&
+                                                    selectedsnapshot
+                                                            .data!.length >
+                                                        14) {
+                                                  QuickFixUi.errorMessage(
+                                                      'Challan generation requires only 15 elements.',
+                                                      context);
+                                                } else if (isSelected(
+                                                    selectedItems:
+                                                        selectedsnapshot.data !=
+                                                                null
+                                                            ? selectedsnapshot
+                                                                .data!
+                                                            : [],
+                                                    item: e)) {
+                                                  selectedInstrumentsList
+                                                      .removeWhere((element) =>
+                                                          element.id == e.id);
+                                                  selectedInstrumentsListData.add(
+                                                      selectedInstrumentsList);
+                                                } else {
+                                                  selectedInstrumentsList
+                                                      .add(e);
+                                                  selectedInstrumentsListData.add(
+                                                      selectedInstrumentsList);
+                                                }
+                                              });
+                                        }),
+                                e.startdate.toString() == '0000-00-00'
                                     ? const Text('')
-                                    : Row(children: [
-                                        StreamBuilder<String>(
-                                            stream: uploadCertificate.stream,
-                                            builder: (context, snapshot) {
-                                              return ImageToPDFGenerator(
-                                                onFilePicked: () {
-                                                  if (snapshot.data != null &&
-                                                      snapshot.data == e.id) {
-                                                    uploadCertificate.add('');
-                                                  } else {
-                                                    uploadCertificate
-                                                        .add(e.id.toString());
-                                                  }
-                                                },
-                                              );
-                                            }),
-                                        StreamBuilder<String>(
-                                            stream: uploadCertificate.stream,
-                                            builder: (context, snapshot) {
-                                              if (snapshot.data != null &&
-                                                  snapshot.data ==
-                                                      e.id.toString()) {
-                                                return IconButton(
-                                                    onPressed: () async {
-                                                      final Directory
-                                                          directory =
-                                                          await getApplicationDocumentsDirectory();
-                                                      final String path =
-                                                          directory.path;
-                                                      final File file = File(
-                                                          '$path/certificate.pdf');
-                                                      showDialog(
-                                                          context: context,
-                                                          barrierDismissible:
-                                                              false,
-                                                          builder: (BuildContext
-                                                              dialContext) {
-                                                            return AlertDialog(
-                                                              content:
-                                                                  const SizedBox(
-                                                                height: 20,
-                                                                child: Center(
-                                                                  child: Text(
-                                                                    'Are you sure you want to upload certificate?',
-                                                                    style: TextStyle(
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              actions: [
-                                                                FilledButton(
-                                                                    onPressed:
-                                                                        () async {
-                                                                      Navigator.of(
-                                                                              context)
-                                                                          .pop();
-                                                                    },
-                                                                    style: ButtonStyle(
-                                                                        backgroundColor:
-                                                                            WidgetStateProperty.all(AppColors
-                                                                                .redTheme)),
-                                                                    child: const Text(
-                                                                        'No')),
-                                                                FilledButton(
-                                                                    onPressed:
-                                                                        () async {
-                                                                      if (await file
-                                                                          .exists()) {
-                                                                        QuickFixUi().showProcessing(
-                                                                            context:
-                                                                                context);
-                                                                        List<int>
-                                                                            pdfBytes =
-                                                                            await file.readAsBytes();
-                                                                        String certificateId = await CalibrationRepository().instrumentsCertificatesRegistration(
-                                                                            token:
-                                                                                state.token,
-                                                                            payload: {
-                                                                              'instrumentname': '${e.instrumentname.toString().trim()}_${e.cardnumber}.pdf',
-                                                                              'postgresql_id': e.id,
-                                                                              'data': base64Encode(pdfBytes)
-                                                                            });
-                                                                        String updatedResponse = await CalibrationRepository().certificateReference(
-                                                                            token:
-                                                                                state.token,
-                                                                            payload: {
-                                                                              'id': e.id,
-                                                                              'certificate_mdocid': certificateId
-                                                                            });
-                                                                        if (updatedResponse ==
-                                                                            'Updated successfully') {
-                                                                          Navigator.of(context)
-                                                                              .pop();
-                                                                          await file
-                                                                              .delete();
-                                                                          uploadCertificate
-                                                                              .add('');
-                                                                          Navigator.of(context)
-                                                                              .pop();
-                                                                          blocProvider
-                                                                              .add(InstrumentCalibrationStatusEvent());
-
-                                                                          QuickFixUi.successMessage(
-                                                                              'Certificate uploaded successfully.',
-                                                                              context);
-                                                                        }
-                                                                      }
-                                                                    },
-                                                                    style: ButtonStyle(
-                                                                        backgroundColor:
-                                                                            WidgetStateProperty.all(AppColors
-                                                                                .greenTheme)),
-                                                                    child: const Text(
-                                                                        'Yes'))
-                                                              ],
-                                                            );
-                                                          });
+                                    : IconButton(
+                                        onPressed: () async {
+                                          TextEditingController rejectedReason =
+                                              TextEditingController();
+                                          rejectInstrument(
+                                              context: context,
+                                              rejectionReasons:
+                                                  state.rejectionReasons,
+                                              rejectedReason: rejectedReason,
+                                              e: e,
+                                              token: state.token,
+                                              userid: state.userId,
+                                              blocProvider: blocProvider);
+                                        },
+                                        icon: Icon(
+                                          Icons.cancel,
+                                          color: Colors.black,
+                                          size: Platform.isAndroid ? 25 : 20,
+                                        )),
+                                e.certificateMdocid != null
+                                    ? viewCertificate(
+                                        context: context,
+                                        e: e,
+                                        token: state.token)
+                                    : e.startdate.toString() == '0000-00-00'
+                                        ? const Text('')
+                                        : Row(children: [
+                                            StreamBuilder<String>(
+                                                stream:
+                                                    uploadCertificate.stream,
+                                                builder: (context, snapshot) {
+                                                  return ImageToPDFGenerator(
+                                                    onFilePicked: () {
+                                                      if (snapshot.data !=
+                                                              null &&
+                                                          snapshot.data ==
+                                                              e.id) {
+                                                        uploadCertificate
+                                                            .add('');
+                                                      } else {
+                                                        uploadCertificate.add(
+                                                            e.id.toString());
+                                                      }
                                                     },
-                                                    icon: Icon(
-                                                      Icons.upload_sharp,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .error,
-                                                    ));
-                                              } else {
-                                                return const SizedBox();
-                                              }
-                                            })
-                                      ])
-                          ])),
+                                                  );
+                                                }),
+                                            StreamBuilder<String>(
+                                                stream:
+                                                    uploadCertificate.stream,
+                                                builder: (context, snapshot) {
+                                                  if (snapshot.data != null &&
+                                                      snapshot.data ==
+                                                          e.id.toString()) {
+                                                    return IconButton(
+                                                        onPressed: () async {
+                                                          final Directory
+                                                              directory =
+                                                              await getApplicationDocumentsDirectory();
+                                                          final String path =
+                                                              directory.path;
+                                                          final File file = File(
+                                                              '$path/certificate.pdf');
+                                                          uploadCertificateWidget(
+                                                              context: context,
+                                                              file: file,
+                                                              state: state,
+                                                              e: e,
+                                                              uploadCertificate:
+                                                                  uploadCertificate,
+                                                              blocProvider:
+                                                                  blocProvider);
+                                                        },
+                                                        icon: Icon(
+                                                          Icons.upload_sharp,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .error,
+                                                        ));
+                                                  } else {
+                                                    return const SizedBox();
+                                                  }
+                                                })
+                                          ])
+                              ])),
                       TableDataCell(
                           label: Text(
-                        e.instrumentname == null
-                            ? ''
-                            : e.instrumentname.toString(),
-                        textAlign: TextAlign.center,
-                        style: tableTextStyle(),
+                              e.instrumentname == null
+                                  ? ''
+                                  : e.instrumentname.toString(),
+                              textAlign: TextAlign.center,
+                              style: AppTheme.tablerowTextStyle())),
+                      TableDataCell(
+                          label: InkWell(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                    title: Text(
+                                        e.instrumenttype.toString().trim(),
+                                        style: AppTheme.tablerowTextStyle()));
+                              });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 7),
+                          child: Text(
+                              e.instrumenttype == null
+                                  ? ''
+                                  : e.instrumenttype.toString(),
+                              textAlign: TextAlign.center,
+                              style: AppTheme.tablerowTextStyle()),
+                        ),
                       )),
                       TableDataCell(
                           label: Text(
-                        e.instrumenttype == null
-                            ? ''
-                            : e.instrumenttype.toString(),
-                        textAlign: TextAlign.center,
-                        style: tableTextStyle(),
-                      )),
+                              e.cardnumber == null
+                                  ? ''
+                                  : e.cardnumber.toString(),
+                              textAlign: TextAlign.center,
+                              style: AppTheme.tablerowTextStyle())),
                       TableDataCell(
                           label: Text(
-                        e.cardnumber == null ? '' : e.cardnumber.toString(),
-                        textAlign: TextAlign.center,
-                        style: tableTextStyle(),
-                      )),
+                              e.measuringrange == null
+                                  ? ''
+                                  : e.measuringrange.toString(),
+                              textAlign: TextAlign.center,
+                              style: AppTheme.tablerowTextStyle())),
                       TableDataCell(
                           label: Text(
-                        e.measuringrange == null
-                            ? ''
-                            : e.measuringrange.toString(),
-                        textAlign: TextAlign.center,
-                        style: tableTextStyle(),
-                      )),
+                              e.startdate.toString() == '0000-00-00'
+                                  ? ''
+                                  : e.startdate == null
+                                      ? ''
+                                      : DateTime.parse(e.startdate.toString())
+                                          .toLocal()
+                                          .toString()
+                                          .substring(0, 10),
+                              textAlign: TextAlign.center,
+                              style: AppTheme.tablerowTextStyle())),
                       TableDataCell(
                           label: Text(
-                        e.startdate.toString() == '0000-00-00'
-                            ? ''
-                            : e.startdate == null
-                                ? ''
-                                : DateTime.parse(e.startdate.toString())
-                                    .toLocal()
-                                    .toString()
-                                    .substring(0, 10),
-                        textAlign: TextAlign.center,
-                        style: tableTextStyle(),
-                      )),
+                              e.duedate.toString() == '0000-00-00'
+                                  ? ''
+                                  : e.duedate == null
+                                      ? ''
+                                      : DateTime.parse(e.duedate.toString())
+                                          .toLocal()
+                                          .toString()
+                                          .substring(0, 10),
+                              textAlign: TextAlign.center,
+                              style: AppTheme.tablerowTextStyle())),
                       TableDataCell(
                           label: Text(
-                        e.duedate.toString() == '0000-00-00'
-                            ? ''
-                            : e.duedate == null
-                                ? ''
-                                : DateTime.parse(e.duedate.toString())
-                                    .toLocal()
-                                    .toString()
-                                    .substring(0, 10),
-                        textAlign: TextAlign.center,
-                        style: tableTextStyle(),
-                      )),
-                      TableDataCell(
-                          label: Text(
-                        e.startdate.toString() == '0000-00-00'
-                            ? 'Outsourced'
-                            : e.remainingTimeUntilDue == null
-                                ? ''
-                                : e.remainingTimeUntilDue.toString() == '-'
-                                    ? 'Last day'
-                                    : e.remainingTimeUntilDue.toString(),
-                        textAlign: TextAlign.center,
-                        style: tableTextStyle(),
-                      )),
+                              e.startdate.toString() == '0000-00-00'
+                                  ? 'Outsourced'
+                                  : e.remainingTimeUntilDue == null
+                                      ? ''
+                                      : e.remainingTimeUntilDue.toString() ==
+                                              '-'
+                                          ? 'Last day'
+                                          : e.remainingTimeUntilDue.toString(),
+                              textAlign: TextAlign.center,
+                              style: AppTheme.tablerowTextStyle())),
                     ]);
               }).toList(),
               footer: StreamBuilder<int>(
@@ -616,9 +577,8 @@ class CalibrationStatus extends StatelessWidget {
                         ? const SizedBox(height: .1)
                         : Container(
                             color: AppColors.whiteTheme,
-                            width: MediaQuery.of(context).size.width - 20,
-                            height: 45,
-                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            width: MediaQuery.of(context).size.width - 25,
+                            height: roHeight,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -654,15 +614,20 @@ class CalibrationStatus extends StatelessWidget {
                                               rangeData.add(
                                                   rangesnapshot.data! - 50);
                                             },
-                                            child: const Row(
+                                            child: Row(
                                               children: [
-                                                Icon(Icons.arrow_back_ios),
-                                                Text(
-                                                  'Back',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
+                                                const Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top: 2, left: 10),
+                                                  child: Icon(
+                                                    Icons.arrow_back_ios,
+                                                    size: 15,
+                                                  ),
+                                                ),
+                                                Text('Back',
+                                                    style:
+                                                        AppTheme.labelTextStyle(
+                                                            isFontBold: true))
                                               ],
                                             ),
                                           );
@@ -710,15 +675,20 @@ class CalibrationStatus extends StatelessWidget {
                                                               .data!) +
                                                       50);
                                             },
-                                            child: const Row(
+                                            child: Row(
                                               children: [
-                                                Text(
-                                                  'Next',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Icon(Icons.arrow_forward_ios)
+                                                Text('Next',
+                                                    style:
+                                                        AppTheme.labelTextStyle(
+                                                            isFontBold: true)),
+                                                const Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top: 2, right: 5),
+                                                  child: Icon(
+                                                    Icons.arrow_forward_ios,
+                                                    size: 15,
+                                                  ),
+                                                )
                                               ],
                                             ),
                                           );
@@ -728,6 +698,76 @@ class CalibrationStatus extends StatelessWidget {
                           );
                   })),
     );
+  }
+
+  Future<dynamic> uploadCertificateWidget(
+      {required BuildContext context,
+      required File file,
+      required InstrumentCalibrationStatusState state,
+      required CalibrationStatusModel e,
+      required StreamController<String> uploadCertificate,
+      required CalibrationBloc blocProvider}) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext dialContext) {
+          return AlertDialog(
+            content: const SizedBox(
+              height: 20,
+              child: Center(
+                child: Text(
+                  'Are you sure you want to upload certificate?',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            actions: [
+              FilledButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                  },
+                  style: ButtonStyle(
+                      backgroundColor:
+                          WidgetStateProperty.all(AppColors.redTheme)),
+                  child: const Text('No')),
+              FilledButton(
+                  onPressed: () async {
+                    if (await file.exists()) {
+                      QuickFixUi().showProcessing(context: context);
+                      List<int> pdfBytes = await file.readAsBytes();
+                      String certificateId = await CalibrationRepository()
+                          .instrumentsCertificatesRegistration(
+                              token: state.token,
+                              payload: {
+                            'instrumentname':
+                                '${e.instrumentname.toString().trim()}_${e.cardnumber}.pdf',
+                            'postgresql_id': e.id,
+                            'data': base64Encode(pdfBytes)
+                          });
+                      String updatedResponse = await CalibrationRepository()
+                          .certificateReference(token: state.token, payload: {
+                        'id': e.id,
+                        'certificate_mdocid': certificateId
+                      });
+                      if (updatedResponse == 'Updated successfully') {
+                        Navigator.of(context).pop();
+                        await file.delete();
+                        uploadCertificate.add('');
+                        Navigator.of(context).pop();
+                        blocProvider.add(InstrumentCalibrationStatusEvent());
+
+                        QuickFixUi.successMessage(
+                            'Certificate uploaded successfully.', context);
+                      }
+                    }
+                  },
+                  style: ButtonStyle(
+                      backgroundColor:
+                          WidgetStateProperty.all(AppColors.greenTheme)),
+                  child: const Text('Yes'))
+            ],
+          );
+        });
   }
 
   bool isSelected(
@@ -748,13 +788,21 @@ class CalibrationStatus extends StatelessWidget {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text(
-              'Reject instrument',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-            ),
+            title: Text('Reject instrument',
+                style: AppTheme.labelTextStyle(isFontBold: true)),
             content: DropdownSearch<InstrumentRejectionReasons>(
               items: rejectionReasons,
               itemAsString: (item) => item.reason.toString(),
+              popupProps: PopupProps.menu(
+                itemBuilder: (context, item, isSelected) {
+                  return ListTile(
+                    title: Text(
+                      item.reason.toString(),
+                      style: AppTheme.labelTextStyle(),
+                    ),
+                  );
+                },
+              ),
               onChanged: (value) {
                 rejectedReason.text = value!.id.toString();
               },
@@ -804,12 +852,18 @@ class CalibrationStatus extends StatelessWidget {
                       }
                     }
                   },
-                  child: const Text('Confirm')),
+                  child: Text(
+                    'Confirm',
+                    style: AppTheme.labelTextStyle(isFontBold: true),
+                  )),
               FilledButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text('Cancel'))
+                  child: Text(
+                    'Cancel',
+                    style: AppTheme.labelTextStyle(isFontBold: true),
+                  ))
             ],
           );
         });
@@ -820,7 +874,7 @@ class CalibrationStatus extends StatelessWidget {
       required CalibrationStatusModel e,
       required String token}) {
     return Padding(
-      padding: const EdgeInsets.only(top: 7, bottom: 7),
+      padding: const EdgeInsets.only(top: 3, bottom: 3),
       child: IconButton(
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
@@ -862,6 +916,4 @@ class CalibrationStatus extends StatelessWidget {
       return const Color(0XFFa1debb);
     }
   }
-
-  tableTextStyle() => TextStyle(fontSize: Platform.isAndroid ? 14 : 12);
 }

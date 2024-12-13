@@ -1,4 +1,6 @@
 // import 'package:de_opc/utils/app_colors.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -73,5 +75,17 @@ class AppTheme {
     return GoogleFonts.nunitoSans(
         textStyle: const TextStyle(
             fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black));
+  }
+
+  static TextStyle labelTextStyle({bool isFontBold = false}) {
+    return TextStyle(
+        fontSize: Platform.isAndroid ? 15 : 13,
+        fontWeight: isFontBold ? FontWeight.bold : FontWeight.normal);
+  }
+
+  static TextStyle tablerowTextStyle({bool isFontBold = false}) {
+    return TextStyle(
+        fontSize: Platform.isAndroid ? 15 : 12,
+        fontWeight: isFontBold ? FontWeight.bold : FontWeight.normal);
   }
 }

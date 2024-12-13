@@ -517,20 +517,24 @@ class _SalesordersState extends State<Salesorders> {
                                     .withOpacity(.1),
                                 child:
                                     state.selectedAssembliesDataList.isNotEmpty
-                                        ? Center(
-                                            child: ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.pushNamed(
-                                                      context,
-                                                      RouteName
-                                                          .assemblyComponentRequirementsScreen,
-                                                      arguments: {
-                                                        'selectedAssembliesDataList':
-                                                            state
-                                                                .selectedAssembliesDataList
-                                                      });
-                                                },
-                                                child: const Text('Check')),
+                                        ? Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 5),
+                                            child: Center(
+                                              child: ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.pushNamed(
+                                                        context,
+                                                        RouteName
+                                                            .assemblyComponentRequirementsScreen,
+                                                        arguments: {
+                                                          'selectedAssembliesDataList':
+                                                              state
+                                                                  .selectedAssembliesDataList
+                                                        });
+                                                  },
+                                                  child: const Text('Check')),
+                                            ),
                                           )
                                         : const Text('')),
                           ),

@@ -28,7 +28,7 @@ class MyIconGenerator {
         return Icon(
           Icons.picture_as_pdf_sharp,
           color: iconColor,
-          size: 30,
+          size: size,
         );
 
       case 'Capacity_plan':
@@ -329,194 +329,194 @@ class MyIconGenerator {
         return Icon(
           Icons.edit_note,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Inward':
         return Icon(
           Icons.arrow_downward,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Calibration':
         return Icon(
           Icons.build_rounded,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Instruments Registration':
         return Icon(
           Icons.library_add,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Schedule Calibration':
         return Icon(
           Icons.history,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Instrument Type Registration':
         return Icon(
           Icons.device_hub,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Stock':
         return Icon(
           Icons.trending_up_outlined,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Calibration Status':
         return Icon(
           Icons.timeline,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Order Instrument':
         return Icon(
           Icons.mail,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'All Orders':
         return Icon(
           Icons.mark_email_read_outlined,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Outward instruments':
         return Icon(
           Icons.build_circle_outlined,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Inward instruments':
         return Icon(
           Icons.shopping_cart,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Outsource workorders':
         return Icon(
           Icons.work_history,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Instruments History':
         return Icon(
           Icons.history_toggle_off_outlined,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Quality':
         return Icon(
           Icons.paste_rounded,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Overtime':
         return Icon(
           Icons.timer,
           color: iconColor,
-          size: 30,
+          size: size,
         );
 
       case 'Employee Overtime':
         return Icon(
           Icons.timer,
           color: iconColor,
-          size: 30,
+          size: size,
         );
 
       case 'Account':
         return Icon(
           Icons.attach_money,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'New Production Product':
         return Icon(
           Icons.new_releases,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Common Reports':
         return Icon(
           Icons.note_add,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Bulk Mails':
         return Icon(
           Icons.mail,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Program access management':
         return Icon(
           Icons.account_tree,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Mail':
         return Icon(
           Icons.mail,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Documents':
         return Icon(
           Icons.folder,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'User modules':
         return Icon(
           Icons.person,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       case 'Update employee details':
         return Icon(
           Icons.person,
           color: iconColor,
-          size: 30,
+          size: size,
         );
 
       case 'Product dashboard':
         return Icon(
           Icons.gradient_sharp,
           color: iconColor,
-          size: 30,
+          size: size,
         );
 
       case 'Product registration':
         return Icon(
           Icons.add_to_photos_rounded,
           color: iconColor,
-          size: 30,
+          size: size,
         );
 
       case 'Product structure':
         return Icon(
           Icons.account_tree,
           color: iconColor,
-          size: 30,
+          size: size,
         );
 
       case 'Sales orders':
         return Icon(
           Icons.receipt_long_outlined,
           color: iconColor,
-          size: 30,
+          size: size,
         );
 
       case 'Product inventory':
         return Icon(
           Icons.inventory_2,
           color: iconColor,
-          size: 30,
+          size: size,
         );
       default:
         return const Icon(Icons.error_outline);

@@ -52,15 +52,12 @@ class InstrumentCalibrationStatusState extends CalibrationState {
   final List<CalibrationStatusModel> calibrationStatusList;
   final List<InstrumentRejectionReasons> rejectionReasons;
   final List<CalibrationStatusModel> selectedInstrumentsList;
-  final String token, userId; // searchString
-  // final int range;
+  final String token, userId;
   InstrumentCalibrationStatusState(
       {required this.calibrationStatusList,
       required this.token,
       required this.userId,
       required this.rejectionReasons,
-      // required this.range,
-      // required this.searchString,
       required this.selectedInstrumentsList});
 }
 
@@ -104,11 +101,14 @@ class OutwardInstrumentsState extends CalibrationState {
 class InwardInstrumentsState extends CalibrationState {
   final List<OutsourcedInstrumentsModel> inwardInstrumentsList;
   final List<Frequency> frequencyList;
-  final String token;
+  final String token, userId;
+  final List<InstrumentRejectionReasons> rejectionReasons;
   InwardInstrumentsState(
       {required this.inwardInstrumentsList,
       required this.frequencyList,
-      required this.token});
+      required this.token,
+      required this.rejectionReasons,
+      required this.userId});
 }
 
 class OutsourceWorkorderState extends CalibrationState {

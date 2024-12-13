@@ -120,92 +120,143 @@ class InwardInstruments extends StatelessWidget {
                         TableDataCell(
                             label: Padding(
                           padding: const EdgeInsets.only(top: 7, bottom: 7),
-                          child: StreamBuilder<InwardInstrumentsModel>(
-                              stream: inwardingInstrument.stream,
-                              builder: (context, snapshot) {
-                                return FilledButton(
-                                    onPressed: () async {
-                                      if (snapshot.data != null) {
-                                        if (snapshot.data!.startdate == '') {
-                                          QuickFixUi.errorMessage(
-                                              'Start date not found.', context);
-                                        } else if (snapshot.data!.duedate ==
-                                            '') {
-                                          QuickFixUi.errorMessage(
-                                              'Due date not found.', context);
-                                        } else {
-                                          try {
-                                            final Directory directory =
-                                                await getApplicationDocumentsDirectory();
-                                            final String path = directory.path;
-                                            final File file =
-                                                File('$path/certificate.pdf');
-                                            if (await file.exists()) {
-                                              QuickFixUi().showProcessing(
-                                                  context: context);
-                                              List<int> pdfBytes =
-                                                  await file.readAsBytes();
-                                              String certificateId =
-                                                  await CalibrationRepository()
-                                                      .instrumentsCertificatesRegistration(
-                                                          token: state.token,
-                                                          payload: {
-                                                    'instrumentname':
-                                                        '${e.instrumentname.toString().trim()}_${e.cardnumber}.pdf',
-                                                    'postgresql_id': e
-                                                        .instrumentcalibrationscheduleId
-                                                        .toString()
-                                                        .trim(),
-                                                    'data':
-                                                        base64Encode(pdfBytes)
-                                                  });
-                                              if (certificateId.length == 24) {
-                                                String response =
-                                                    await CalibrationRepository()
-                                                        .inwardSpacificInstrument(
-                                                            token: state.token,
-                                                            payload: {
-                                                      'startdate': snapshot
-                                                          .data!.startdate,
-                                                      'duedate': snapshot
-                                                          .data!.duedate,
-                                                      'frequency': snapshot
-                                                          .data!.frequency,
-                                                      'certificateid':
-                                                          certificateId,
-                                                      'id': e
-                                                          .instrumentcalibrationscheduleId
-                                                    });
-                                                if (response ==
-                                                    'Updated successfully') {
-                                                  Navigator.of(context).pop();
-                                                  blocProvider.add(
-                                                      OutwardInstrumentsEvent());
-                                                  await file.delete();
-                                                  Future.delayed(
-                                                      const Duration(
-                                                          seconds: 1), () {
-                                                    blocProvider.add(
-                                                        InwardInstrumentsEvent());
-                                                  });
-                                                }
-                                              }
-                                            } else {
-                                              QuickFixUi.errorMessage(
-                                                  'Certificate not found.',
-                                                  context);
-                                            }
-                                          } catch (e) {
-                                            //
-                                          }
-                                        }
-                                      } else {
-                                        QuickFixUi.errorMessage(
-                                            'Start date not found.', context);
-                                      }
-                                    },
-                                    child: const Text('Submit'));
-                              }),
+                          child: Row(
+                            children: [
+                              submitButton(
+                                  inwardingInstrument: inwardingInstrument,
+                                  state: state,
+                                  e: e,
+                                  blocProvider: blocProvider),
+                              IconButton(
+                                  padding: const EdgeInsets.only(bottom: 1),
+                                  onPressed: () async {
+                                    TextEditingController rejectedReason =
+                                        TextEditingController();
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                              title: const Text(
+                                                'Reject instrument',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 17),
+                                              ),
+                                              content: DropdownSearch<
+                                                  InstrumentRejectionReasons>(
+                                                items: state.rejectionReasons,
+                                                itemAsString: (item) =>
+                                                    item.reason.toString(),
+                                                onChanged: (value) {
+                                                  rejectedReason.text =
+                                                      value!.id.toString();
+                                                },
+                                              ),
+                                              actions: [
+                                                FilledButton(
+                                                    onPressed: () async {
+                                                      if (rejectedReason.text ==
+                                                          '') {
+                                                        QuickFixUi()
+                                                            .showCustomDialog(
+                                                                errorMessage:
+                                                                    'Select rejection reason first.',
+                                                                context:
+                                                                    context);
+                                                      } else {
+                                                        String id = e
+                                                                .instrumentcalibrationscheduleId
+                                                                .toString()
+                                                                .trim(),
+                                                            startdate = e
+                                                                .startdate
+                                                                .toString()
+                                                                .trim(),
+                                                            duedate = e.duedate
+                                                                .toString()
+                                                                .trim(),
+                                                            certificateMdocid =
+                                                                e.certificateId
+                                                                    .toString()
+                                                                    .trim();
+                                                        String deleteResponse =
+                                                            await CalibrationRepository()
+                                                                .rejectInstrument(
+                                                                    token: state
+                                                                        .token,
+                                                                    payload: {
+                                                              'id':
+                                                                  id.toString(),
+                                                              'isdeleted': true
+                                                            });
+
+                                                        if (deleteResponse ==
+                                                            'Updated successfully') {
+                                                          String response =
+                                                              await CalibrationRepository()
+                                                                  .addrejectedInstrumentToHistory(
+                                                                      token: state
+                                                                          .token,
+                                                                      payload: {
+                                                                'createdby':
+                                                                    state
+                                                                        .userId,
+                                                                'instrumentcalibrationschedule_id':
+                                                                    id,
+                                                                'startdate':
+                                                                    startdate,
+                                                                'duedate':
+                                                                    duedate,
+                                                                'certificate_id':
+                                                                    certificateMdocid,
+                                                                'rejectionreason':
+                                                                    rejectedReason
+                                                                        .text,
+                                                                'isdeleted':
+                                                                    rejectedReason.text ==
+                                                                            '81180939c054478587d54fab54f585fd'
+                                                                        ? false
+                                                                        : true
+                                                              });
+
+                                                          if (response ==
+                                                              'Inserted successfully') {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            QuickFixUi
+                                                                .successMessage(
+                                                                    response,
+                                                                    context);
+                                                            Future.delayed(
+                                                                const Duration(
+                                                                    seconds: 1),
+                                                                () {
+                                                              blocProvider.add(
+                                                                  InwardInstrumentsEvent());
+                                                            });
+                                                          }
+                                                        }
+                                                      }
+                                                    },
+                                                    child:
+                                                        const Text('Confirm')),
+                                                FilledButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: const Text('Cancel'))
+                                              ]);
+                                        });
+                                  },
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                    size: Platform.isAndroid ? 25 : 20,
+                                  )),
+                            ],
+                          ),
                         ))
                       ]))
                   .toList()),
@@ -216,6 +267,77 @@ class InwardInstruments extends StatelessWidget {
         );
       }
     });
+  }
+
+  StreamBuilder<InwardInstrumentsModel> submitButton(
+      {required StreamController<InwardInstrumentsModel> inwardingInstrument,
+      required InwardInstrumentsState state,
+      required OutsourcedInstrumentsModel e,
+      required CalibrationBloc blocProvider}) {
+    return StreamBuilder<InwardInstrumentsModel>(
+        stream: inwardingInstrument.stream,
+        builder: (context, snapshot) {
+          return FilledButton(
+              onPressed: () async {
+                if (snapshot.data != null) {
+                  if (snapshot.data!.startdate == '') {
+                    QuickFixUi.errorMessage('Start date not found.', context);
+                  } else if (snapshot.data!.duedate == '') {
+                    QuickFixUi.errorMessage('Due date not found.', context);
+                  } else {
+                    try {
+                      final Directory directory =
+                          await getApplicationDocumentsDirectory();
+                      final String path = directory.path;
+                      final File file = File('$path/certificate.pdf');
+                      if (await file.exists()) {
+                        QuickFixUi().showProcessing(context: context);
+                        List<int> pdfBytes = await file.readAsBytes();
+                        String certificateId = await CalibrationRepository()
+                            .instrumentsCertificatesRegistration(
+                                token: state.token,
+                                payload: {
+                              'instrumentname':
+                                  '${e.instrumentname.toString().trim()}_${e.cardnumber}.pdf',
+                              'postgresql_id': e.instrumentcalibrationscheduleId
+                                  .toString()
+                                  .trim(),
+                              'data': base64Encode(pdfBytes)
+                            });
+                        if (certificateId.length == 24) {
+                          String response = await CalibrationRepository()
+                              .inwardSpacificInstrument(
+                                  token: state.token,
+                                  payload: {
+                                'startdate': snapshot.data!.startdate,
+                                'duedate': snapshot.data!.duedate,
+                                'frequency': snapshot.data!.frequency,
+                                'certificateid': certificateId,
+                                'id': e.instrumentcalibrationscheduleId
+                              });
+                          if (response == 'Updated successfully') {
+                            Navigator.of(context).pop();
+                            blocProvider.add(OutwardInstrumentsEvent());
+                            await file.delete();
+                            Future.delayed(const Duration(seconds: 1), () {
+                              blocProvider.add(InwardInstrumentsEvent());
+                            });
+                          }
+                        }
+                      } else {
+                        QuickFixUi.errorMessage(
+                            'Certificate not found.', context);
+                      }
+                    } catch (e) {
+                      //
+                    }
+                  }
+                } else {
+                  QuickFixUi.errorMessage('Start date not found.', context);
+                }
+              },
+              child: const Text('Submit'));
+        });
   }
 
   frequencyWidget(

@@ -290,15 +290,6 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
                 width: 220,
                 height: 50,
                 child: InkWell(
-                    // style: ElevatedButton.styleFrom(
-                    // backgroundColor: AppColors().getColorDependingUponStock(
-                    //     currentStock:
-                    //         node.buildProductStructure![0].currentstock!,
-                    //     requiredQuantity: node
-                    //         .buildProductStructure![0].quantity!
-                    //         .toDouble(),
-                    //     issuedQuantity: node
-                    //         .buildProductStructure![0].issuedquantity!)),
                     onTap: () async {
                       double dialogWidth = 600, rowHeight = 35;
                       List<IssuedStockModel> issuedStock = await PamRepository()
@@ -342,139 +333,32 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 13),
                               )),
-                          trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                  "Required : ${node.buildProductStructure![0].quantity}",
-                                  style: buttonFontSize()),
-                              Text(
-                                  "Issued : ${node.buildProductStructure![0].issuedquantity}",
-                                  style: buttonFontSize()),
-                              Text(
-                                  "Stock : ${node.buildProductStructure![0].currentstock}",
-                                  style: buttonFontSize()),
-                            ],
+                          trailing: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 1.5),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    "Required : ${node.buildProductStructure![0].quantity}",
+                                    style: buttonFontSize()),
+                                Text(
+                                    "Issued : ${node.buildProductStructure![0].issuedquantity}",
+                                    style: buttonFontSize()),
+                                Text(
+                                    "Stock : ${node.buildProductStructure![0].currentstock}",
+                                    style: buttonFontSize()),
+                              ],
+                            ),
                           ),
-                        )
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        //   children: [
-                        //     Container(
-                        //       child: Padding(
-                        //         padding:
-                        //             const EdgeInsets.symmetric(horizontal: 8),
-                        //         child: Text(
-                        //           node.buildProductStructure![0].part!,
-                        //           style: TextStyle(
-                        //               color: Colors.black,
-                        //               fontWeight: Platform.isAndroid
-                        //                   ? size.width < 550
-                        //                       ? FontWeight.normal
-                        //                       : FontWeight.bold
-                        //                   : size.width < 1350
-                        //                       ? FontWeight.normal
-                        //                       : FontWeight.bold),
-                        //         ),
-                        //       ),
-                        //     ),
-                        //     Container(
-                        //       width: 105,
-                        //       child: Column(
-                        //         mainAxisAlignment: MainAxisAlignment.center,
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         children: [
-                        // Text(
-                        //     "Required : ${node.buildProductStructure![0].quantity}",
-                        //     style: buttonFontSize()),
-                        // Text(
-                        //     "Issued : ${node.buildProductStructure![0].issuedquantity}",
-                        //     style: buttonFontSize()),
-                        // Text(
-                        //     "Stock : ${node.buildProductStructure![0].currentstock}",
-                        //     style: buttonFontSize()),
-                        //         ],
-                        //       ),
-                        //     )
-                        //   ],
-                        // ),
-                        )),
-                // child: ElevatedButton(
-                //     style: ElevatedButton.styleFrom(
-                //         backgroundColor: AppColors().getColorDependingUponStock(
-                //             currentStock:
-                //                 node.buildProductStructure![0].currentstock!,
-                //             requiredQuantity: node
-                //                 .buildProductStructure![0].quantity!
-                //                 .toDouble(),
-                //             issuedQuantity: node
-                //                 .buildProductStructure![0].issuedquantity!)),
-                //     onPressed: () async {
-                //       double dialogWidth = 600, rowHeight = 35;
-                //       List<IssuedStockModel> issuedStock = await PamRepository()
-                //           .selectedProductIssuedStock(
-                //               token: state.token,
-                //               productId: node.buildProductStructure![0].partId
-                //                   .toString(),
-                //               revision: node.buildProductStructure![0].revision
-                //                   .toString(),
-                //               parentProductId: node
-                //                   .buildProductStructure![0].parentpartId
-                //                   .toString(),
-                //               soDetailsId:
-                //                   state.selectedProduct.sodetailsId.toString());
-
-                //       issueStockDialog(
-                //           context: context,
-                //           dialogWidth: dialogWidth,
-                //           issuedStock: issuedStock,
-                //           rowHeight: rowHeight,
-                //           node: node,
-                //           state: state,
-                //           blocProvider: blocProvider);
-                //     },
-                //     child: Row(
-                //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                //       children: [
-                //         Text(
-                //           node.buildProductStructure![0].part!,
-                //           style: TextStyle(
-                //               color: Colors.black,
-                //               fontWeight: Platform.isAndroid
-                //                   ? size.width < 550
-                //                       ? FontWeight.normal
-                //                       : FontWeight.bold
-                //                   : size.width < 1350
-                //                       ? FontWeight.normal
-                //                       : FontWeight.bold),
-                //         ),
-                //         Column(
-                //           mainAxisAlignment: MainAxisAlignment.center,
-                //           crossAxisAlignment: CrossAxisAlignment.start,
-                //           children: [
-                //             Text(
-                //                 "Required : ${node.buildProductStructure![0].quantity}",
-                //                 style: buttonFontSize()),
-                //             Text(
-                //                 "Issued : ${node.buildProductStructure![0].issuedquantity}",
-                //                 style: buttonFontSize()),
-                //             Text(
-                //                 "Stock : ${node.buildProductStructure![0].currentstock}",
-                //                 style: buttonFontSize()),
-                //           ],
-                //         )
-                //       ],
-                //     )),
+                        ))),
               ),
             )),
         if (node.buildProductStructure![0].children!.isNotEmpty)
           CustomPaint(
             size: const Size(16, 16),
             painter: LinePainter(
-              node: node,
-              context: context,
-            ),
+                node: node, context: context, androidstartY: -8, wendY: 33),
             child: Container(
               padding: const EdgeInsets.only(left: 72), // 50
               child: Column(

@@ -62,7 +62,9 @@ class CalibrationDashboard extends StatelessWidget {
               destinations: programsList
                   .map((e) => NavigationDestination(
                         icon: MyIconGenerator.getIcon(
-                            name: e.toString(), iconColor: Colors.black),
+                            name: e.toString(),
+                            iconColor: Colors.black,
+                            size: 25),
                         label: e.toString(),
                       ))
                   .toList());

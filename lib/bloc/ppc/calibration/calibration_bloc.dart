@@ -188,10 +188,16 @@ class CalibrationBloc extends Bloc<CalibrationEvent, CalibrationState> {
       List<Frequency> frequencyList = await CalibrationRepository()
           .frequency(token: saveddata['token'].toString());
 
+      List<InstrumentRejectionReasons> rejectionReasons =
+          await CalibrationRepository()
+              .instrumentRejectionReasons(token: saveddata['token'].toString());
+
       emit(InwardInstrumentsState(
           inwardInstrumentsList: inwardInstrumentsList,
           frequencyList: frequencyList,
-          token: saveddata['token'].toString()));
+          token: saveddata['token'].toString(),
+          rejectionReasons: rejectionReasons,
+          userId: saveddata['data'][0]['id'].toString()));
     });
 
     //----------------------Instrument calibration outsource workorder---------------------------------------
