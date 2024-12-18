@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:de/utils/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../bloc/ppc/calibration/calibration_bloc.dart';
@@ -45,6 +46,7 @@ class InstrumentStore extends StatelessWidget {
                 tablebodyColor: Theme.of(context).colorScheme.surface,
                 tableBorderColor: Theme.of(context).primaryColor,
                 headerStyle: TextStyle(
+                    fontSize: Platform.isAndroid ? 15 : 13,
                     color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold),
                 column: [
@@ -73,39 +75,11 @@ class InstrumentStore extends StatelessWidget {
                                             e: e,
                                             state: state,
                                             context: context),
-                                        IconButton(
-                                            onPressed: () async {
-                                              String response =
-                                                  await CalibrationRepository()
-                                                      .restoreStoredInstruments(
-                                                          token: state.token,
-                                                          payload: {
-                                                    'id': e.id.toString()
-                                                  });
-                                              if (response ==
-                                                  'Deleted successfully') {
-                                                String deleteResponse =
-                                                    await CalibrationRepository()
-                                                        .rejectInstrument(
-                                                            token: state.token,
-                                                            payload: {
-                                                      'id': e
-                                                          .instrumentcalibrationscheduleId
-                                                          .toString(),
-                                                      'isdeleted': false
-                                                    });
-                                                if (deleteResponse ==
-                                                    'Updated successfully') {
-                                                  blocProvider.add(
-                                                      InstrumentStoreEvent());
-                                                }
-                                              }
-                                            },
-                                            icon: Icon(
-                                              Icons.restore_outlined,
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                            ))
+                                        restoreInstrument(
+                                            state: state,
+                                            e: e,
+                                            blocProvider: blocProvider,
+                                            context: context)
                                       ],
                                     )
                                   : const Text('')),
@@ -113,21 +87,25 @@ class InstrumentStore extends StatelessWidget {
                               label: Text(
                             e.instrumentname.toString(),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
                             e.instrumenttype.toString(),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
                             e.cardnumber.toString(),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
                             e.measuringrange.toString(),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
@@ -140,6 +118,7 @@ class InstrumentStore extends StatelessWidget {
                                         .toString()
                                         .substring(0, 10),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
@@ -152,21 +131,25 @@ class InstrumentStore extends StatelessWidget {
                                         .toString()
                                         .substring(0, 10),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
                             e.manufacturer.toString(),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
                             e.storagelocation.toString(),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
                             e.storedby.toString(),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
@@ -179,6 +162,7 @@ class InstrumentStore extends StatelessWidget {
                                         .toString()
                                         .substring(0, 10),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                         ]))
                     .toList()),
@@ -188,6 +172,33 @@ class InstrumentStore extends StatelessWidget {
         }
       })),
     );
+  }
+
+  IconButton restoreInstrument(
+      {required InstrumentStoreState state,
+      required StoredInstrumentsModel e,
+      required CalibrationBloc blocProvider,
+      required BuildContext context}) {
+    return IconButton(
+        onPressed: () async {
+          String response = await CalibrationRepository()
+              .restoreStoredInstruments(
+                  token: state.token, payload: {'id': e.id.toString()});
+          if (response == 'Deleted successfully') {
+            String deleteResponse = await CalibrationRepository()
+                .rejectInstrument(token: state.token, payload: {
+              'id': e.instrumentcalibrationscheduleId.toString(),
+              'isdeleted': false
+            });
+            if (deleteResponse == 'Updated successfully') {
+              blocProvider.add(InstrumentStoreEvent());
+            }
+          }
+        },
+        icon: Icon(
+          Icons.restore_outlined,
+          color: Theme.of(context).primaryColor,
+        ));
   }
 
   IconButton certificateButton(

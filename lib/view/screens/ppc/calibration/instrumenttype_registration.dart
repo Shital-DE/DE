@@ -11,7 +11,7 @@ import '../../../../bloc/ppc/calibration/calibration_bloc.dart';
 import '../../../../bloc/ppc/calibration/calibration_event.dart';
 import '../../../../bloc/ppc/calibration/calibration_state.dart';
 import '../../../../services/repository/quality/calibration_repository.dart';
-import '../../../../utils/app_colors.dart';
+import '../../../../utils/app_theme.dart';
 import '../../../../utils/common/quickfix_widget.dart';
 import '../../../../utils/responsive.dart';
 import '../../../widgets/table/custom_table.dart';
@@ -91,63 +91,12 @@ class InstrumentTypeRegistration extends StatelessWidget {
                             state: state,
                             instrumentType: instrumentType,
                             blocProvider: blocProvider),
-                        Container(
-                          width: (screenWidth - 20) / 2,
-                          height: screenHeight - 260,
-                          margin: const EdgeInsets.only(top: 10, right: 10),
-                          child: CustomTable(
-                              tablewidth: (screenWidth - 20) / 2,
-                              tableheight: screenHeight - 210,
-                              showIndex: true,
-                              rowHeight: 45,
-                              tableOutsideBorder: true,
-                              enableRowBottomBorder: true,
-                              tableheaderColor:
-                                  Theme.of(context).colorScheme.errorContainer,
-                              headerStyle: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.blackColor),
-                              column: [
-                                ColumnData(
-                                    width: 500, label: 'Manufacturer name'),
-                                ColumnData(width: 100, label: 'Action')
-                              ],
-                              rows: state.manufacturerData
-                                  .map((e) => RowData(cell: [
-                                        TableDataCell(
-                                            width: 500,
-                                            label: Text(
-                                                e.manufacturer.toString())),
-                                        TableDataCell(
-                                            width: 100,
-                                            label: IconButton(
-                                                onPressed: () async {
-                                                  String response =
-                                                      await CalibrationRepository()
-                                                          .deleteManufacturer(
-                                                              token:
-                                                                  state.token,
-                                                              payload: {
-                                                        'id': e.id
-                                                      });
-                                                  if (response ==
-                                                      'Updated successfully') {
-                                                    QuickFixUi.successMessage(
-                                                        'Deleted successfully',
-                                                        context);
-                                                    blocProvider.add(
-                                                        InstrumentTypeRegistrationEvent());
-                                                  }
-                                                },
-                                                icon: Icon(
-                                                  Icons.delete,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .error,
-                                                )))
-                                      ]))
-                                  .toList()),
-                        )
+                        manufacturerDataTable(
+                            screenWidth: screenWidth,
+                            screenHeight: screenHeight,
+                            context: context,
+                            state: state,
+                            blocProvider: blocProvider)
                       ],
                     ),
                   )
@@ -162,6 +111,63 @@ class InstrumentTypeRegistration extends StatelessWidget {
     }));
   }
 
+  Container manufacturerDataTable(
+      {required double screenWidth,
+      required double screenHeight,
+      required BuildContext context,
+      required InstrumentTypeRegistrationState state,
+      required CalibrationBloc blocProvider}) {
+    return Container(
+      width: (screenWidth - 20) / 2,
+      height: screenHeight - 260,
+      margin: const EdgeInsets.only(top: 10, right: 10),
+      child: CustomTable(
+          tablewidth: (screenWidth - 20) / 2,
+          tableheight: screenHeight - 210,
+          showIndex: true,
+          rowHeight: 45,
+          tableOutsideBorder: true,
+          enableRowBottomBorder: true,
+          tableheaderColor: Theme.of(context).colorScheme.errorContainer,
+          headerStyle: AppTheme.labelTextStyle(isFontBold: true),
+          column: [
+            ColumnData(
+                width: ((screenWidth - 20) / 2) - 160,
+                label: 'Manufacturer name'),
+            ColumnData(width: 100, label: 'Action')
+          ],
+          rows: state.manufacturerData
+              .map((e) => RowData(cell: [
+                    TableDataCell(
+                        width: ((screenWidth - 20) / 2) - 160,
+                        label: Text(
+                          e.manufacturer.toString(),
+                          style: AppTheme.labelTextStyle(),
+                        )),
+                    TableDataCell(
+                        width: 100,
+                        label: IconButton(
+                            onPressed: () async {
+                              String response = await CalibrationRepository()
+                                  .deleteManufacturer(
+                                      token: state.token,
+                                      payload: {'id': e.id});
+                              if (response == 'Updated successfully') {
+                                QuickFixUi.successMessage(
+                                    'Deleted successfully', context);
+                                blocProvider
+                                    .add(InstrumentTypeRegistrationEvent());
+                              }
+                            },
+                            icon: Icon(
+                              Icons.delete,
+                              color: Theme.of(context).colorScheme.error,
+                            )))
+                  ]))
+              .toList()),
+    );
+  }
+
   SizedBox manufacturerRegistration(
       {required TextEditingController manufacturer,
       required BuildContext context,
@@ -171,16 +177,19 @@ class InstrumentTypeRegistration extends StatelessWidget {
     return SizedBox(
         height: 40,
         child: Row(children: [
-          Container(
+          SizedBox(
             width: 300,
-            decoration: QuickFixUi().borderContainer(borderThickness: .5),
-            padding: const EdgeInsets.only(left: 20),
             child: TextField(
               controller: manufacturer,
+              textAlign: TextAlign.center,
+              style: AppTheme.labelTextStyle(),
               decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Manufacturer name',
-                  hintStyle: TextStyle(fontSize: Platform.isAndroid ? 15 : 14)),
+                hintText: 'Manufacturer name',
+                contentPadding:
+                    const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(2)),
+              ),
               onChanged: (value) {
                 manufacturer.text = value.toString();
               },
@@ -275,16 +284,21 @@ class InstrumentTypeRegistration extends StatelessWidget {
           tableOutsideBorder: true,
           enableRowBottomBorder: true,
           tableheaderColor: Theme.of(context).primaryColorLight,
-          headerStyle: const TextStyle(
-              fontWeight: FontWeight.bold, color: AppColors.blackColor),
+          headerStyle: AppTheme.labelTextStyle(isFontBold: true),
           column: [
-            ColumnData(width: 500, label: 'Instrument type'),
+            ColumnData(
+                width: ((screenWidth - 20) / 2) - 160,
+                label: 'Instrument type'),
             ColumnData(width: 100, label: 'Action')
           ],
           rows: state.instrumentsTypeList
               .map((e) => RowData(cell: [
                     TableDataCell(
-                        width: 500, label: Text(e.description.toString())),
+                        width: ((screenWidth - 20) / 2) - 160,
+                        label: Text(
+                          e.description.toString(),
+                          style: AppTheme.labelTextStyle(),
+                        )),
                     TableDataCell(
                         width: 100,
                         label: IconButton(
@@ -317,16 +331,19 @@ class InstrumentTypeRegistration extends StatelessWidget {
     return SizedBox(
         height: 40,
         child: Row(children: [
-          Container(
+          SizedBox(
             width: 300,
-            decoration: QuickFixUi().borderContainer(borderThickness: .5),
-            padding: const EdgeInsets.only(left: 20),
             child: TextField(
               controller: instrumentType,
+              textAlign: TextAlign.center,
+              style: AppTheme.labelTextStyle(),
               decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Instrument category',
-                  hintStyle: TextStyle(fontSize: Platform.isAndroid ? 15 : 14)),
+                hintText: 'Instrument category',
+                contentPadding:
+                    const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(2)),
+              ),
               onChanged: (value) {
                 instrumentType.text = value.toString();
               },
@@ -408,23 +425,25 @@ class InstrumentTypeRegistration extends StatelessWidget {
         Container(
             height: 40,
             width: screenWidth / 2,
-            padding: const EdgeInsets.only(left: 150),
+            // padding: const EdgeInsets.only(left: 150),
             child: Text(
               'Instrument categories registration',
+              textAlign: TextAlign.center,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: Platform.isAndroid ? 18 : 16,
+                  fontSize: Platform.isAndroid ? 16 : 14,
                   color: Theme.of(context).colorScheme.primary),
             )),
         Container(
             height: 40,
             width: screenWidth / 2,
-            padding: const EdgeInsets.only(left: 150),
+            // padding: const EdgeInsets.only(left: 150),
             child: Text(
               'Manufacturer registration',
+              textAlign: TextAlign.center,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: Platform.isAndroid ? 18 : 16,
+                  fontSize: Platform.isAndroid ? 16 : 14,
                   color: Theme.of(context).colorScheme.primary),
             ))
       ],

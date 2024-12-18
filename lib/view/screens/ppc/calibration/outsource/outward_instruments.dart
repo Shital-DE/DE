@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, must_be_immutable
 
 import 'dart:async';
+import 'dart:io';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +15,7 @@ import '../../../../../services/model/registration/subcontractor_models.dart';
 import '../../../../../services/repository/quality/calibration_repository.dart';
 import '../../../../../services/session/user_login.dart';
 import '../../../../../utils/app_icons.dart';
+import '../../../../../utils/app_theme.dart';
 import '../../../../../utils/common/quickfix_widget.dart';
 import '../../../../../utils/responsive.dart';
 import '../../../../widgets/PDF/challan.dart';
@@ -72,7 +74,10 @@ class OutwardInstruments extends StatelessWidget {
                     blocProvider: blocProvider);
               } else {
                 return const Center(
-                  child: Text('No elements are available for calibration.'),
+                  child: Text(
+                    'No elements are available for calibration.',
+                    style: TextStyle(fontSize: 13, color: Colors.grey),
+                  ),
                 );
               }
             } else if (state is InwardInstrumentsState) {
@@ -108,6 +113,16 @@ class OutwardInstruments extends StatelessWidget {
             child: DropdownSearch<CalibrationContractors>(
               items: state.calibrationContractorList,
               itemAsString: (item) => item.name.toString(),
+              popupProps: PopupProps.menu(
+                itemBuilder: (context, item, isSelected) {
+                  return ListTile(
+                    title: Text(
+                      item.name.toString(),
+                      style: AppTheme.labelTextStyle(),
+                    ),
+                  );
+                },
+              ),
               dropdownDecoratorProps: const DropDownDecoratorProps(
                   dropdownSearchDecoration: InputDecoration(
                       border: InputBorder.none, hintText: 'Select contractor')),
@@ -130,8 +145,9 @@ class OutwardInstruments extends StatelessWidget {
               columnWidth: size.width / 5.1,
               tableheaderColor: Colors.white,
               headerStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor),
+                  fontSize: Platform.isAndroid ? 15 : 13,
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold),
               tableOutsideBorder: true,
               enableHeaderBottomBorder: true,
               enableRowBottomBorder: true,
@@ -149,78 +165,38 @@ class OutwardInstruments extends StatelessWidget {
               rows: state.outwardInstrumentsList
                   .map((e) => RowData(cell: [
                         TableDataCell(
-                            label: Text(e.instrumentname.toString(),
-                                textAlign: TextAlign.center)),
+                            label: Text(
+                          e.instrumentname.toString(),
+                          textAlign: TextAlign.center,
+                          style: AppTheme.labelTextStyle(),
+                        )),
                         TableDataCell(
-                            label: Text(e.instrumenttype.toString(),
-                                textAlign: TextAlign.center)),
+                            label: Text(
+                          e.instrumenttype.toString(),
+                          textAlign: TextAlign.center,
+                          style: AppTheme.labelTextStyle(),
+                        )),
                         TableDataCell(
-                            label: Text(e.cardnumber.toString(),
-                                textAlign: TextAlign.center)),
+                            label: Text(
+                          e.cardnumber.toString(),
+                          textAlign: TextAlign.center,
+                          style: AppTheme.labelTextStyle(),
+                        )),
                         TableDataCell(
-                            label: Text(e.measuringrange.toString(),
-                                textAlign: TextAlign.center)),
+                            label: Text(
+                          e.measuringrange.toString(),
+                          textAlign: TextAlign.center,
+                          style: AppTheme.labelTextStyle(),
+                        )),
                         TableDataCell(
-                            label: StreamBuilder<List<String>>(
-                                stream: unselectedInstrumentsData.stream,
-                                builder: (context, snapshot) {
-                                  return Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Checkbox(
-                                          value: snapshot.data == null
-                                              ? true
-                                              : snapshot.data!
-                                                      .contains(e.id.toString())
-                                                  ? false
-                                                  : true,
-                                          onChanged: (value) {
-                                            if (snapshot.data != null &&
-                                                snapshot.data!.contains(
-                                                    e.id.toString())) {
-                                              unselectedInstrumentsList
-                                                  .remove(e.id.toString());
-                                              unselectedInstrumentsData.add(
-                                                  unselectedInstrumentsList);
-                                            } else {
-                                              unselectedInstrumentsList
-                                                  .add(e.id.toString());
-                                              unselectedInstrumentsData.add(
-                                                  unselectedInstrumentsList);
-                                            }
-                                          }),
-                                      IconButton(
-                                          onPressed: () async {
-                                            String response =
-                                                await CalibrationRepository()
-                                                    .cancelCalibration(
-                                                        token: state.token,
-                                                        payload: {
-                                                  'createdby': state.userId,
-                                                  'startdate': e.startdate,
-                                                  'duedate': e.duedate,
-                                                  'instrumentcalibrationscheduleId':
-                                                      e.instrumentcalibrationscheduleId,
-                                                  'historytableid': e.id,
-                                                  'frequency': e.frequency,
-                                                  'certificate_mdocid':
-                                                      e.certificateId
-                                                });
-                                            if (response ==
-                                                'Deleted successfully') {
-                                              blocProvider.add(
-                                                  OutwardInstrumentsEvent());
-                                            }
-                                          },
-                                          icon: Icon(
-                                            Icons.cancel_rounded,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .error,
-                                          ))
-                                    ],
-                                  );
-                                })),
+                            label: actionsColumn(
+                                unselectedInstrumentsData:
+                                    unselectedInstrumentsData,
+                                e: e,
+                                unselectedInstrumentsList:
+                                    unselectedInstrumentsList,
+                                state: state,
+                                blocProvider: blocProvider)),
                       ]))
                   .toList()),
         ),
@@ -249,90 +225,144 @@ class OutwardInstruments extends StatelessWidget {
                           'Challan generation requires only 15 elements.',
                           context);
                     } else {
-                      showDialog(
+                      outSourceInstrument(
                           context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              content: const SizedBox(
-                                  height: 22,
-                                  child: Text(
-                                    'Are you sure?',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 17),
-                                    textAlign: TextAlign.center,
-                                  )),
-                              actions: [
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.red,
-                                    ),
-                                    onPressed: () async {
-                                      dynamic response =
-                                          await CalibrationRepository()
-                                              .generateChallan(
-                                                  token: state.token,
-                                                  payload: {
-                                            'outwardchallan_no': state.chalanno,
-                                            'outsource_date': DateTime.now()
-                                                .toString()
-                                                .split(' ')[0],
-                                            'subcontractor_id':
-                                                state.subcontactor.id,
-                                            'userid': state.userId
-                                          });
-                                      if (response['Status'] ==
-                                          'Inserted successfully') {
-                                        for (var data in updatedData) {
-                                          await CalibrationRepository()
-                                              .challanReference(
-                                                  token: state.token,
-                                                  payload: {
-                                                'id': data.id,
-                                                'outsourceworkorder_id':
-                                                    response['id'].toString()
-                                              });
-                                        }
-                                        Navigator.of(context).pop();
-                                        blocProvider
-                                            .add(OutwardInstrumentsEvent());
-
-                                        generatePDF(
-                                          context: context,
-                                          size: size,
-                                          state: state,
-                                          updatedData: updatedData,
-                                        );
-                                      }
-                                    },
-                                    child: const Text(
-                                      'Yes',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    )),
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green,
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text(
-                                      'No',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ))
-                              ],
-                            );
-                          });
+                          state: state,
+                          updatedData: updatedData,
+                          blocProvider: blocProvider,
+                          size: size);
                     }
                   },
                   child: const Text('Generate Challan'));
             })
       ],
     );
+  }
+
+  Future<dynamic> outSourceInstrument(
+      {required BuildContext context,
+      required OutwardInstrumentsState state,
+      required List<OutsourcedInstrumentsModel> updatedData,
+      required CalibrationBloc blocProvider,
+      required Size size}) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: const SizedBox(
+                height: 22,
+                child: Text(
+                  'Are you sure?',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                  textAlign: TextAlign.center,
+                )),
+            actions: [
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                  ),
+                  onPressed: () async {
+                    dynamic response = await CalibrationRepository()
+                        .generateChallan(token: state.token, payload: {
+                      'outwardchallan_no': state.chalanno,
+                      'outsource_date': DateTime.now().toString().split(' ')[0],
+                      'subcontractor_id': state.subcontactor.id,
+                      'userid': state.userId
+                    });
+                    if (response['Status'] == 'Inserted successfully') {
+                      for (var data in updatedData) {
+                        await CalibrationRepository().challanReference(
+                            token: state.token,
+                            payload: {
+                              'id': data.id,
+                              'outsourceworkorder_id': response['id'].toString()
+                            });
+                      }
+                      Navigator.of(context).pop();
+                      blocProvider.add(OutwardInstrumentsEvent());
+
+                      generatePDF(
+                        context: context,
+                        size: size,
+                        state: state,
+                        updatedData: updatedData,
+                      );
+                    }
+                  },
+                  child: const Text(
+                    'Yes',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  )),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'No',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ))
+            ],
+          );
+        });
+  }
+
+  StreamBuilder<List<String>> actionsColumn(
+      {required StreamController<List<String>> unselectedInstrumentsData,
+      required OutsourcedInstrumentsModel e,
+      required List<String> unselectedInstrumentsList,
+      required OutwardInstrumentsState state,
+      required CalibrationBloc blocProvider}) {
+    return StreamBuilder<List<String>>(
+        stream: unselectedInstrumentsData.stream,
+        builder: (context, snapshot) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Checkbox(
+                  value: snapshot.data == null
+                      ? true
+                      : snapshot.data!.contains(e.id.toString())
+                          ? false
+                          : true,
+                  onChanged: (value) {
+                    if (snapshot.data != null &&
+                        snapshot.data!.contains(e.id.toString())) {
+                      unselectedInstrumentsList.remove(e.id.toString());
+                      unselectedInstrumentsData.add(unselectedInstrumentsList);
+                    } else {
+                      unselectedInstrumentsList.add(e.id.toString());
+                      unselectedInstrumentsData.add(unselectedInstrumentsList);
+                    }
+                  }),
+              IconButton(
+                  onPressed: () async {
+                    String response = await CalibrationRepository()
+                        .cancelCalibration(token: state.token, payload: {
+                      'createdby': state.userId,
+                      'startdate': e.startdate,
+                      'duedate': e.duedate,
+                      'instrumentcalibrationscheduleId':
+                          e.instrumentcalibrationscheduleId,
+                      'historytableid': e.id,
+                      'frequency': e.frequency,
+                      'certificate_mdocid': e.certificateId
+                    });
+                    if (response == 'Deleted successfully') {
+                      blocProvider.add(OutwardInstrumentsEvent());
+                    }
+                  },
+                  icon: Icon(
+                    Icons.cancel_rounded,
+                    color: Theme.of(context).colorScheme.error,
+                  ))
+            ],
+          );
+        });
   }
 
   void generatePDF(

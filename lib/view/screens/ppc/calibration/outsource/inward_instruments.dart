@@ -12,6 +12,7 @@ import '../../../../../bloc/ppc/calibration/calibration_event.dart';
 import '../../../../../bloc/ppc/calibration/calibration_state.dart';
 import '../../../../../services/model/quality/calibration_model.dart';
 import '../../../../../services/repository/quality/calibration_repository.dart';
+import '../../../../../utils/app_theme.dart';
 import '../../../../../utils/common/quickfix_widget.dart';
 import '../../../../../utils/responsive.dart';
 import '../../../../widgets/PDF/image_to_pdf_generator.dart';
@@ -54,12 +55,16 @@ class InwardInstruments extends StatelessWidget {
               tableheight: tableHeight,
               rowHeight: 45,
               showIndex: true,
-              columnWidth:
-                  Platform.isAndroid ? size.width / 9.2 : size.width / 8.8,
+              columnWidth: Platform.isAndroid
+                  ? size.width / 9.2
+                  : (size.width > 1300)
+                      ? size.width / 8.8
+                      : size.width / 9.2,
               tableheaderColor: Colors.white,
               headerStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor),
+                  fontSize: Platform.isAndroid ? 15 : 13,
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold),
               tableOutsideBorder: true,
               enableHeaderBottomBorder: true,
               enableRowBottomBorder: true,
@@ -83,22 +88,26 @@ class InwardInstruments extends StatelessWidget {
                             label: Text(
                           e.instrumentname.toString(),
                           textAlign: TextAlign.center,
+                          style: AppTheme.labelTextStyle(),
                         )),
                         TableDataCell(
                             label: Text(
                           e.instrumenttype.toString(),
                           textAlign: TextAlign.center,
+                          style: AppTheme.labelTextStyle(),
                         )),
                         TableDataCell(
                             width: 100,
                             label: Text(
                               e.cardnumber.toString(),
                               textAlign: TextAlign.center,
+                              style: AppTheme.labelTextStyle(),
                             )),
                         TableDataCell(
                             label: Text(
                           e.measuringrange.toString(),
                           textAlign: TextAlign.center,
+                          style: AppTheme.labelTextStyle(),
                         )),
                         TableDataCell(
                             label: startDate(
@@ -132,123 +141,12 @@ class InwardInstruments extends StatelessWidget {
                                   onPressed: () async {
                                     TextEditingController rejectedReason =
                                         TextEditingController();
-                                    showDialog(
+                                    rejectInstrument(
                                         context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                              title: const Text(
-                                                'Reject instrument',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 17),
-                                              ),
-                                              content: DropdownSearch<
-                                                  InstrumentRejectionReasons>(
-                                                items: state.rejectionReasons,
-                                                itemAsString: (item) =>
-                                                    item.reason.toString(),
-                                                onChanged: (value) {
-                                                  rejectedReason.text =
-                                                      value!.id.toString();
-                                                },
-                                              ),
-                                              actions: [
-                                                FilledButton(
-                                                    onPressed: () async {
-                                                      if (rejectedReason.text ==
-                                                          '') {
-                                                        QuickFixUi()
-                                                            .showCustomDialog(
-                                                                errorMessage:
-                                                                    'Select rejection reason first.',
-                                                                context:
-                                                                    context);
-                                                      } else {
-                                                        String id = e
-                                                                .instrumentcalibrationscheduleId
-                                                                .toString()
-                                                                .trim(),
-                                                            startdate = e
-                                                                .startdate
-                                                                .toString()
-                                                                .trim(),
-                                                            duedate = e.duedate
-                                                                .toString()
-                                                                .trim(),
-                                                            certificateMdocid =
-                                                                e.certificateId
-                                                                    .toString()
-                                                                    .trim();
-                                                        String deleteResponse =
-                                                            await CalibrationRepository()
-                                                                .rejectInstrument(
-                                                                    token: state
-                                                                        .token,
-                                                                    payload: {
-                                                              'id':
-                                                                  id.toString(),
-                                                              'isdeleted': true
-                                                            });
-
-                                                        if (deleteResponse ==
-                                                            'Updated successfully') {
-                                                          String response =
-                                                              await CalibrationRepository()
-                                                                  .addrejectedInstrumentToHistory(
-                                                                      token: state
-                                                                          .token,
-                                                                      payload: {
-                                                                'createdby':
-                                                                    state
-                                                                        .userId,
-                                                                'instrumentcalibrationschedule_id':
-                                                                    id,
-                                                                'startdate':
-                                                                    startdate,
-                                                                'duedate':
-                                                                    duedate,
-                                                                'certificate_id':
-                                                                    certificateMdocid,
-                                                                'rejectionreason':
-                                                                    rejectedReason
-                                                                        .text,
-                                                                'isdeleted':
-                                                                    rejectedReason.text ==
-                                                                            '81180939c054478587d54fab54f585fd'
-                                                                        ? false
-                                                                        : true
-                                                              });
-
-                                                          if (response ==
-                                                              'Inserted successfully') {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                            QuickFixUi
-                                                                .successMessage(
-                                                                    response,
-                                                                    context);
-                                                            Future.delayed(
-                                                                const Duration(
-                                                                    seconds: 1),
-                                                                () {
-                                                              blocProvider.add(
-                                                                  InwardInstrumentsEvent());
-                                                            });
-                                                          }
-                                                        }
-                                                      }
-                                                    },
-                                                    child:
-                                                        const Text('Confirm')),
-                                                FilledButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                    child: const Text('Cancel'))
-                                              ]);
-                                        });
+                                        state: state,
+                                        rejectedReason: rejectedReason,
+                                        e: e,
+                                        blocProvider: blocProvider);
                                   },
                                   icon: Icon(
                                     Icons.delete,
@@ -263,10 +161,92 @@ class InwardInstruments extends StatelessWidget {
         );
       } else {
         return const Center(
-          child: Text('No instruments are outsourced.'),
+          child: Text(
+            'No instruments are outsourced.',
+            style: TextStyle(fontSize: 13, color: Colors.grey),
+          ),
         );
       }
     });
+  }
+
+  Future<dynamic> rejectInstrument(
+      {required BuildContext context,
+      required InwardInstrumentsState state,
+      required TextEditingController rejectedReason,
+      required OutsourcedInstrumentsModel e,
+      required CalibrationBloc blocProvider}) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              title: const Text(
+                'Reject instrument',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+              ),
+              content: DropdownSearch<InstrumentRejectionReasons>(
+                items: state.rejectionReasons,
+                itemAsString: (item) => item.reason.toString(),
+                onChanged: (value) {
+                  rejectedReason.text = value!.id.toString();
+                },
+              ),
+              actions: [
+                FilledButton(
+                    onPressed: () async {
+                      if (rejectedReason.text == '') {
+                        QuickFixUi().showCustomDialog(
+                            errorMessage: 'Select rejection reason first.',
+                            context: context);
+                      } else {
+                        String id = e.instrumentcalibrationscheduleId
+                                .toString()
+                                .trim(),
+                            startdate = e.startdate.toString().trim(),
+                            duedate = e.duedate.toString().trim(),
+                            certificateMdocid =
+                                e.certificateId.toString().trim();
+                        String deleteResponse = await CalibrationRepository()
+                            .rejectInstrument(token: state.token, payload: {
+                          'id': id.toString(),
+                          'isdeleted': true
+                        });
+
+                        if (deleteResponse == 'Updated successfully') {
+                          String response = await CalibrationRepository()
+                              .addrejectedInstrumentToHistory(
+                                  token: state.token,
+                                  payload: {
+                                'createdby': state.userId,
+                                'instrumentcalibrationschedule_id': id,
+                                'startdate': startdate,
+                                'duedate': duedate,
+                                'certificate_id': certificateMdocid,
+                                'rejectionreason': rejectedReason.text,
+                                'isdeleted': rejectedReason.text ==
+                                        '81180939c054478587d54fab54f585fd'
+                                    ? false
+                                    : true
+                              });
+
+                          if (response == 'Inserted successfully') {
+                            Navigator.of(context).pop();
+                            QuickFixUi.successMessage(response, context);
+                            Future.delayed(const Duration(seconds: 1), () {
+                              blocProvider.add(InwardInstrumentsEvent());
+                            });
+                          }
+                        }
+                      }
+                    },
+                    child: const Text('Confirm')),
+                FilledButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Cancel'))
+              ]);
+        });
   }
 
   StreamBuilder<InwardInstrumentsModel> submitButton(
@@ -354,6 +334,16 @@ class InwardInstruments extends StatelessWidget {
             child: DropdownSearch<Frequency>(
               items: state.frequencyList,
               itemAsString: (item) => item.frequency.toString(),
+              popupProps: PopupProps.menu(
+                itemBuilder: (context, item, isSelected) {
+                  return ListTile(
+                    title: Text(
+                      item.frequency.toString(),
+                      style: AppTheme.labelTextStyle(),
+                    ),
+                  );
+                },
+              ),
               onChanged: (value) async {
                 if (value!.frequency == '0') {
                   QuickFixUi.errorMessage(
@@ -394,11 +384,14 @@ class InwardInstruments extends StatelessWidget {
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(snapshot.data != null &&
-                      snapshot.data!.duedate != null &&
-                      outsourcedInstruments.id == snapshot.data!.historyId
-                  ? snapshot.data!.duedate.toString()
-                  : ''),
+              Text(
+                snapshot.data != null &&
+                        snapshot.data!.duedate != null &&
+                        outsourcedInstruments.id == snapshot.data!.historyId
+                    ? snapshot.data!.duedate.toString()
+                    : '',
+                style: AppTheme.labelTextStyle(),
+              ),
               IconButton(
                   onPressed: () async {
                     try {
@@ -440,10 +433,13 @@ class InwardInstruments extends StatelessWidget {
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(snapshot.data != null &&
-                      outsourcedInstruments.id == snapshot.data!.historyId
-                  ? snapshot.data!.startdate.toString()
-                  : ''),
+              Text(
+                snapshot.data != null &&
+                        outsourcedInstruments.id == snapshot.data!.historyId
+                    ? snapshot.data!.startdate.toString()
+                    : '',
+                style: AppTheme.labelTextStyle(),
+              ),
               IconButton(
                   onPressed: () async {
                     try {

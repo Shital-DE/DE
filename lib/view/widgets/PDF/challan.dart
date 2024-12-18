@@ -224,6 +224,7 @@ class Challan extends StatelessWidget {
   pw.Widget tableColumn({required String element}) {
     return pw.Padding(
       child: pw.Text(element,
+          textAlign: pw.TextAlign.center,
           style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 8)),
       padding: const pw.EdgeInsets.all(10),
     );
@@ -237,7 +238,7 @@ class PDFTableRow {
       child: pw.Padding(
         padding: const pw.EdgeInsets.all(8),
         child: pw.Text(element,
-            textAlign: pw.TextAlign.left,
+            textAlign: pw.TextAlign.center,
             style: const pw.TextStyle(fontSize: 7)),
       ),
     );

@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -16,6 +15,7 @@ import '../../../../bloc/ppc/calibration/calibration_state.dart';
 import '../../../../routes/route_names.dart';
 import '../../../../services/model/quality/calibration_model.dart';
 import '../../../../services/repository/quality/calibration_repository.dart';
+import '../../../../utils/app_theme.dart';
 import '../../../../utils/common/quickfix_widget.dart';
 import '../../../../utils/responsive.dart';
 import '../../../widgets/date_range_picker.dart';
@@ -58,8 +58,9 @@ class CalibrationScheduleRegistration extends StatelessWidget {
         builder: (context, state) {
       if (state is CalibrationScheduleRegistrationState &&
           state.currentDayRecords.isNotEmpty) {
-        double tableheight = (state.currentDayRecords.length + 1) *
-            (Platform.isAndroid ? 50 : 40);
+        double rowHeight = Platform.isAndroid ? 40 : 35,
+            tableheight =
+                ((state.currentDayRecords.length + 1) * rowHeight) + 2.5;
         return Container(
             margin: MediaQuery.of(context).size.width < 1350
                 ? const EdgeInsets.only(left: 10, right: 10)
@@ -73,13 +74,14 @@ class CalibrationScheduleRegistration extends StatelessWidget {
                 tableheight: tableheight,
                 columnWidth:
                     MediaQuery.of(context).size.width < 1370 ? 200 : 219.5,
-                rowHeight: Platform.isAndroid ? 50 : 40,
+                rowHeight: rowHeight,
+                headerHeight: rowHeight,
                 showIndex: true,
                 tableheaderColor: Theme.of(context).primaryColorLight,
                 headerStyle: TextStyle(
-                    color: Theme.of(context).primaryColorDark,
-                    fontWeight: FontWeight.bold,
-                    fontSize: Platform.isAndroid ? 14 : 13),
+                    fontSize: Platform.isAndroid ? 15 : 13,
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold),
                 tableOutsideBorder: true,
                 enableRowBottomBorder: true,
                 column: [
@@ -111,7 +113,7 @@ class CalibrationScheduleRegistration extends StatelessWidget {
                     TableDataCell(
                         width: 100,
                         label: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(6.0),
                           child: e.certificateMdocid != null
                               ? ElevatedButton(
                                   style: ButtonStyle(
@@ -156,26 +158,26 @@ class CalibrationScheduleRegistration extends StatelessWidget {
                         label: Text(
                       e.instrumentname.toString(),
                       textAlign: TextAlign.center,
-                      style: tableFontStyle(),
+                      style: AppTheme.labelTextStyle(),
                     )),
                     TableDataCell(
                         label: Text(
                       e.instrumenttype.toString(),
                       textAlign: TextAlign.center,
-                      style: tableFontStyle(),
+                      style: AppTheme.labelTextStyle(),
                     )),
                     TableDataCell(
                         width: 100,
                         label: Text(
                           e.cardnumber.toString(),
                           textAlign: TextAlign.center,
-                          style: tableFontStyle(),
+                          style: AppTheme.labelTextStyle(),
                         )),
                     TableDataCell(
                         label: Text(
                       e.measuringrange.toString(),
                       textAlign: TextAlign.center,
-                      style: tableFontStyle(),
+                      style: AppTheme.labelTextStyle(),
                     )),
                     TableDataCell(
                         width: 100,
@@ -189,7 +191,7 @@ class CalibrationScheduleRegistration extends StatelessWidget {
                                       .substring(0, 10)
                                   : '',
                           textAlign: TextAlign.center,
-                          style: tableFontStyle(),
+                          style: AppTheme.labelTextStyle(),
                         )),
                     TableDataCell(
                         width: 100,
@@ -203,14 +205,14 @@ class CalibrationScheduleRegistration extends StatelessWidget {
                                       .substring(0, 10)
                                   : '',
                           textAlign: TextAlign.center,
-                          style: tableFontStyle(),
+                          style: AppTheme.labelTextStyle(),
                         )),
                     TableDataCell(
                         width: 100,
                         label: Text(
                           e.frequency == null ? '' : e.frequency.toString(),
                           textAlign: TextAlign.center,
-                          style: tableFontStyle(),
+                          style: AppTheme.labelTextStyle(),
                         )),
                     TableDataCell(
                         width: 100,
@@ -219,7 +221,7 @@ class CalibrationScheduleRegistration extends StatelessWidget {
                               ? ''
                               : e.purchaseorder.toString(),
                           textAlign: TextAlign.center,
-                          style: tableFontStyle(),
+                          style: AppTheme.labelTextStyle(),
                         )),
                     TableDataCell(
                         label: Text(
@@ -227,7 +229,7 @@ class CalibrationScheduleRegistration extends StatelessWidget {
                           ? ''
                           : e.barcodeinformation.toString(),
                       textAlign: TextAlign.center,
-                      style: tableFontStyle(),
+                      style: AppTheme.labelTextStyle(),
                     )),
                   ]);
                 }).toList()));
@@ -237,12 +239,9 @@ class CalibrationScheduleRegistration extends StatelessWidget {
     });
   }
 
-  TextStyle tableFontStyle() =>
-      TextStyle(fontSize: Platform.isAndroid ? 14 : 13);
-
   Container calibrationScheduleRegistrationForm(
       {required BuildContext context, required CalibrationBloc blocProvider}) {
-    double conWidth = 250, conHeight = Platform.isAndroid ? 45 : 40;
+    double conWidth = 230, conHeight = Platform.isAndroid ? 45 : 35;
     StreamController<AllInstrumentsData> allInstrumentsData =
         StreamController<AllInstrumentsData>.broadcast();
     StreamController<List<InstrumentsPurchaseOrder>> purchaseOrderList =
@@ -257,7 +256,7 @@ class CalibrationScheduleRegistration extends StatelessWidget {
     TextEditingController manufacturer = TextEditingController();
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: Platform.isAndroid ? 405 : 370,
+      height: Platform.isAndroid ? 405 : 355, // 370
       margin: MediaQuery.of(context).size.width < 1350
           ? const EdgeInsets.only(left: 10, right: 10)
           : const EdgeInsets.only(left: 200, right: 200),
@@ -275,7 +274,7 @@ class CalibrationScheduleRegistration extends StatelessWidget {
             'Calibration Schedule Registration',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: Platform.isAndroid ? 18 : 15,
+                fontSize: Platform.isAndroid ? 17 : 14,
                 color: Theme.of(context).colorScheme.error),
           ),
           QuickFixUi.verticalSpace(height: 20),
@@ -383,29 +382,10 @@ class CalibrationScheduleRegistration extends StatelessWidget {
             children: [
               title(name: 'Manufacturer'),
               dots(),
-              BlocBuilder<CalibrationBloc, CalibrationState>(
-                  builder: (context, state) {
-                if (state is CalibrationScheduleRegistrationState) {
-                  return SizedBox(
-                    width: conWidth,
-                    height: conHeight,
-                    child: DropdownSearch<ManufacturerData>(
-                      items: state.manufacturerData,
-                      itemAsString: (item) => item.manufacturer.toString(),
-                      popupProps: const PopupProps.menu(
-                          showSearchBox: true,
-                          searchFieldProps: TextFieldProps(
-                            style: TextStyle(fontSize: 18),
-                          )),
-                      onChanged: (value) async {
-                        manufacturer.text = value!.id.toString();
-                      },
-                    ),
-                  );
-                } else {
-                  return const Stack();
-                }
-              }),
+              manufacturerWidget(
+                  conWidth: conWidth,
+                  conHeight: conHeight,
+                  manufacturer: manufacturer),
               submitButton(
                   allInstrumentsData: allInstrumentsData,
                   range: range,
@@ -424,6 +404,49 @@ class CalibrationScheduleRegistration extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  BlocBuilder<CalibrationBloc, CalibrationState> manufacturerWidget(
+      {required double conWidth,
+      required double conHeight,
+      required TextEditingController manufacturer}) {
+    return BlocBuilder<CalibrationBloc, CalibrationState>(
+        builder: (context, state) {
+      if (state is CalibrationScheduleRegistrationState) {
+        return SizedBox(
+          width: conWidth,
+          height: conHeight,
+          child: DropdownSearch<ManufacturerData>(
+            items: state.manufacturerData,
+            itemAsString: (item) => item.manufacturer.toString(),
+            popupProps: PopupProps.menu(
+              showSearchBox: true,
+              itemBuilder: (context, item, isSelected) {
+                return ListTile(
+                  title: Text(
+                    item.manufacturer.toString(),
+                    style: AppTheme.labelTextStyle(),
+                  ),
+                );
+              },
+            ),
+            dropdownDecoratorProps: DropDownDecoratorProps(
+                textAlign: TextAlign.center,
+                dropdownSearchDecoration: InputDecoration(
+                  contentPadding:
+                      const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(2)),
+                )),
+            onChanged: (value) async {
+              manufacturer.text = value!.id.toString();
+            },
+          ),
+        );
+      } else {
+        return const Stack();
+      }
+    });
   }
 
   SizedBox uploadCertificates(double conWidth,
@@ -480,7 +503,7 @@ class CalibrationScheduleRegistration extends StatelessWidget {
       required CalibrationBloc blocProvider,
       required TextEditingController manufacturer}) {
     return Container(
-        width: 500,
+        width: 480,
         padding: const EdgeInsets.only(left: 40, right: 200),
         child: BlocBuilder<CalibrationBloc, CalibrationState>(
             builder: (context, state) {
@@ -610,34 +633,24 @@ class CalibrationScheduleRegistration extends StatelessWidget {
       width: conWidth,
       child: Row(
         children: [
-          Container(
+          SizedBox(
             width: conWidth - 52,
             height: conHeight,
-            decoration: QuickFixUi().borderContainer(borderThickness: .5),
-            padding: const EdgeInsets.only(left: 10),
             child: TextField(
               readOnly: true,
               controller: barcodedata,
-              decoration: const InputDecoration(border: InputBorder.none),
+              textAlign: TextAlign.center,
+              style: AppTheme.labelTextStyle(),
+              decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(2)),
+              ),
             ),
           ),
           IconButton(
               onPressed: () async {
-                // String result = await FlutterBarcodeScanner.scanBarcode(
-                //   '#ff6666',
-                //   'Cancel',
-                //   true,
-                //   ScanMode.BARCODE,
-                // );
-                // var result = await Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (context) => const SimpleBarcodeScannerPage(
-                //         isShowFlashIcon: true,
-                //         barcodeAppBar:
-                //             BarcodeAppBar(appBarTitle: 'Scan barcode'),
-                //       ),
-                //     ));
                 String? result = await SimpleBarcodeScanner.scanBarcode(
                   context,
                   barcodeAppBar: const BarcodeAppBar(
@@ -666,39 +679,46 @@ class CalibrationScheduleRegistration extends StatelessWidget {
     );
   }
 
-  Container purchaseOrderWidget(
+  SizedBox purchaseOrderWidget(
       {required StreamController<List<InstrumentsPurchaseOrder>>
           purchaseOrderList,
       required double conWidth,
       required TextEditingController purchaseOrderId,
       required double conHeight}) {
-    return Container(
+    return SizedBox(
         width: conWidth,
         height: conHeight,
-        decoration: QuickFixUi().borderContainer(borderThickness: .5),
-        padding: const EdgeInsets.only(left: 10),
         child: StreamBuilder<List<InstrumentsPurchaseOrder>>(
             stream: purchaseOrderList.stream,
             builder: (context, snapshot) {
-              if (snapshot.data != null && snapshot.data!.isNotEmpty) {
-                return DropdownSearch<InstrumentsPurchaseOrder>(
-                  items: snapshot.data!,
-                  itemAsString: (item) => item.purchaseorder.toString(),
-                  popupProps: const PopupProps.menu(
-                      showSearchBox: true,
-                      searchFieldProps: TextFieldProps(
-                        style: TextStyle(fontSize: 18),
-                      )),
-                  dropdownDecoratorProps: const DropDownDecoratorProps(
-                      dropdownSearchDecoration:
-                          InputDecoration(border: InputBorder.none)),
-                  onChanged: (value) {
-                    purchaseOrderId.text = value!.id.toString();
+              return DropdownSearch<InstrumentsPurchaseOrder>(
+                items: snapshot.data != null && snapshot.data!.isNotEmpty
+                    ? snapshot.data!
+                    : [],
+                itemAsString: (item) => item.purchaseorder.toString(),
+                popupProps: PopupProps.menu(
+                  showSearchBox: true,
+                  itemBuilder: (context, item, isSelected) {
+                    return ListTile(
+                      title: Text(
+                        item.purchaseorder.toString(),
+                        style: AppTheme.labelTextStyle(),
+                      ),
+                    );
                   },
-                );
-              } else {
-                return const Stack();
-              }
+                ),
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                    textAlign: TextAlign.center,
+                    dropdownSearchDecoration: InputDecoration(
+                      contentPadding:
+                          const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(2)),
+                    )),
+                onChanged: (value) {
+                  purchaseOrderId.text = value!.id.toString();
+                },
+              );
             }));
   }
 
@@ -717,10 +737,24 @@ class CalibrationScheduleRegistration extends StatelessWidget {
           child: DropdownSearch<Frequency>(
             items: state.frequencyList,
             itemAsString: (item) => item.frequency.toString(),
-            popupProps: const PopupProps.menu(
-                showSearchBox: true,
-                searchFieldProps: TextFieldProps(
-                  style: TextStyle(fontSize: 18),
+            popupProps: PopupProps.menu(
+              showSearchBox: true,
+              itemBuilder: (context, item, isSelected) {
+                return ListTile(
+                  title: Text(
+                    item.frequency.toString(),
+                    style: AppTheme.labelTextStyle(),
+                  ),
+                );
+              },
+            ),
+            dropdownDecoratorProps: DropDownDecoratorProps(
+                textAlign: TextAlign.center,
+                dropdownSearchDecoration: InputDecoration(
+                  contentPadding:
+                      const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(2)),
                 )),
             onChanged: (value) async {
               if (value!.frequency == '0') {
@@ -753,15 +787,20 @@ class CalibrationScheduleRegistration extends StatelessWidget {
       width: conWidth,
       child: Row(
         children: [
-          Container(
+          SizedBox(
             width: conWidth - 52,
-            decoration: QuickFixUi().borderContainer(borderThickness: .5),
-            padding: const EdgeInsets.only(left: 10),
             height: conHeight,
             child: TextField(
               readOnly: true,
               controller: duedate,
-              decoration: const InputDecoration(border: InputBorder.none),
+              textAlign: TextAlign.center,
+              style: AppTheme.labelTextStyle(),
+              decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(2)),
+              ),
             ),
           ),
           IconButton(
@@ -797,15 +836,20 @@ class CalibrationScheduleRegistration extends StatelessWidget {
       width: conWidth,
       child: Row(
         children: [
-          Container(
+          SizedBox(
             width: conWidth - 52,
             height: conHeight,
-            decoration: QuickFixUi().borderContainer(borderThickness: .5),
-            padding: const EdgeInsets.only(left: 10),
             child: TextField(
               readOnly: true,
               controller: startdate,
-              decoration: const InputDecoration(border: InputBorder.none),
+              textAlign: TextAlign.center,
+              style: AppTheme.labelTextStyle(),
+              decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(2)),
+              ),
             ),
           ),
           IconButton(
@@ -830,18 +874,21 @@ class CalibrationScheduleRegistration extends StatelessWidget {
     );
   }
 
-  Container rangeWidget(
+  SizedBox rangeWidget(
       {required double conWidth,
       required TextEditingController range,
       required double conHeight}) {
-    return Container(
+    return SizedBox(
       width: conWidth,
       height: conHeight,
-      decoration: QuickFixUi().borderContainer(borderThickness: .5),
-      padding: const EdgeInsets.only(left: 10),
       child: TextField(
         controller: range,
-        decoration: const InputDecoration(border: InputBorder.none),
+        textAlign: TextAlign.center,
+        style: AppTheme.labelTextStyle(),
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(2)),
+        ),
         onChanged: (value) {
           range.text = value.toString();
         },
@@ -849,18 +896,21 @@ class CalibrationScheduleRegistration extends StatelessWidget {
     );
   }
 
-  Container cardNumberWidget(
+  SizedBox cardNumberWidget(
       {required double conWidth,
       required TextEditingController cardNumber,
       required double conHeight}) {
-    return Container(
+    return SizedBox(
       width: conWidth,
       height: conHeight,
-      decoration: QuickFixUi().borderContainer(borderThickness: .5),
-      padding: const EdgeInsets.only(left: 10),
       child: TextField(
         controller: cardNumber,
-        decoration: const InputDecoration(border: InputBorder.none),
+        textAlign: TextAlign.center,
+        style: AppTheme.labelTextStyle(),
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(2)),
+        ),
         onChanged: (value) {
           cardNumber.text = value.toString();
         },
@@ -875,11 +925,9 @@ class CalibrationScheduleRegistration extends StatelessWidget {
     return StreamBuilder<AllInstrumentsData>(
         stream: allInstrumentsData.stream,
         builder: (context, snapshot) {
-          return Container(
+          return SizedBox(
             width: conWidth,
             height: conHeight,
-            decoration: QuickFixUi().borderContainer(borderThickness: .5),
-            padding: const EdgeInsets.only(left: 10),
             child: TextField(
               readOnly: true,
               controller: TextEditingController(
@@ -887,7 +935,14 @@ class CalibrationScheduleRegistration extends StatelessWidget {
                           snapshot.data!.instrumenttype != null
                       ? snapshot.data!.instrumenttype.toString()
                       : ''),
-              decoration: const InputDecoration(border: InputBorder.none),
+              textAlign: TextAlign.center,
+              style: AppTheme.labelTextStyle(),
+              decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(2)),
+              ),
             ),
           );
         });
@@ -909,10 +964,24 @@ class CalibrationScheduleRegistration extends StatelessWidget {
           child: DropdownSearch<AllInstrumentsData>(
             items: state.allInstrumentsList,
             itemAsString: (item) => item.instrumentname.toString(),
-            popupProps: const PopupProps.menu(
-                showSearchBox: true,
-                searchFieldProps: TextFieldProps(
-                  style: TextStyle(fontSize: 18),
+            popupProps: PopupProps.menu(
+              showSearchBox: true,
+              itemBuilder: (context, item, isSelected) {
+                return ListTile(
+                  title: Text(
+                    item.instrumentname.toString(),
+                    style: AppTheme.labelTextStyle(),
+                  ),
+                );
+              },
+            ),
+            dropdownDecoratorProps: DropDownDecoratorProps(
+                textAlign: TextAlign.center,
+                dropdownSearchDecoration: InputDecoration(
+                  contentPadding:
+                      const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(2)),
                 )),
             onChanged: (value) async {
               purchaseOrderList.add([]);
@@ -964,7 +1033,7 @@ class CalibrationScheduleRegistration extends StatelessWidget {
   SizedBox dots() => const SizedBox(
       width: 30,
       child: Text(':',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)));
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)));
 
   SizedBox title({required String name}) => SizedBox(
       width: 180,
@@ -972,6 +1041,6 @@ class CalibrationScheduleRegistration extends StatelessWidget {
         name,
         style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: Platform.isAndroid ? 15 : 13),
+            fontSize: Platform.isAndroid ? 15 : 12),
       ));
 }

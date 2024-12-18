@@ -5,6 +5,7 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:async';
 import 'dart:io';
+import 'package:de/utils/app_colors.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +14,7 @@ import '../../../../bloc/ppc/calibration/calibration_event.dart';
 import '../../../../bloc/ppc/calibration/calibration_state.dart';
 import '../../../../services/model/quality/calibration_model.dart';
 import '../../../../services/repository/quality/calibration_repository.dart';
+import '../../../../utils/app_theme.dart';
 import '../../../../utils/common/quickfix_widget.dart';
 import '../../../../utils/responsive.dart';
 import '../../../widgets/table/custom_table.dart';
@@ -59,20 +61,20 @@ class InstrumentsRegistration extends StatelessWidget {
               BlocBuilder<CalibrationBloc, CalibrationState>(
                   builder: (context, state) {
                 if (state is InstrumentsRegistrationState) {
-                  return Container(
+                  return SizedBox(
                       width: 200,
                       height: 45,
-                      decoration:
-                          QuickFixUi().borderContainer(borderThickness: .5),
-                      padding: const EdgeInsets.only(left: 20),
-                      margin: const EdgeInsets.only(right: 20),
                       child: BlocBuilder<CalibrationBloc, CalibrationState>(
                           builder: (context, state) {
                         if (state is InstrumentsRegistrationState) {
                           return TextField(
+                            textAlign: TextAlign.center,
                             decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.only(
+                                    bottom: 11, top: 11, left: 2),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(2)),
                                 suffixIcon: const Icon(Icons.search),
-                                border: InputBorder.none,
                                 hintText: 'Search instrument',
                                 hintStyle: hintTextStyle()),
                             onChanged: (value) {
@@ -104,10 +106,9 @@ class InstrumentsRegistration extends StatelessWidget {
                   stream: searchedProducts.stream,
                   builder: (context, snapshot) {
                     double tableWidth = MediaQuery.of(context).size.width - 320,
-                        rowHeight = Platform.isAndroid ? 50 : 40;
+                        rowHeight = Platform.isAndroid ? 45 : 35;
                     return instrumentsTable(
                         context: context,
-                        searchedProducts: searchedProducts,
                         allInstrumentsList: snapshot.data != null
                             ? snapshot.data!
                             : state.allInstrumentsList.length > 100
@@ -115,12 +116,18 @@ class InstrumentsRegistration extends StatelessWidget {
                                 : state.allInstrumentsList,
                         tableWidth: tableWidth,
                         rowHeight: rowHeight,
-                        tableheight: state.allInstrumentsList.isEmpty
-                            ? 52
-                            : state.allInstrumentsList.length > 20
-                                ? MediaQuery.of(context).size.height - 220
-                                : (state.allInstrumentsList.length + 1) *
-                                    rowHeight);
+                        tableheight: snapshot.data != null
+                            ? snapshot.data!.isEmpty
+                                ? rowHeight + 2
+                                : (snapshot.data!.length * rowHeight) +
+                                    rowHeight
+                            : state.allInstrumentsList.isEmpty
+                                ? rowHeight
+                                : state.allInstrumentsList.length > 20
+                                    ? MediaQuery.of(context).size.height - 220
+                                    : ((state.allInstrumentsList.length) *
+                                            rowHeight) +
+                                        rowHeight);
                   });
             } else {
               return const Stack();
@@ -132,27 +139,26 @@ class InstrumentsRegistration extends StatelessWidget {
   }
 
   TextStyle hintTextStyle() {
-    return TextStyle(fontSize: Platform.isAndroid ? 15 : 14);
+    return TextStyle(fontSize: Platform.isAndroid ? 15 : 13);
   }
 
-  Container instrumentsTable(
+  SizedBox instrumentsTable(
       {required BuildContext context,
-      required StreamController<List<AllInstrumentsData>> searchedProducts,
       required List<AllInstrumentsData> allInstrumentsList,
       required double tableWidth,
       required double tableheight,
       required double rowHeight}) {
-    return Container(
+    return SizedBox(
         width: tableWidth,
         height: MediaQuery.of(context).size.height -
             (Platform.isAndroid ? 240 : 220),
-        padding: const EdgeInsets.only(right: 10),
         child: CustomTable(
           tableheight: tableheight,
           tablewidth: tableWidth,
           rowHeight: rowHeight,
+          headerHeight: rowHeight,
           showIndex: true,
-          columnWidth: (MediaQuery.of(context).size.width - 400) / 4,
+          columnWidth: (MediaQuery.of(context).size.width - 400) / 3.85,
           tableOutsideBorder: true,
           enableRowBottomBorder: true,
           tableBorderColor: Theme.of(context).primaryColor,
@@ -263,35 +269,45 @@ class InstrumentsRegistration extends StatelessWidget {
                                 if (state is InstrumentsRegistrationState) {
                                   return Column(
                                     children: [
-                                      Container(
+                                      SizedBox(
                                         width: Platform.isAndroid ? 300 : 250,
                                         height: Platform.isAndroid ? 45 : 38,
-                                        decoration: QuickFixUi()
-                                            .borderContainer(
-                                                borderThickness: .5),
-                                        padding: EdgeInsets.only(
-                                            left: 20,
-                                            bottom: Platform.isAndroid ? 0 : 5),
                                         child: DropdownSearch<
                                             MeasuringInstruments>(
                                           items: state.measuringInstrumentsList,
                                           itemAsString: (item) =>
                                               item.description.toString(),
-                                          popupProps: const PopupProps.menu(
-                                              showSearchBox: true,
-                                              searchFieldProps: TextFieldProps(
-                                                style: TextStyle(fontSize: 18),
-                                              )),
-                                          dropdownDecoratorProps:
-                                              DropDownDecoratorProps(
-                                                  dropdownSearchDecoration:
-                                                      InputDecoration(
-                                                          border:
-                                                              InputBorder.none,
-                                                          hintText:
-                                                              'Select product',
-                                                          hintStyle:
-                                                              hintTextStyle())),
+                                          popupProps: PopupProps.menu(
+                                            itemBuilder:
+                                                (context, item, isSelected) {
+                                              return ListTile(
+                                                title: Text(
+                                                  item.description.toString(),
+                                                  style:
+                                                      AppTheme.labelTextStyle(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          dropdownDecoratorProps: DropDownDecoratorProps(
+                                              textAlign: TextAlign.center,
+                                              dropdownSearchDecoration:
+                                                  InputDecoration(
+                                                      contentPadding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 11,
+                                                              top: 11,
+                                                              left: 2),
+                                                      border:
+                                                          OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          2)),
+                                                      hintText:
+                                                          'Select product',
+                                                      hintStyle:
+                                                          hintTextStyle())),
                                           onChanged: (value) {
                                             productId.text =
                                                 value!.id.toString();
@@ -324,24 +340,31 @@ class InstrumentsRegistration extends StatelessWidget {
                       child: BlocBuilder<CalibrationBloc, CalibrationState>(
                           builder: (context, state) {
                         if (state is InstrumentsRegistrationState) {
-                          return Container(
+                          return SizedBox(
                             width: Platform.isAndroid ? 300 : 250,
                             height: Platform.isAndroid ? 45 : 38,
-                            decoration: QuickFixUi()
-                                .borderContainer(borderThickness: .5),
-                            padding: EdgeInsets.only(
-                                left: 20, bottom: Platform.isAndroid ? 0 : 5),
                             child: DropdownSearch<InstrumentsTypeData>(
                               items: state.instrumentsTypeList,
                               itemAsString: (item) =>
                                   item.description.toString(),
-                              popupProps: const PopupProps.menu(
-                                  showSearchBox: true,
-                                  searchFieldProps: TextFieldProps(
-                                      style: TextStyle(fontSize: 18))),
+                              popupProps: PopupProps.menu(
+                                itemBuilder: (context, item, isSelected) {
+                                  return ListTile(
+                                    title: Text(
+                                      item.description.toString(),
+                                      style: AppTheme.labelTextStyle(),
+                                    ),
+                                  );
+                                },
+                              ),
                               dropdownDecoratorProps: DropDownDecoratorProps(
+                                  textAlign: TextAlign.center,
                                   dropdownSearchDecoration: InputDecoration(
-                                      border: InputBorder.none,
+                                      contentPadding: const EdgeInsets.only(
+                                          bottom: 11, top: 11, left: 2),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(2)),
                                       hintText: 'Select instrument type',
                                       hintStyle: hintTextStyle())),
                               onChanged: (value) {
@@ -358,19 +381,21 @@ class InstrumentsRegistration extends StatelessWidget {
                     ),
                     QuickFixUi.verticalSpace(height: 10),
                     Center(
-                      child: Container(
+                      child: SizedBox(
                         width: Platform.isAndroid ? 300 : 250,
                         height: Platform.isAndroid ? 45 : 38,
-                        decoration:
-                            QuickFixUi().borderContainer(borderThickness: .5),
-                        padding: EdgeInsets.only(
-                            left: 20, bottom: Platform.isAndroid ? 0 : 5),
                         child: TextField(
                           controller: instrumentName,
+                          textAlign: TextAlign.center,
                           decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Drawing number',
-                              hintStyle: hintTextStyle()),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(2)),
+                            hintText: 'Drawing number',
+                            hintStyle: hintTextStyle(),
+                            contentPadding: const EdgeInsets.only(
+                              bottom: 5,
+                            ),
+                          ),
                           onChanged: (value) {
                             instrumentName.text = value.toString();
                             description.text = instrumentTypeDescription.text +
@@ -381,19 +406,21 @@ class InstrumentsRegistration extends StatelessWidget {
                     ),
                     QuickFixUi.verticalSpace(height: 10),
                     Center(
-                      child: Container(
+                      child: SizedBox(
                         width: Platform.isAndroid ? 300 : 250,
                         height: Platform.isAndroid ? 45 : 38,
-                        decoration:
-                            QuickFixUi().borderContainer(borderThickness: .5),
-                        padding: EdgeInsets.only(
-                            left: 20, bottom: Platform.isAndroid ? 0 : 5),
                         child: TextField(
                           controller: description,
+                          textAlign: TextAlign.center,
                           decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Description',
-                              hintStyle: hintTextStyle()),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(2)),
+                            hintText: 'Description',
+                            hintStyle: hintTextStyle(),
+                            contentPadding: const EdgeInsets.only(
+                              bottom: 5,
+                            ),
+                          ),
                           onChanged: (value) {
                             description.text = value.toString();
                           },
@@ -402,19 +429,21 @@ class InstrumentsRegistration extends StatelessWidget {
                     ),
                     QuickFixUi.verticalSpace(height: 10),
                     Center(
-                      child: Container(
+                      child: SizedBox(
                         width: Platform.isAndroid ? 300 : 250,
                         height: Platform.isAndroid ? 45 : 38,
-                        decoration:
-                            QuickFixUi().borderContainer(borderThickness: .5),
-                        padding: EdgeInsets.only(
-                            left: 20, bottom: Platform.isAndroid ? 0 : 5),
                         child: TextField(
                           controller: subcategory,
+                          textAlign: TextAlign.center,
                           decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Sub category',
-                              hintStyle: hintTextStyle()),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(2)),
+                            hintText: 'Sub category',
+                            hintStyle: hintTextStyle(),
+                            contentPadding: const EdgeInsets.only(
+                              bottom: 5,
+                            ),
+                          ),
                           onChanged: (value) {
                             subcategory.text = value.toString();
                           },
@@ -430,39 +459,45 @@ class InstrumentsRegistration extends StatelessWidget {
                               return Column(
                                 children: [
                                   QuickFixUi.verticalSpace(height: 10),
-                                  Container(
+                                  SizedBox(
                                     width: Platform.isAndroid ? 300 : 250,
                                     height: Platform.isAndroid ? 45 : 38,
-                                    decoration: QuickFixUi()
-                                        .borderContainer(borderThickness: .5),
-                                    padding: EdgeInsets.only(
-                                        left: 20,
-                                        bottom: Platform.isAndroid ? 0 : 5),
                                     child: TextField(
                                       controller: storageLocation,
-                                      decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: 'Storage location'),
+                                      textAlign: TextAlign.center,
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(2)),
+                                        hintText: 'Storage location',
+                                        hintStyle: hintTextStyle(),
+                                        contentPadding: const EdgeInsets.only(
+                                          bottom: 5,
+                                        ),
+                                      ),
                                       onChanged: (value) {
                                         storageLocation.text = value.toString();
                                       },
                                     ),
                                   ),
                                   QuickFixUi.verticalSpace(height: 10),
-                                  Container(
+                                  SizedBox(
                                     width: Platform.isAndroid ? 300 : 250,
                                     height: Platform.isAndroid ? 45 : 38,
-                                    decoration: QuickFixUi()
-                                        .borderContainer(borderThickness: .5),
-                                    padding: EdgeInsets.only(
-                                        left: 20,
-                                        bottom: Platform.isAndroid ? 0 : 5),
                                     child: TextField(
                                       controller: rackNumber,
+                                      textAlign: TextAlign.center,
                                       keyboardType: TextInputType.number,
-                                      decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: 'Rack Number'),
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(2)),
+                                        hintText: 'Rack Number',
+                                        hintStyle: hintTextStyle(),
+                                        contentPadding: const EdgeInsets.only(
+                                          bottom: 5,
+                                        ),
+                                      ),
                                       onChanged: (value) {
                                         rackNumber.text = value.toString();
                                       },
@@ -535,7 +570,12 @@ class InstrumentsRegistration extends StatelessWidget {
                                             productNotFound: productNotFound);
                                       }
                                     },
-                                    child: const Text('SUBMIT'));
+                                    child: Text('SUBMIT',
+                                        style: TextStyle(
+                                            color: AppColors.whiteTheme,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize:
+                                                Platform.isAndroid ? 15 : 12)));
                               } else {
                                 return const Stack();
                               }
@@ -616,7 +656,6 @@ class InstrumentsRegistration extends StatelessWidget {
                                 ? productid
                                 : productId.text.trim(),
                         'instrumentname': instrumentName.trim(),
-                        // 'manufacturer': manufacturer.text.toUpperCase(),
                         'description': description.text.toUpperCase(),
                         'subcategory': subcategory.text.toUpperCase()
                       });
@@ -628,7 +667,7 @@ class InstrumentsRegistration extends StatelessWidget {
                           blocProvider.add(InstrumentsRegistrationEvent());
                           instrumentTypeId.text = '';
                           productId.text = '';
-                          // manufacturer.text = '';
+
                           description.text = '';
                           subcategory.text = '';
                           storageLocation.text = '';

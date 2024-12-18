@@ -1,8 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-// import 'package:de_opc/services/repository/quality/calibration_repository.dart';
-// import 'package:de_opc/utils/responsive.dart';
-// import 'package:de_opc/view/widgets/table/custom_table.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +10,7 @@ import '../../../../../bloc/ppc/calibration/calibration_event.dart';
 import '../../../../../bloc/ppc/calibration/calibration_state.dart';
 import '../../../../../services/model/quality/calibration_model.dart';
 import '../../../../../services/repository/quality/calibration_repository.dart';
+import '../../../../../utils/app_theme.dart';
 import '../../../../../utils/responsive.dart';
 import '../../../../widgets/PDF/challan.dart';
 import '../../../../widgets/table/custom_table.dart';
@@ -34,6 +33,8 @@ class InstrumentOutsourceWorkorders extends StatelessWidget {
 
   BlocBuilder<CalibrationBloc, CalibrationState> outsourceWorkordersScreen(
       {required Size size}) {
+    double allColumnWidth = 180,
+        contrcatorColumnWidth = (size.width - 70) - (allColumnWidth * 4);
     return BlocBuilder<CalibrationBloc, CalibrationState>(
         builder: (context, state) {
       if (state is OutsourceWorkorderState && state.allWorkorders.isNotEmpty) {
@@ -45,11 +46,12 @@ class InstrumentOutsourceWorkorders extends StatelessWidget {
               tablewidth: size.width,
               tableheight: (state.allWorkorders.length + 1) * 45,
               rowHeight: 45,
-              columnWidth: (size.width - 28) / 5.1,
+              columnWidth: allColumnWidth,
               tableheaderColor: Colors.white,
               headerStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor),
+                  fontSize: Platform.isAndroid ? 15 : 13,
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold),
               tableOutsideBorder: true,
               enableHeaderBottomBorder: true,
               enableRowBottomBorder: true,
@@ -60,7 +62,10 @@ class InstrumentOutsourceWorkorders extends StatelessWidget {
               column: [
                 ColumnData(label: 'Workorder No.'),
                 ColumnData(label: 'Outsource date'),
-                ColumnData(label: 'Contractor'),
+                ColumnData(
+                  label: 'Contractor',
+                  width: contrcatorColumnWidth,
+                ),
                 ColumnData(label: 'Outsourced by'),
                 ColumnData(label: 'Certificate'),
               ],
@@ -70,6 +75,7 @@ class InstrumentOutsourceWorkorders extends StatelessWidget {
                             label: Text(
                           e.challanno.toString(),
                           textAlign: TextAlign.center,
+                          style: AppTheme.labelTextStyle(),
                         )),
                         TableDataCell(
                             label: Text(
@@ -78,16 +84,20 @@ class InstrumentOutsourceWorkorders extends StatelessWidget {
                               .toString()
                               .substring(0, 10),
                           textAlign: TextAlign.center,
+                          style: AppTheme.labelTextStyle(),
                         )),
                         TableDataCell(
+                            width: contrcatorColumnWidth,
                             label: Text(
-                          e.contractor.toString(),
-                          textAlign: TextAlign.center,
-                        )),
+                              e.contractor.toString(),
+                              textAlign: TextAlign.center,
+                              style: AppTheme.labelTextStyle(),
+                            )),
                         TableDataCell(
                             label: Text(
                           e.outsourcedby.toString(),
                           textAlign: TextAlign.center,
+                          style: AppTheme.labelTextStyle(),
                         )),
                         TableDataCell(
                             label: IconButton(
@@ -117,7 +127,11 @@ class InstrumentOutsourceWorkorders extends StatelessWidget {
                   .toList()),
         );
       } else {
-        return const Center(child: Text('No elements are outsourced yet.'));
+        return const Center(
+            child: Text(
+          'No elements are outsourced yet.',
+          style: TextStyle(fontSize: 13, color: Colors.grey),
+        ));
       }
     });
   }

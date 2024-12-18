@@ -115,7 +115,7 @@ class CustomTable extends StatelessWidget {
                           ),
                         if (showIndex == true)
                           Container(
-                            width: rowHeight,
+                            width: rowHeight + 5,
                             height: headerHeight,
                             decoration: BoxDecoration(
                               color: tableheaderColor,
