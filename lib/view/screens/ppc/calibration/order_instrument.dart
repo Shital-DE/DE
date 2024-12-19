@@ -5,6 +5,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:io';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +14,8 @@ import '../../../../bloc/ppc/calibration/calibration_event.dart';
 import '../../../../bloc/ppc/calibration/calibration_state.dart';
 import '../../../../services/model/quality/calibration_model.dart';
 import '../../../../services/repository/quality/calibration_repository.dart';
+import '../../../../utils/app_colors.dart';
+import '../../../../utils/app_theme.dart';
 import '../../../../utils/common/quickfix_widget.dart';
 import '../../../../utils/responsive.dart';
 import '../../../widgets/table/custom_table.dart';
@@ -51,7 +54,7 @@ class OrderInstrument extends StatelessWidget {
         StreamController<Map<String, dynamic>>.broadcast();
     StreamController<List<MailContentElements>> mailContentListData =
         StreamController<List<MailContentElements>>.broadcast();
-    double conWidth = 400, conHeight = 50;
+    double conWidth = 350, conHeight = Platform.isAndroid ? 40 : 35;
     return SizedBox(
       width: size.width,
       height: size.height,
@@ -77,7 +80,7 @@ class OrderInstrument extends StatelessWidget {
                     style: TextStyle(
                         color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.bold,
-                        fontSize: 18),
+                        fontSize: Platform.isAndroid ? 16 : 13),
                   ),
                 ),
                 fromWidget(conWidth, conHeight, from),
@@ -90,7 +93,7 @@ class OrderInstrument extends StatelessWidget {
                     style: TextStyle(
                         color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.bold,
-                        fontSize: 18),
+                        fontSize: Platform.isAndroid ? 16 : 13),
                   ),
                 ),
                 Row(
@@ -100,13 +103,25 @@ class OrderInstrument extends StatelessWidget {
                           isNew.add('true');
                         },
                         icon: const Icon(Icons.add_circle),
-                        label: const Text('New')),
+                        label: Text(
+                          'New',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: Platform.isAndroid ? 15 : 12),
+                        )),
                     TextButton.icon(
                         onPressed: () {
                           isNew.add('false');
                         },
                         icon: const Icon(Icons.exit_to_app_sharp),
-                        label: const Text('Against rejection')),
+                        label: Text(
+                          'Against rejection',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: Platform.isAndroid ? 15 : 12),
+                        )),
                   ],
                 ),
                 StreamBuilder<String>(
@@ -179,15 +194,17 @@ class OrderInstrument extends StatelessWidget {
                     height: conHeight,
                     child: Row(
                       children: [
-                        Container(
+                        SizedBox(
                           width: size.width - (conWidth + 140),
-                          decoration:
-                              QuickFixUi().borderContainer(borderThickness: .5),
-                          padding: paddingWidget(),
                           child: TextField(
                             controller: subject,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
+                            textAlign: TextAlign.start,
+                            style: AppTheme.labelTextStyle(),
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(2)),
+                              contentPadding:
+                                  const EdgeInsets.only(bottom: 5, left: 20),
                             ),
                             onChanged: (value) {},
                           ),
@@ -239,14 +256,15 @@ class OrderInstrument extends StatelessWidget {
                                       width: 100,
                                       height: conHeight,
                                       color: Theme.of(context).primaryColor,
-                                      child: const Center(
+                                      child: Center(
                                         child: Text(
                                           'Send',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white,
-                                              fontSize: 18),
+                                              fontSize:
+                                                  Platform.isAndroid ? 15 : 13),
                                         ),
                                       ),
                                     ),
@@ -290,7 +308,10 @@ class OrderInstrument extends StatelessWidget {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(mailBeggining(state: state)),
+                      Text(
+                        mailBeggining(state: state),
+                        style: AppTheme.labelTextStyle(),
+                      ),
                       Container(
                         width: size.width - 100,
                         height: snapshot.data!.isEmpty
@@ -312,7 +333,7 @@ class OrderInstrument extends StatelessWidget {
                             headerStyle: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).primaryColor,
-                                fontSize: 15),
+                                fontSize: Platform.isAndroid ? 15 : 13),
                             tableOutsideBorder: true,
                             enableHeaderBottomBorder: true,
                             enableRowBottomBorder: true,
@@ -346,31 +367,39 @@ class OrderInstrument extends StatelessWidget {
                                           label: Text(
                                         e.drawingNumber.toString().trim(),
                                         textAlign: TextAlign.center,
+                                        style: AppTheme.labelTextStyle(),
                                       )),
                                       TableDataCell(
                                           label: Text(
                                         e.instrumentDescription
                                             .toString()
                                             .trim(),
+                                        textAlign: TextAlign.center,
+                                        style: AppTheme.labelTextStyle(),
                                       )),
                                       TableDataCell(
                                           label: Text(
                                         e.product.toString().trim(),
                                         textAlign: TextAlign.center,
+                                        style: AppTheme.labelTextStyle(),
                                       )),
                                       TableDataCell(
                                           label: Text(
                                         e.productDescription.toString().trim(),
+                                        textAlign: TextAlign.center,
+                                        style: AppTheme.labelTextStyle(),
                                       )),
                                       TableDataCell(
                                           label: Text(
                                         e.measuringRange.toString().trim(),
                                         textAlign: TextAlign.center,
+                                        style: AppTheme.labelTextStyle(),
                                       )),
                                       TableDataCell(
                                           label: Text(
                                         e.quantity.toString().trim(),
                                         textAlign: TextAlign.center,
+                                        style: AppTheme.labelTextStyle(),
                                       )),
                                       TableDataCell(
                                           label: SingleChildScrollView(
@@ -385,12 +414,16 @@ class OrderInstrument extends StatelessWidget {
                                                   .toString()
                                                   .trim(),
                                           textAlign: TextAlign.center,
+                                          style: AppTheme.labelTextStyle(),
                                         ),
                                       )),
                                     ]))
                                 .toList()),
                       ),
-                      Text(mailBottom(from: from.text))
+                      Text(
+                        mailBottom(from: from.text),
+                        style: AppTheme.labelTextStyle(),
+                      )
                     ],
                   );
                 } else {
@@ -398,11 +431,13 @@ class OrderInstrument extends StatelessWidget {
                 }
               });
             } else {
-              return const Center(
+              return Center(
                   child: Text(
                 'Mail content!',
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                    fontSize: Platform.isAndroid ? 15 : 13),
               ));
             }
           }),
@@ -535,7 +570,12 @@ class OrderInstrument extends StatelessWidget {
                                   e;
                                 }
                               },
-                              child: const Text('Add')),
+                              child: Text('Add',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.whiteTheme,
+                                    fontSize: Platform.isAndroid ? 15 : 13,
+                                  ))),
                         );
                       } else {
                         return const Stack();
@@ -599,32 +639,41 @@ class OrderInstrument extends StatelessWidget {
       margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
       child: Row(
         children: [
-          const SizedBox(
+          SizedBox(
             width: 110,
             child: Text(
               'Instrument : ',
-              style: TextStyle(fontSize: 17),
+              style: AppTheme.labelTextStyle(isFontBold: true),
             ),
           ),
           BlocBuilder<CalibrationBloc, CalibrationState>(
               builder: (context, state) {
             if (state is OrderInstrumentState) {
-              return Container(
-                decoration: QuickFixUi().borderContainer(borderThickness: .5),
-                padding: const EdgeInsets.only(left: 10, right: 10),
+              return SizedBox(
                 width: conWidth - 140,
                 height: conHeight,
                 child: DropdownSearch<AllInstrumentsData>(
                   items: state.allInstrumentsList,
                   itemAsString: (item) => item.instrumentname.toString(),
-                  dropdownDecoratorProps: const DropDownDecoratorProps(
+                  popupProps: PopupProps.menu(
+                    itemBuilder: (context, item, isSelected) {
+                      return ListTile(
+                        title: Text(
+                          item.instrumentname.toString(),
+                          style: AppTheme.labelTextStyle(),
+                        ),
+                      );
+                    },
+                  ),
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                      textAlign: TextAlign.center,
                       dropdownSearchDecoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Drawing number')),
-                  popupProps: const PopupProps.menu(
-                      showSearchBox: true,
-                      searchFieldProps: TextFieldProps(
-                        style: TextStyle(fontSize: 18),
+                        hintText: 'Drawing number',
+                        hintStyle: AppTheme.labelTextStyle(),
+                        contentPadding:
+                            const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(2)),
                       )),
                   onChanged: (value) async {
                     List<InstrumentMeasuringRanges> response =
@@ -666,33 +715,42 @@ class OrderInstrument extends StatelessWidget {
       margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
       child: Row(
         children: [
-          const SizedBox(
+          SizedBox(
             width: 110,
             child: Text(
               'Instrument : ',
-              style: TextStyle(fontSize: 17),
+              style: AppTheme.labelTextStyle(isFontBold: true),
             ),
           ),
           BlocBuilder<CalibrationBloc, CalibrationState>(
               builder: (context, state) {
             if (state is OrderInstrumentState) {
-              return Container(
-                decoration: QuickFixUi().borderContainer(borderThickness: .5),
-                padding: const EdgeInsets.only(left: 10, right: 10),
+              return SizedBox(
                 width: conWidth - 140,
                 height: conHeight,
-                child: DropdownSearch<RejectedInstrumentsDataModel>(
+                child: DropdownSearch<RejectedInstrumentsNewOrderDataModel>(
                   items: state.rejectedInstrumentsDataList,
                   itemAsString: (item) =>
                       '${item.instrumentname}       ${item.cardnumber}',
-                  dropdownDecoratorProps: const DropDownDecoratorProps(
+                  popupProps: PopupProps.menu(
+                    itemBuilder: (context, item, isSelected) {
+                      return ListTile(
+                        title: Text(
+                          item.instrumentname.toString(),
+                          style: AppTheme.labelTextStyle(),
+                        ),
+                      );
+                    },
+                  ),
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                      textAlign: TextAlign.center,
                       dropdownSearchDecoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Drawing number')),
-                  popupProps: const PopupProps.menu(
-                      showSearchBox: true,
-                      searchFieldProps: TextFieldProps(
-                        style: TextStyle(fontSize: 18),
+                        hintText: 'Drawing number',
+                        hintStyle: AppTheme.labelTextStyle(),
+                        contentPadding:
+                            const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(2)),
                       )),
                   onChanged: (value) async {
                     selectedInstrument.add({
@@ -727,22 +785,28 @@ class OrderInstrument extends StatelessWidget {
       margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
       child: Row(
         children: [
-          const SizedBox(
+          SizedBox(
             width: 110,
             child: Text(
               'Quantity : ',
-              style: TextStyle(fontSize: 17),
+              style: AppTheme.labelTextStyle(isFontBold: true),
             ),
           ),
-          Container(
+          SizedBox(
               width: conWidth - 140,
               height: conHeight,
-              decoration: QuickFixUi().borderContainer(borderThickness: .5),
-              padding: paddingWidget(),
               child: TextField(
                 controller: quantity,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(border: InputBorder.none),
+                textAlign: TextAlign.center,
+                style: AppTheme.labelTextStyle(),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(2)),
+                  contentPadding: const EdgeInsets.only(
+                    bottom: 5,
+                  ),
+                ),
                 onChanged: (value) {
                   quantity.text = value.toString();
                 },
@@ -765,33 +829,40 @@ class OrderInstrument extends StatelessWidget {
             margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
             child: Row(
               children: [
-                const SizedBox(
+                SizedBox(
                   width: 110,
                   child: Text(
                     'Range : ',
-                    style: TextStyle(fontSize: 17),
+                    style: AppTheme.labelTextStyle(isFontBold: true),
                   ),
                 ),
                 snapshot.data != null && snapshot.data!.isNotEmpty
-                    ? Container(
+                    ? SizedBox(
                         width: conWidth - 140,
                         height: conHeight,
-                        decoration:
-                            QuickFixUi().borderContainer(borderThickness: .5),
-                        padding: const EdgeInsets.only(left: 10, right: 10),
                         child: DropdownSearch<InstrumentMeasuringRanges>(
                             items: snapshot.data!,
                             itemAsString: (item) =>
                                 item.measuringrange.toString(),
-                            dropdownDecoratorProps:
-                                const DropDownDecoratorProps(
-                                    dropdownSearchDecoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: 'Measuring ranges')),
-                            popupProps: const PopupProps.menu(
-                                showSearchBox: true,
-                                searchFieldProps: TextFieldProps(
-                                  style: TextStyle(fontSize: 18),
+                            popupProps: PopupProps.menu(
+                              itemBuilder: (context, item, isSelected) {
+                                return ListTile(
+                                  title: Text(
+                                    item.measuringrange.toString(),
+                                    style: AppTheme.labelTextStyle(),
+                                  ),
+                                );
+                              },
+                            ),
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                                textAlign: TextAlign.center,
+                                dropdownSearchDecoration: InputDecoration(
+                                  hintText: 'Measuring range',
+                                  hintStyle: AppTheme.labelTextStyle(),
+                                  contentPadding: const EdgeInsets.only(
+                                      bottom: 11, top: 11, left: 2),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(2)),
                                 )),
                             onChanged: (value) async {
                               range.text = value!.measuringrange.toString();
@@ -821,17 +892,16 @@ class OrderInstrument extends StatelessWidget {
       margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
       child: Row(
         children: [
-          const SizedBox(
+          SizedBox(
             width: 70,
             child: Text(
               'To : ',
-              style: TextStyle(fontSize: 17),
+              style: AppTheme.labelTextStyle(isFontBold: true),
             ),
           ),
           Container(
             width: conWidth - 100,
             height: conHeight,
-            decoration: QuickFixUi().borderContainer(borderThickness: .5),
             padding: paddingWidget(),
             child: BlocBuilder<CalibrationBloc, CalibrationState>(
                 builder: (context, state) {
@@ -840,9 +910,17 @@ class OrderInstrument extends StatelessWidget {
                   readOnly: true,
                   controller: TextEditingController(
                       text: state.toList.isNotEmpty
-                          ? state.toList[0].emailaddress
+                          ? state.toList[0].emailaddress.toString().trim()
                           : ''),
-                  decoration: const InputDecoration(border: InputBorder.none),
+                  textAlign: TextAlign.center,
+                  style: AppTheme.labelTextStyle(),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(2)),
+                    contentPadding: const EdgeInsets.only(
+                      bottom: 5,
+                    ),
+                  ),
                 );
               } else {
                 return const Stack();
@@ -860,15 +938,14 @@ class OrderInstrument extends StatelessWidget {
       margin: const EdgeInsets.all(10),
       child: Row(
         children: [
-          const SizedBox(
+          SizedBox(
             width: 70,
             child: Text(
               'From : ',
-              style: TextStyle(fontSize: 17),
+              style: AppTheme.labelTextStyle(isFontBold: true),
             ),
           ),
           Container(
-            decoration: QuickFixUi().borderContainer(borderThickness: .5),
             width: conWidth - 100,
             height: conHeight,
             padding: paddingWidget(),
@@ -878,10 +955,24 @@ class OrderInstrument extends StatelessWidget {
                 return DropdownSearch<MailAddress>(
                   items: state.fromList,
                   itemAsString: (item) => item.emailaddress.toString(),
-                  dropdownDecoratorProps: const DropDownDecoratorProps(
+                  popupProps: PopupProps.menu(
+                    itemBuilder: (context, item, isSelected) {
+                      return ListTile(
+                        title: Text(
+                          item.emailaddress.toString(),
+                          style: AppTheme.labelTextStyle(),
+                        ),
+                      );
+                    },
+                  ),
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                      textAlign: TextAlign.center,
                       dropdownSearchDecoration: InputDecoration(
-                    border: InputBorder.none,
-                  )),
+                        contentPadding:
+                            const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(2)),
+                      )),
                   onChanged: (value) {
                     from.text = value!.emailaddress.toString();
                   },

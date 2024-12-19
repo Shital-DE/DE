@@ -159,6 +159,11 @@ class Routes {
             builder: (BuildContext context) =>
                 RouteData.getRouteData(context, RouteName.instrumentStore, {}));
 
+      case RouteName.rejectedInstruments: // Instrument calibration history
+        return MaterialPageRoute(
+            builder: (BuildContext context) => RouteData.getRouteData(
+                context, RouteName.rejectedInstruments, {}));
+
       // Packing
       case RouteName.packingScreen: // Packing screen
         return MaterialPageRoute(

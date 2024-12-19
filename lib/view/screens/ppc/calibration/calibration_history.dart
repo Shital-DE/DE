@@ -16,6 +16,7 @@ import '../../../../bloc/ppc/calibration/calibration_state.dart';
 import '../../../../routes/route_names.dart';
 import '../../../../services/model/quality/calibration_model.dart';
 import '../../../../services/repository/quality/calibration_repository.dart';
+import '../../../../utils/app_theme.dart';
 import '../../../../utils/common/quickfix_widget.dart';
 import '../../../../utils/responsive.dart';
 import '../../../widgets/table/custom_table.dart';
@@ -33,12 +34,13 @@ class CalibrationHistory extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         body: MakeMeResponsiveScreen(
-            horixontaltab: calibrationHistoryScreen(
-                allCards: allCards, blocProvider: blocProvider, size: size),
-            windows: calibrationHistoryScreen(
-                allCards: allCards, blocProvider: blocProvider, size: size),
-            linux: calibrationHistoryScreen(
-                allCards: allCards, blocProvider: blocProvider, size: size)));
+      horixontaltab: calibrationHistoryScreen(
+          allCards: allCards, blocProvider: blocProvider, size: size),
+      windows: calibrationHistoryScreen(
+          allCards: allCards, blocProvider: blocProvider, size: size),
+      linux: calibrationHistoryScreen(
+          allCards: allCards, blocProvider: blocProvider, size: size),
+    ));
   }
 
   BlocBuilder<CalibrationBloc, CalibrationState> calibrationHistoryScreen(
@@ -55,10 +57,12 @@ class CalibrationHistory extends StatelessWidget {
             size: size,
             context: context);
       } else {
-        return const Center(child: Text('Data not found.'));
+        return dataNotFoundWidget();
       }
     });
   }
+
+  Center dataNotFoundWidget() => const Center(child: Text('Data not found.'));
 
   ListView instrumentHistoryWidget(
       {required InstrumentCalibrationHistoryState state,
@@ -66,29 +70,39 @@ class CalibrationHistory extends StatelessWidget {
       required CalibrationBloc blocProvider,
       required Size size,
       required BuildContext context}) {
+    double conWidth = 250, conHeight = Platform.isAndroid ? 45 : 35;
     return ListView(
       children: [
-        QuickFixUi.verticalSpace(height: 10),
+        QuickFixUi.verticalSpace(height: 5),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 300,
-              height: 45,
-              padding: const EdgeInsets.only(left: 20),
-              decoration: QuickFixUi().borderContainer(borderThickness: .5),
+            SizedBox(
+              width: conWidth,
+              height: conHeight,
               child: DropdownSearch<AllInstrumentsData>(
                 items: state.allInstrumentsList,
                 itemAsString: (item) => item.instrumentname.toString(),
-                popupProps: const PopupProps.menu(
-                    showSearchBox: true,
-                    searchFieldProps: TextFieldProps(
-                      style: TextStyle(fontSize: 18),
-                    )),
-                dropdownDecoratorProps: const DropDownDecoratorProps(
+                popupProps: PopupProps.menu(
+                  itemBuilder: (context, item, isSelected) {
+                    return ListTile(
+                      title: Text(
+                        item.instrumentname.toString(),
+                        style: AppTheme.labelTextStyle(),
+                      ),
+                    );
+                  },
+                ),
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                    textAlign: TextAlign.center,
                     dropdownSearchDecoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Select instrument')),
+                      hintText: 'Select instrument',
+                      hintStyle: AppTheme.labelTextStyle(),
+                      contentPadding:
+                          const EdgeInsets.only(bottom: 11, top: 11, left: 2),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(2)),
+                    )),
                 onChanged: (value) async {
                   allCards.add([]);
                   List<InstrumentsCardModel> cardsList =
@@ -104,24 +118,32 @@ class CalibrationHistory extends StatelessWidget {
                 stream: allCards.stream,
                 builder: (context, snapshot) {
                   if (snapshot.data != null && snapshot.data!.isNotEmpty) {
-                    return Container(
-                      width: 200,
-                      height: 45,
-                      padding: const EdgeInsets.only(left: 20),
-                      decoration:
-                          QuickFixUi().borderContainer(borderThickness: .5),
+                    return SizedBox(
+                      width: conWidth,
+                      height: conHeight,
                       child: DropdownSearch<InstrumentsCardModel>(
                         items: snapshot.data!,
                         itemAsString: (item) => item.cardnumber.toString(),
-                        popupProps: const PopupProps.menu(
-                            showSearchBox: true,
-                            searchFieldProps: TextFieldProps(
-                              style: TextStyle(fontSize: 18),
-                            )),
-                        dropdownDecoratorProps: const DropDownDecoratorProps(
+                        popupProps: PopupProps.menu(
+                          itemBuilder: (context, item, isSelected) {
+                            return ListTile(
+                              title: Text(
+                                item.cardnumber.toString(),
+                                style: AppTheme.labelTextStyle(),
+                              ),
+                            );
+                          },
+                        ),
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                            textAlign: TextAlign.center,
                             dropdownSearchDecoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Card number')),
+                              hintText: 'Card number',
+                              hintStyle: AppTheme.labelTextStyle(),
+                              contentPadding: const EdgeInsets.only(
+                                  bottom: 11, top: 11, left: 2),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(2)),
+                            )),
                         onChanged: (value) async {
                           blocProvider.add(InstrumentCalibrationHistoryEvent(
                               instrument: value));
@@ -138,15 +160,18 @@ class CalibrationHistory extends StatelessWidget {
             ? Container(
                 width: size.width,
                 height: size.height - 255,
-                margin: const EdgeInsets.all(10),
+                margin: const EdgeInsets.only(left: 5, right: 5, top: 10),
                 child: CustomTable(
                     tablewidth: size.width,
-                    tableheight: (state.calibrationHistory.length + 1) * 45,
-                    rowHeight: 45,
-                    columnWidth: (size.width - 28) / 7.2,
+                    tableheight:
+                        (state.calibrationHistory.length + 1) * conHeight,
+                    rowHeight: conHeight,
+                    headerHeight: conHeight,
+                    columnWidth: 200,
                     tableheaderColor: Colors.white,
                     headerStyle: TextStyle(
                         fontWeight: FontWeight.bold,
+                        fontSize: Platform.isAndroid ? 15 : 13,
                         color: Theme.of(context).primaryColor),
                     tableOutsideBorder: true,
                     enableHeaderBottomBorder: true,
@@ -154,7 +179,6 @@ class CalibrationHistory extends StatelessWidget {
                     borderThickness: .5,
                     headerBorderThickness: .5,
                     headerBorderColor: Colors.black,
-                    showIndex: true,
                     column: [
                       ColumnData(label: 'Certificate'),
                       ColumnData(label: 'Instrument name'),
@@ -175,60 +199,32 @@ class CalibrationHistory extends StatelessWidget {
                           TableDataCell(
                               label: e.certificateMdocid.toString().trim() !=
                                       'null'
-                                  ? IconButton(
-                                      onPressed: () async {
-                                        String response =
-                                            await CalibrationRepository()
-                                                .getCertificate(payload: {
-                                          'id': e.certificateMdocid
-                                        }, token: state.token);
-
-                                        if (response != '' &&
-                                            response !=
-                                                'Something went wrong') {
-                                          if (Platform.isAndroid) {
-                                            Navigator.pushNamed(
-                                                context, RouteName.pdf,
-                                                arguments: {
-                                                  'data':
-                                                      base64.decode(response)
-                                                });
-                                          } else {
-                                            Documents().models(
-                                                response,
-                                                '${e.instrumentname}-${e.cardnumber}',
-                                                '',
-                                                'pdf');
-                                          }
-                                        } else {
-                                          debugPrint('File not found');
-                                        }
-                                      },
-                                      icon: Icon(
-                                        Icons.picture_as_pdf,
-                                        color:
-                                            Theme.of(context).colorScheme.error,
-                                      ))
+                                  ? pdfButton(
+                                      e: e, state: state, context: context)
                                   : const Text('')),
                           TableDataCell(
                               label: Text(
                             e.instrumentname.toString(),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
                             e.instrumenttype.toString(),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
                             e.cardnumber.toString(),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
                             e.measuringrange.toString(),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
@@ -241,6 +237,7 @@ class CalibrationHistory extends StatelessWidget {
                                         .toString()
                                         .substring(0, 10),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
@@ -253,16 +250,19 @@ class CalibrationHistory extends StatelessWidget {
                                         .toString()
                                         .substring(0, 10),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
                             e.manufacturer.toString(),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
                             e.storagelocation.toString(),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
@@ -270,6 +270,7 @@ class CalibrationHistory extends StatelessWidget {
                                 ? ''
                                 : e.rejectionreason.toString(),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
@@ -277,6 +278,7 @@ class CalibrationHistory extends StatelessWidget {
                                 ? ''
                                 : e.rejectedby.toString(),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
@@ -287,6 +289,7 @@ class CalibrationHistory extends StatelessWidget {
                                     .toString()
                                     .substring(0, 10),
                             textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
                           )),
                         ],
                       );
@@ -294,5 +297,32 @@ class CalibrationHistory extends StatelessWidget {
             : const Stack()
       ],
     );
+  }
+
+  IconButton pdfButton(
+      {required CalibrationHistoryModel e,
+      required InstrumentCalibrationHistoryState state,
+      required BuildContext context}) {
+    return IconButton(
+        onPressed: () async {
+          String response = await CalibrationRepository().getCertificate(
+              payload: {'id': e.certificateMdocid}, token: state.token);
+
+          if (response != '' && response != 'Something went wrong') {
+            if (Platform.isAndroid) {
+              Navigator.pushNamed(context, RouteName.pdf,
+                  arguments: {'data': base64.decode(response)});
+            } else {
+              Documents().models(
+                  response, '${e.instrumentname}-${e.cardnumber}', '', 'pdf');
+            }
+          } else {
+            debugPrint('File not found');
+          }
+        },
+        icon: Icon(
+          Icons.picture_as_pdf,
+          color: Theme.of(context).colorScheme.error,
+        ));
   }
 }

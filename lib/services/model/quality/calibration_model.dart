@@ -608,7 +608,8 @@ class InstrumentRejectionReasons {
   }
 }
 
-class RejectedInstrumentsDataModel {
+// Rejected instruments data model for order new instrument under rejection
+class RejectedInstrumentsNewOrderDataModel {
   String? instrumentId;
   String? instrumentscheduleId;
   String? instrumentname;
@@ -618,7 +619,7 @@ class RejectedInstrumentsDataModel {
   String? product;
   String? productdescription;
 
-  RejectedInstrumentsDataModel(
+  RejectedInstrumentsNewOrderDataModel(
       {this.instrumentId,
       this.instrumentscheduleId,
       this.instrumentname,
@@ -628,7 +629,7 @@ class RejectedInstrumentsDataModel {
       this.product,
       this.productdescription});
 
-  RejectedInstrumentsDataModel.fromJson(Map<String, dynamic> json) {
+  RejectedInstrumentsNewOrderDataModel.fromJson(Map<String, dynamic> json) {
     instrumentId = json['instrument_id'];
     instrumentscheduleId = json['instrumentschedule_id'];
     instrumentname = json['instrumentname'];
@@ -875,6 +876,60 @@ class StoredInstrumentsModel {
     data['id'] = id;
     data['instrumentcalibrationschedule_id'] = instrumentcalibrationscheduleId;
     data['certificate_mdocid'] = certificateMdocid;
+    return data;
+  }
+}
+
+// Rejected instruments model
+class RejectedInstrumentsModel {
+  String? instrumentname;
+  String? cardnumber;
+  String? measuringrange;
+  String? rejectedDate;
+  String? rejectedby;
+  String? rejectionReason;
+  String? historyId;
+  String? instrumentcalibrationscheduleId;
+  String? instrumentId;
+  String? certificateId;
+
+  RejectedInstrumentsModel(
+      {this.instrumentname,
+      this.cardnumber,
+      this.measuringrange,
+      this.rejectedDate,
+      this.rejectedby,
+      this.rejectionReason,
+      this.historyId,
+      this.instrumentcalibrationscheduleId,
+      this.instrumentId,
+      this.certificateId});
+
+  RejectedInstrumentsModel.fromJson(Map<String, dynamic> json) {
+    instrumentname = json['instrumentname'];
+    cardnumber = json['cardnumber'];
+    measuringrange = json['measuringrange'];
+    rejectedDate = json['rejected_date'];
+    rejectedby = json['rejectedby'];
+    rejectionReason = json['rejection_reason'];
+    historyId = json['history_id'];
+    instrumentcalibrationscheduleId = json['instrumentcalibrationschedule_id'];
+    instrumentId = json['instrument_id'];
+    certificateId = json['certificate_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['instrumentname'] = instrumentname;
+    data['cardnumber'] = cardnumber;
+    data['measuringrange'] = measuringrange;
+    data['rejected_date'] = rejectedDate;
+    data['rejectedby'] = rejectedby;
+    data['rejection_reason'] = rejectionReason;
+    data['history_id'] = historyId;
+    data['instrumentcalibrationschedule_id'] = instrumentcalibrationscheduleId;
+    data['instrument_id'] = instrumentId;
+    data['certificate_id'] = certificateId;
     return data;
   }
 }

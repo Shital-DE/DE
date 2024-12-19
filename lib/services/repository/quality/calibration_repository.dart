@@ -5,6 +5,8 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:convert';
+import 'package:flutter/material.dart';
+
 import '../../../utils/app_url.dart';
 import '../../common/api.dart';
 import 'package:http/http.dart' as http;
@@ -243,7 +245,6 @@ class CalibrationRepository {
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
       });
-      // debugPrint(response.body.toString());
       List<dynamic> data = jsonDecode(response.body);
       return data
           .map((e) => CurrentDayInstrumentsRegistered.fromJson(e))
@@ -622,8 +623,9 @@ class CalibrationRepository {
   }
 
   // Rejected instruments data to fill rejection against
-  Future<List<RejectedInstrumentsDataModel>> rejectedInstrumentsData(
-      {required String token}) async {
+  Future<List<RejectedInstrumentsNewOrderDataModel>>
+      rejectedInstrumentsDataForNewInstrumentOrder(
+          {required String token}) async {
     try {
       http.Response response =
           await API().getApiResponse(AppUrl.rejectedInstrumentsdata, {
@@ -632,7 +634,9 @@ class CalibrationRepository {
         'Authorization': 'Bearer $token',
       });
       List<dynamic> data = jsonDecode(response.body);
-      return data.map((e) => RejectedInstrumentsDataModel.fromJson(e)).toList();
+      return data
+          .map((e) => RejectedInstrumentsNewOrderDataModel.fromJson(e))
+          .toList();
     } catch (e) {
       return [];
     }
@@ -752,6 +756,24 @@ class CalibrationRepository {
       }
     } catch (e) {
       return e.toString();
+    }
+  }
+
+  // Rejected instruments
+  Future<List<RejectedInstrumentsModel>> rejectedInstruments(
+      {required String token}) async {
+    try {
+      http.Response response =
+          await API().getApiResponse(AppUrl.rejectedInstrument, {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      debugPrint(response.body.toString());
+      List<dynamic> data = jsonDecode(response.body);
+      return data.map((e) => RejectedInstrumentsModel.fromJson(e)).toList();
+    } catch (e) {
+      return [];
     }
   }
 }

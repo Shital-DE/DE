@@ -243,21 +243,9 @@ class AllInstrumentOrders extends StatelessWidget {
         });
   }
 
-  // String extractTopPart(String input) {
-  //   int startIndex = input.indexOf('');
-  //   int endIndex = input.indexOf(',') + ','.length;
-
-  //   if (startIndex != -1 && endIndex != -1) {
-  //     return input.substring(startIndex, endIndex);
-  //   }
-
-  //   return '';
-  // }
-
   String extractBottomPart(String input) {
     int startIndex = input.indexOf('Best regards');
     if (startIndex != -1) {
-      // Add the length of 'Best regards' and trim to remove leading and trailing whitespace
       return input.substring(startIndex).trim();
     }
     return '';

@@ -267,7 +267,7 @@ class AppUrl {
   static var instrumentRejectionReasons =
       '$baseUrl/quality/calibration/instrument-rejection-reasons'; // Instrument rejection reasons
   static var rejectedInstrumentsdata =
-      '$baseUrl/quality/calibration/rejected-instruments-data-list'; // Rejected instruments data list
+      '$baseUrl/quality/calibration/rejected-instruments-data-for-new-instrument-order'; // Rejected instruments data list
   static var registerInstrumentOrders =
       '$baseUrl/quality/calibration/register-instrument-orders'; // Instrument orders
   static var getOneOrder =
@@ -284,6 +284,8 @@ class AppUrl {
       '$baseUrl/quality/calibration/cancel-calibration'; // Cancel calibration
   static var restoreStoredInstrument =
       '$baseUrl/quality/calibration/restore-stored-instruments'; // Restore stored instrument
+  static var rejectedInstrument =
+      '$baseUrl/quality/calibration/rejected-instruments-data'; // Rejected instruments
 
   // Packing and stock
   static var registerStock =

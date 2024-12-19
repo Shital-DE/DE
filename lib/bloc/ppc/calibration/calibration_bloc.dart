@@ -85,15 +85,9 @@ class CalibrationBloc extends Bloc<CalibrationEvent, CalibrationState> {
       final saveddata = await UserData.getUserData();
       List<CalibrationStatusModel> calibrationStatusList = [];
 
-      // if (event.range == 0) {
       calibrationStatusList = await CalibrationRepository().calibrationStatus(
-          token: saveddata['token'].toString(),
-          range: 0,
-          // event.range,
-          searchString: ''
-          // event.searchString
-          );
-      // }
+          token: saveddata['token'].toString(), range: 0, searchString: '');
+
       List<InstrumentRejectionReasons> rejectionReasons =
           await CalibrationRepository()
               .instrumentRejectionReasons(token: saveddata['token'].toString());
@@ -102,8 +96,6 @@ class CalibrationBloc extends Bloc<CalibrationEvent, CalibrationState> {
           token: saveddata['token'].toString(),
           userId: saveddata['data'][0]['id'].toString(),
           rejectionReasons: rejectionReasons,
-          // range: event.range,
-          // searchString: event.searchString,
           selectedInstrumentsList: event.selectedInstrumentsList));
     });
 
@@ -120,9 +112,10 @@ class CalibrationBloc extends Bloc<CalibrationEvent, CalibrationState> {
       List<AllInstrumentsData> allInstrumentsList =
           await CalibrationRepository()
               .getAllInstruments(token: saveddata['token'].toString());
-      List<RejectedInstrumentsDataModel> rejectedInstrumentsDataList =
+      List<RejectedInstrumentsNewOrderDataModel> rejectedInstrumentsDataList =
           await CalibrationRepository()
-              .rejectedInstrumentsData(token: saveddata['token'].toString());
+              .rejectedInstrumentsDataForNewInstrumentOrder(
+                  token: saveddata['token'].toString());
       emit(OrderInstrumentState(
           token: saveddata['token'].toString(),
           fromList: fromList,
@@ -252,6 +245,30 @@ class CalibrationBloc extends Bloc<CalibrationEvent, CalibrationState> {
       emit(InstrumentStoreState(
           storedInstrumentsData: storedInstrumentsData,
           token: saveddata['token'].toString()));
+    });
+
+    //--------------------------Rejected instuments---------------------------------------
+    on<RejectedInstrumentsEvent>((event, emit) async {
+      // User data and token
+      final saveddata = await UserData.getUserData();
+
+      List<String> tableColumnsList = [
+        // 'Index',
+        'Instrument name',
+        'Card number',
+        'Measuring range',
+        'Rejected date',
+        'Rejected by',
+        'Rejection reason'
+      ];
+
+      List<RejectedInstrumentsModel> rejectedInstrumentsDataList =
+          await CalibrationRepository()
+              .rejectedInstruments(token: saveddata['token'].toString());
+
+      emit(RejectedInstrumentState(
+          rejectedInstrumentsDataList: rejectedInstrumentsDataList,
+          tableColumnsList: tableColumnsList));
     });
   }
 }

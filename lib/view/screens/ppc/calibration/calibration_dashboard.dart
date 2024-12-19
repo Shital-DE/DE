@@ -56,7 +56,34 @@ class CalibrationDashboard extends StatelessWidget {
                 } else if (destination == 5) {
                   blocProvider.add(AllInstrumentOrdersEvent());
                 } else if (destination == 6) {
-                  blocProvider.add(InstrumentCalibrationHistoryEvent());
+                  final RenderBox overlay = Overlay.of(context)
+                      .context
+                      .findRenderObject() as RenderBox;
+                  showMenu(
+                      context: context,
+                      position: RelativeRect.fromLTRB(
+                        overlay.size.width - 150,
+                        overlay.size.height - 150,
+                        20,
+                        20,
+                      ),
+                      items: [
+                        PopupMenuItem(
+                          value: 'Rejected instruments',
+                          child: const Text('Rejected instruments'),
+                          onTap: () {
+                            blocProvider.add(RejectedInstrumentsEvent());
+                          },
+                        ),
+                        PopupMenuItem(
+                          value: 'Instruments history',
+                          child: const Text('Instruments history'),
+                          onTap: () {
+                            blocProvider
+                                .add(InstrumentCalibrationHistoryEvent());
+                          },
+                        ),
+                      ]);
                 }
               },
               destinations: programsList
@@ -93,6 +120,9 @@ class CalibrationDashboard extends StatelessWidget {
       } else if (state is InstrumentCalibrationHistoryState) {
         return RouteData.getRouteData(
             context, RouteName.calibrationHistory, {});
+      } else if (state is RejectedInstrumentState) {
+        return RouteData.getRouteData(
+            context, RouteName.rejectedInstruments, {});
       } else {
         return const Center(
           child: Text(' Calibration'),

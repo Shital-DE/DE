@@ -91,6 +91,8 @@ class RouteName {
   static const String calibrationHistory =
       'calibrationHistory'; // Calibration history
   static const String instrumentStore = 'instrumentStore'; // Instrument store
+  static const String rejectedInstruments =
+      'rejectedInstruments'; // Rejected instruments
 
   //Registration
   static const String registration = 'registration';

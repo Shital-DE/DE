@@ -422,10 +422,9 @@ class InstrumentTypeRegistration extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Container(
+        SizedBox(
             height: 40,
             width: screenWidth / 2,
-            // padding: const EdgeInsets.only(left: 150),
             child: Text(
               'Instrument categories registration',
               textAlign: TextAlign.center,
@@ -434,10 +433,9 @@ class InstrumentTypeRegistration extends StatelessWidget {
                   fontSize: Platform.isAndroid ? 16 : 14,
                   color: Theme.of(context).colorScheme.primary),
             )),
-        Container(
+        SizedBox(
             height: 40,
             width: screenWidth / 2,
-            // padding: const EdgeInsets.only(left: 150),
             child: Text(
               'Manufacturer registration',
               textAlign: TextAlign.center,

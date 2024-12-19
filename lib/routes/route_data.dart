@@ -67,6 +67,7 @@ import '../view/screens/ppc/calibration/order_instrument.dart';
 import '../view/screens/ppc/calibration/outsource/instrument_outsource_workorders.dart';
 import '../view/screens/ppc/calibration/outsource/inward_instruments.dart';
 import '../view/screens/ppc/calibration/outsource/outward_instruments.dart';
+import '../view/screens/ppc/calibration/rejected_instruments.dart';
 import '../view/screens/ppc/capacity_plan/bar_chart.dart';
 import '../view/screens/ppc/capacity_plan/capacity_dashboard.dart';
 import '../view/screens/ppc/capacity_plan/capacity_plan.dart';
@@ -334,6 +335,16 @@ class RouteData {
             create: (BuildContext context) => CalibrationBloc(),
           ),
         ], child: const InstrumentStore());
+
+      case RouteName.rejectedInstruments: // Rejected instruments
+        return MultiBlocListener(listeners: [
+          BlocProvider<AppBarBloc>(
+            create: (BuildContext context) => AppBarBloc(),
+          ),
+          BlocProvider<CalibrationBloc>(
+            create: (BuildContext context) => CalibrationBloc(),
+          ),
+        ], child: const RejectedInstrumentsPage());
 
       case RouteName.packingScreen: // Paking screen
         return MultiBlocProvider(providers: [

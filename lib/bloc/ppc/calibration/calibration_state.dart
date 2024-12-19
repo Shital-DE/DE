@@ -5,10 +5,13 @@
 import '../../../services/model/quality/calibration_model.dart';
 import '../../../services/model/registration/subcontractor_models.dart';
 
+// Instrument calibration states
 class CalibrationState {}
 
+// Calibration initial state
 class CalibrationInitialState extends CalibrationState {}
 
+// Instruments registration state
 class InstrumentsRegistrationState extends CalibrationState {
   final List<MeasuringInstruments> measuringInstrumentsList;
   final List<InstrumentsTypeData> instrumentsTypeList;
@@ -22,6 +25,7 @@ class InstrumentsRegistrationState extends CalibrationState {
       required this.allInstrumentsList});
 }
 
+// Instruments type registration state
 class InstrumentTypeRegistrationState extends CalibrationState {
   final String token, userId;
   final List<InstrumentsTypeData> instrumentsTypeList;
@@ -33,6 +37,7 @@ class InstrumentTypeRegistrationState extends CalibrationState {
       required this.manufacturerData});
 }
 
+// Calibration schedule registration state
 class CalibrationScheduleRegistrationState extends CalibrationState {
   final List<AllInstrumentsData> allInstrumentsList;
   final List<Frequency> frequencyList;
@@ -48,6 +53,7 @@ class CalibrationScheduleRegistrationState extends CalibrationState {
       required this.manufacturerData});
 }
 
+// Instrument status state
 class InstrumentCalibrationStatusState extends CalibrationState {
   final List<CalibrationStatusModel> calibrationStatusList;
   final List<InstrumentRejectionReasons> rejectionReasons;
@@ -61,12 +67,13 @@ class InstrumentCalibrationStatusState extends CalibrationState {
       required this.selectedInstrumentsList});
 }
 
+// Instrument order states
 class OrderInstrumentState extends CalibrationState {
   final String token, userId;
   final List<MailAddress> fromList;
   final List<MailAddress> toList;
   final List<AllInstrumentsData> allInstrumentsList;
-  final List<RejectedInstrumentsDataModel> rejectedInstrumentsDataList;
+  final List<RejectedInstrumentsNewOrderDataModel> rejectedInstrumentsDataList;
   OrderInstrumentState(
       {required this.token,
       required this.fromList,
@@ -76,6 +83,7 @@ class OrderInstrumentState extends CalibrationState {
       required this.rejectedInstrumentsDataList});
 }
 
+// Instrument all orders state
 class AllInstrumentOrdersState extends CalibrationState {
   final List<AllInstrumentOrdersModel> allinstrumentOrdersList;
   final String token;
@@ -83,6 +91,7 @@ class AllInstrumentOrdersState extends CalibrationState {
       {required this.allinstrumentOrdersList, required this.token});
 }
 
+// Outward instruments state
 class OutwardInstrumentsState extends CalibrationState {
   final String token, userId, chalanno, currentdate;
   final List<OutsourcedInstrumentsModel> outwardInstrumentsList;
@@ -98,6 +107,7 @@ class OutwardInstrumentsState extends CalibrationState {
       required this.currentdate});
 }
 
+// Inward instruments state
 class InwardInstrumentsState extends CalibrationState {
   final List<OutsourcedInstrumentsModel> inwardInstrumentsList;
   final List<Frequency> frequencyList;
@@ -111,12 +121,14 @@ class InwardInstrumentsState extends CalibrationState {
       required this.userId});
 }
 
+// Instrument outsource work orders state
 class OutsourceWorkorderState extends CalibrationState {
   final String token;
   final List<OutsorceWorkordersModel> allWorkorders;
   OutsourceWorkorderState({required this.allWorkorders, required this.token});
 }
 
+// Instrument calibration history state
 class InstrumentCalibrationHistoryState extends CalibrationState {
   final List<AllInstrumentsData> allInstrumentsList;
   final List<CalibrationHistoryModel> calibrationHistory;
@@ -127,9 +139,19 @@ class InstrumentCalibrationHistoryState extends CalibrationState {
       required this.token});
 }
 
+// Instrument store state
 class InstrumentStoreState extends CalibrationState {
   final List<StoredInstrumentsModel> storedInstrumentsData;
   final String token;
   InstrumentStoreState(
       {required this.storedInstrumentsData, required this.token});
+}
+
+// Rejected instrument state
+class RejectedInstrumentState extends CalibrationState {
+  List<RejectedInstrumentsModel> rejectedInstrumentsDataList;
+  List<String> tableColumnsList;
+  RejectedInstrumentState(
+      {required this.rejectedInstrumentsDataList,
+      required this.tableColumnsList});
 }
