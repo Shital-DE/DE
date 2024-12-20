@@ -11,7 +11,8 @@ abstract class QualityState {}
 
 class QualityInitialState extends QualityState {}
 
-class QualityDashboardState extends QualityState {
+// Quality production state
+class QualityProductionState extends QualityState {
   final bool isInspectionStarted;
   final Barcode barcode;
   final String pdfMdocId,
@@ -31,7 +32,7 @@ class QualityDashboardState extends QualityState {
   final List<DocumentDetails> modelsDetails;
   final List<Workcentre> workcentrelist;
   final List<QualityRejectedReasons> rejectedReasonsList;
-  QualityDashboardState(
+  QualityProductionState(
       {required this.isInspectionStarted,
       required this.barcode,
       required this.pdfMdocId,
@@ -56,4 +57,11 @@ class QualityDashboardState extends QualityState {
 class QualityErrorState extends QualityState {
   final String errorMessage;
   QualityErrorState({required this.errorMessage});
+}
+
+class QualityProductionProcessesState extends QualityState {
+  List<Productprocessseq> productprocessseqlist;
+  List<String> tableColumnsList;
+  QualityProductionProcessesState(
+      {required this.productprocessseqlist, required this.tableColumnsList});
 }

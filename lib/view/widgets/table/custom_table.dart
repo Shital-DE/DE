@@ -115,7 +115,7 @@ class CustomTable extends StatelessWidget {
                           ),
                         if (showIndex == true)
                           Container(
-                            width: rowHeight + 5,
+                            width: rowHeight * 2,
                             height: headerHeight,
                             decoration: BoxDecoration(
                               color: tableheaderColor,
@@ -243,7 +243,7 @@ class CustomTable extends StatelessWidget {
           BlocBuilder<AppTableBloc, AppTableState>(builder: (context, state) {
         return Container(
             height: rowHeight,
-            width: rowHeight,
+            width: rowHeight * 2,
             decoration: BoxDecoration(
               color: state is AppTableScrollDirectionState &&
                       state.selectedRowList.contains(count)

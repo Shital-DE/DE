@@ -6,9 +6,11 @@ import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../services/model/common/document_model.dart';
 import '../../../services/model/machine/workcentre.dart';
+import '../../../services/model/operator/oprator_models.dart';
 import '../../../services/model/quality/quality_models.dart';
 import '../../../services/repository/common/documents_repository.dart';
 import '../../../services/repository/common/tablet_repository.dart';
+import '../../../services/repository/operator/operator_repository.dart';
 import '../../../services/repository/quality/quality_repository.dart';
 import '../../../services/session/user_login.dart';
 import 'quality_dashboard_event.dart';
@@ -16,7 +18,8 @@ import 'quality_dashboard_state.dart';
 
 class QualityBloc extends Bloc<QualityEvents, QualityState> {
   QualityBloc() : super(QualityInitialState()) {
-    on<QualityDashboardEvents>((event, emit) async {
+    // Quality production bloc handller
+    on<QualityProductionEvents>((event, emit) async {
       bool isAlreadyInspected = false;
       String pdfmdocid = '',
           pdfRevisionNo = '',
@@ -90,7 +93,7 @@ class QualityBloc extends Bloc<QualityEvents, QualityState> {
             await QualityInspectionRepository()
                 .rejectedReasons(saveddata['token']);
 
-        emit(QualityDashboardState(
+        emit(QualityProductionState(
           isInspectionStarted: isAlreadyInspected,
           barcode: event.barcode,
           pdfMdocId: pdfmdocid,
@@ -111,6 +114,29 @@ class QualityBloc extends Bloc<QualityEvents, QualityState> {
           inspectionId: inspectionId,
         ));
       }
+    });
+
+    // Quality processes bloc handller
+    on<QualityProductionProcessesEvents>((event, emit) async {
+      final userdata = await UserData.getUserData();
+      final machineData = await MachineData.geMachineData();
+      final macData = jsonDecode(machineData.toString());
+      List<String> tableColumnsList = [
+        'Sequence number',
+        'Instruction',
+        'Setup minuts',
+        'Runtime minuts',
+        'Action'
+      ];
+      List<Productprocessseq> productprocessseqlist = await OperatorRepository()
+          .productprocessseq(
+              workcentreid: macData[0]['wr_workcentre_id'],
+              token: userdata['token'],
+              productid: event.barcode.productid.toString(),
+              revisionno: event.barcode.revisionnumber.toString());
+      emit(QualityProductionProcessesState(
+          productprocessseqlist: productprocessseqlist,
+          tableColumnsList: tableColumnsList));
     });
   }
 }

@@ -84,8 +84,15 @@ class Routes {
       // Quality
       case RouteName.qualityScreen:
         return MaterialPageRoute(
+            builder: (BuildContext context) => RouteData.getRouteData(context,
+                RouteName.qualityScreen, args!)); // Quality production screen
+
+      case RouteName.productionProcessScreen:
+        return MaterialPageRoute(
             builder: (BuildContext context) => RouteData.getRouteData(
-                context, RouteName.qualityScreen, args!)); // Quality dashboard
+                context,
+                RouteName.productionProcessScreen,
+                args!)); // Production process screen
 
       case RouteName.calibration: // Calibration screen
         return MaterialPageRoute(

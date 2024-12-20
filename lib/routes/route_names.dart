@@ -65,6 +65,7 @@ class RouteName {
   static const String packingScreen = 'packingScreen'; // Packing screen
   static const String stock = 'stock'; // Stock
   static const String qualityScreen = 'qualityScreen'; //Quality screen
+  static const String productionProcessScreen = 'qualityProcessScreen';
 
   // Calibration
   static const String calibration = 'calibration'; // Calibration

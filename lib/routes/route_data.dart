@@ -5,6 +5,7 @@ import 'package:de/bloc/sales_order/sales_order_bloc.dart';
 import 'package:de/view/screens/product_assets_management/pam_dashboard.dart';
 import 'package:de/view/screens/product_assets_management/product_registration.dart';
 import 'package:de/view/screens/product_assets_management/product_structure.dart';
+import 'package:de/view/screens/production/production_processes_screen.dart';
 import 'package:de/view/screens/user/update_employee_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -93,7 +94,7 @@ import '../view/screens/production/operator/pending_product_production.dart';
 import '../view/screens/production/packing/packing_dashboard.dart';
 import '../view/screens/production/packing/stock.dart';
 import '../view/screens/production/production.dart';
-import '../view/screens/production/quality/quality_dashboard.dart';
+import '../view/screens/production/quality/quality_production_screen.dart';
 import '../view/screens/sales_orders/issue_stock.dart';
 import '../view/screens/sales_orders/salesorders.dart';
 import '../view/screens/user/employee_registration.dart';
@@ -201,7 +202,7 @@ class RouteData {
             ));
 
       // Quality
-      case RouteName.qualityScreen: // Quality screen
+      case RouteName.qualityScreen: // Quality production screen
         return MultiBlocProvider(providers: [
           BlocProvider<AppBarBloc>(
             create: (BuildContext context) => AppBarBloc(),
@@ -209,7 +210,18 @@ class RouteData {
           BlocProvider<QualityBloc>(
             create: (BuildContext context) => QualityBloc(),
           ),
-        ], child: QualityDashboard(arguments: args));
+        ], child: QualityProductionScreen(arguments: args));
+
+      // Quality
+      case RouteName.productionProcessScreen: // Production process screen
+        return MultiBlocProvider(providers: [
+          BlocProvider<AppBarBloc>(
+            create: (BuildContext context) => AppBarBloc(),
+          ),
+          BlocProvider<QualityBloc>(
+            create: (BuildContext context) => QualityBloc(),
+          ),
+        ], child: ProductionProcessScreen(arguments: args));
 
       // Calibration
       case RouteName.calibration:

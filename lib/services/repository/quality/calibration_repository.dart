@@ -5,8 +5,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:convert';
-import 'package:flutter/material.dart';
-
 import '../../../utils/app_url.dart';
 import '../../common/api.dart';
 import 'package:http/http.dart' as http;
@@ -769,7 +767,6 @@ class CalibrationRepository {
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
       });
-      debugPrint(response.body.toString());
       List<dynamic> data = jsonDecode(response.body);
       return data.map((e) => RejectedInstrumentsModel.fromJson(e)).toList();
     } catch (e) {

@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:de/utils/app_colors.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,10 +43,10 @@ class CalibrationScheduleRegistration extends StatelessWidget {
     return Scaffold(
       body: ListView(
         children: [
-          QuickFixUi.verticalSpace(height: 10),
+          QuickFixUi.verticalSpace(height: 5),
           calibrationScheduleRegistrationForm(
               context: context, blocProvider: blocProvider),
-          QuickFixUi.verticalSpace(height: 10),
+          QuickFixUi.verticalSpace(height: 5),
           currentRecordsTable()
         ],
       ),
@@ -54,34 +55,36 @@ class CalibrationScheduleRegistration extends StatelessWidget {
 
   BlocBuilder<CalibrationBloc, CalibrationState> currentRecordsTable() {
     StreamController<String> viewPdf = StreamController<String>.broadcast();
+
     return BlocBuilder<CalibrationBloc, CalibrationState>(
         builder: (context, state) {
+      Size size = MediaQuery.of(context).size;
       if (state is CalibrationScheduleRegistrationState &&
           state.currentDayRecords.isNotEmpty) {
         double rowHeight = Platform.isAndroid ? 40 : 35,
             tableheight =
-                ((state.currentDayRecords.length + 1) * rowHeight) + 2.5;
+                (((state.currentDayRecords.length + 1) * rowHeight) + 2.4) + 20;
         return Container(
-            margin: MediaQuery.of(context).size.width < 1350
-                ? const EdgeInsets.only(left: 10, right: 10)
+            margin: size.width < 1350
+                ? const EdgeInsets.only(left: 5, right: 5)
                 : const EdgeInsets.only(left: 200),
-            width: MediaQuery.of(context).size.width,
+            width: size.width,
             height: tableheight <= 500 ? tableheight : 500,
             child: CustomTable(
-                tablewidth: MediaQuery.of(context).size.width < 1370
-                    ? MediaQuery.of(context).size.width
-                    : MediaQuery.of(context).size.width - 400,
+                tablewidth: size.width < 1370 ? size.width : size.width - 400,
                 tableheight: tableheight,
-                columnWidth:
-                    MediaQuery.of(context).size.width < 1370 ? 200 : 219.5,
+                columnWidth: size.width < 1370 ? 200 : 219.5,
+                headerBorderThickness: .5,
                 rowHeight: rowHeight,
-                headerHeight: rowHeight,
-                showIndex: true,
-                tableheaderColor: Theme.of(context).primaryColorLight,
+                headerHeight: rowHeight + 20,
                 headerStyle: TextStyle(
-                    fontSize: Platform.isAndroid ? 15 : 13,
+                    fontWeight: FontWeight.bold,
                     color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold),
+                    fontSize: Platform.isAndroid ? 15 : 13),
+                tableheaderColor: AppColors.whiteTheme,
+                headerBorderColor: AppColors.blackColor,
+                showIndex: true,
+                enableHeaderBottomBorder: true,
                 tableOutsideBorder: true,
                 enableRowBottomBorder: true,
                 column: [
@@ -258,7 +261,7 @@ class CalibrationScheduleRegistration extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       height: Platform.isAndroid ? 405 : 355, // 370
       margin: MediaQuery.of(context).size.width < 1350
-          ? const EdgeInsets.only(left: 10, right: 10)
+          ? const EdgeInsets.only(left: 5, right: 5)
           : const EdgeInsets.only(left: 200, right: 200),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.errorContainer,

@@ -403,7 +403,7 @@ class MyIconGenerator {
           color: iconColor,
           size: size,
         );
-      case 'Instruments History':
+      case 'Instruments Log':
         return Icon(
           Icons.history_toggle_off_outlined,
           color: iconColor,

@@ -6,14 +6,21 @@ import '../../../services/model/operator/oprator_models.dart';
 
 abstract class QualityEvents {}
 
-class QualityDashboardEvents extends QualityEvents {
+// Quality production events
+class QualityProductionEvents extends QualityEvents {
   final bool isInspectionStarted;
   final Barcode barcode;
   final String startInspection;
 
-  QualityDashboardEvents({
+  QualityProductionEvents({
     this.isInspectionStarted = false,
     required this.barcode,
     this.startInspection = '',
   });
+}
+
+// Quality processes events
+class QualityProductionProcessesEvents extends QualityEvents {
+  final Barcode barcode;
+  QualityProductionProcessesEvents({required this.barcode});
 }

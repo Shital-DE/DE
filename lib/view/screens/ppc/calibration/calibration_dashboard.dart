@@ -2,7 +2,7 @@
 // Created Date : 5 Dec 2023
 // Description : Calibration screen
 
-// import 'package:de_opc/utils/responsive.dart';
+import 'package:de/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../bloc/ppc/calibration/calibration_bloc.dart';
@@ -38,7 +38,7 @@ class CalibrationDashboard extends StatelessWidget {
             'Calibration Status',
             'Order Instrument',
             'All Orders',
-            'Instruments History'
+            'Instruments Log'
           ];
           return NavigationBar(
               selectedIndex: selectedIndex(state),
@@ -59,31 +59,11 @@ class CalibrationDashboard extends StatelessWidget {
                   final RenderBox overlay = Overlay.of(context)
                       .context
                       .findRenderObject() as RenderBox;
-                  showMenu(
+                  instrumentLogMenu(
                       context: context,
-                      position: RelativeRect.fromLTRB(
-                        overlay.size.width - 150,
-                        overlay.size.height - 150,
-                        20,
-                        20,
-                      ),
-                      items: [
-                        PopupMenuItem(
-                          value: 'Rejected instruments',
-                          child: const Text('Rejected instruments'),
-                          onTap: () {
-                            blocProvider.add(RejectedInstrumentsEvent());
-                          },
-                        ),
-                        PopupMenuItem(
-                          value: 'Instruments history',
-                          child: const Text('Instruments history'),
-                          onTap: () {
-                            blocProvider
-                                .add(InstrumentCalibrationHistoryEvent());
-                          },
-                        ),
-                      ]);
+                      overlay: overlay,
+                      blocProvider: blocProvider,
+                      state: state);
                 }
               },
               destinations: programsList
@@ -96,6 +76,59 @@ class CalibrationDashboard extends StatelessWidget {
                       ))
                   .toList());
         }));
+  }
+
+  Future<String?> instrumentLogMenu(
+      {required BuildContext context,
+      required RenderBox overlay,
+      required CalibrationBloc blocProvider,
+      required CalibrationState state}) {
+    return showMenu(
+        context: context,
+        position: RelativeRect.fromLTRB(
+          overlay.size.width - 150,
+          overlay.size.height - 150,
+          20,
+          20,
+        ),
+        items: [
+          PopupMenuItem(
+            value: 'Rejected instruments',
+            labelTextStyle: WidgetStateProperty.all(
+              state is RejectedInstrumentState
+                  ? TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    )
+                  : const TextStyle(
+                      fontWeight: FontWeight.normal,
+                      color: AppColors.blackColor,
+                    ),
+            ),
+            child: const Text('Rejected instruments'),
+            onTap: () {
+              blocProvider.add(RejectedInstrumentsEvent());
+            },
+          ),
+          PopupMenuItem(
+            value: 'Instruments history',
+            labelTextStyle: WidgetStateProperty.all(
+              state is InstrumentCalibrationHistoryState
+                  ? TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    )
+                  : const TextStyle(
+                      fontWeight: FontWeight.normal,
+                      color: AppColors.blackColor,
+                    ),
+            ),
+            child: const Text('Instruments history'),
+            onTap: () {
+              blocProvider.add(InstrumentCalibrationHistoryEvent());
+            },
+          ),
+        ]);
   }
 
   BlocBuilder<CalibrationBloc, CalibrationState> calibrationDashboard() {

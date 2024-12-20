@@ -1,6 +1,6 @@
 // Author : Shital Gayakwad
 // Created Date :  March 2023
-// Description : ERPX_PPC -> Quality dashboard
+// Description : ERPX_PPC -> Quality production screen
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
@@ -23,15 +23,15 @@ import '../../../widgets/barcode_session.dart';
 import '../../../widgets/table/custom_table.dart';
 import '../../common/documents.dart';
 
-class QualityDashboard extends StatelessWidget {
+class QualityProductionScreen extends StatelessWidget {
   final Map<String, dynamic> arguments;
-  const QualityDashboard({super.key, required this.arguments});
+  const QualityProductionScreen({super.key, required this.arguments});
 
   @override
   Widget build(BuildContext context) {
     Barcode? barcode = arguments['barcode'];
     final blocProvider = BlocProvider.of<QualityBloc>(context);
-    blocProvider.add(QualityDashboardEvents(barcode: barcode!));
+    blocProvider.add(QualityProductionEvents(barcode: barcode!));
     TextEditingController remarkController = TextEditingController();
     return MakeMeResponsiveScreen(
         horixontaltab: productInspect(
@@ -60,7 +60,7 @@ class QualityDashboard extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          if (state is QualityDashboardState) {
+          if (state is QualityProductionState) {
             return ListView(children: [
               BarcodeSession().barcodeData(
                   context: context, parentWidth: 1280, barcode: barcode),
@@ -93,7 +93,7 @@ class QualityDashboard extends StatelessWidget {
   SizedBox productInspectionStatus(
       {required Barcode barcode,
       required BuildContext context,
-      required QualityDashboardState state}) {
+      required QualityProductionState state}) {
     return SizedBox(
       width: 200,
       height: 40,
@@ -376,7 +376,7 @@ class QualityDashboard extends StatelessWidget {
       required TextEditingController rejectedReasonsController}) {
     return BlocBuilder<QualityBloc, QualityState>(
       builder: (context, state) {
-        if (state is QualityDashboardState) {
+        if (state is QualityProductionState) {
           return SizedBox(
               width: 300,
               height: 45,
@@ -439,7 +439,7 @@ class QualityDashboard extends StatelessWidget {
 
   Future<dynamic> endInspectionConfirmation(
       {required BuildContext context,
-      required QualityDashboardState state,
+      required QualityProductionState state,
       required TextEditingController remarkController,
       required TextEditingController okQty,
       required TextEditingController shortQty,
@@ -515,7 +515,7 @@ class QualityDashboard extends StatelessWidget {
   }
 
   Future<dynamic> finalEndInspectionConfirmation(
-      {required BuildContext context, required QualityDashboardState state}) {
+      {required BuildContext context, required QualityProductionState state}) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -574,7 +574,7 @@ class QualityDashboard extends StatelessWidget {
       required TextEditingController rejectedReasonsController}) {
     return BlocBuilder<QualityBloc, QualityState>(
       builder: (context, state) {
-        if (state is QualityDashboardState) {
+        if (state is QualityProductionState) {
           return StreamBuilder<String>(
               stream: rejectedQty.stream,
               builder: (context, snapshot) {
@@ -634,7 +634,7 @@ class QualityDashboard extends StatelessWidget {
       required TextEditingController selectedWorkcentre}) {
     return BlocBuilder<QualityBloc, QualityState>(
       builder: (context, state) {
-        if (state is QualityDashboardState) {
+        if (state is QualityProductionState) {
           return StreamBuilder<String>(
               stream: reworkQty.stream,
               builder: (context, snapshot) {
@@ -786,7 +786,7 @@ class QualityDashboard extends StatelessWidget {
   BlocBuilder<QualityBloc, QualityState> documentsVersions() {
     return BlocBuilder<QualityBloc, QualityState>(
       builder: (context, state) {
-        if (state is QualityDashboardState) {
+        if (state is QualityProductionState) {
           return Documents().horizontalVersions(
               context: context,
               topMargin: 0,
@@ -810,7 +810,7 @@ class QualityDashboard extends StatelessWidget {
   BlocBuilder<QualityBloc, QualityState> documents() {
     return BlocBuilder<QualityBloc, QualityState>(
       builder: (context, state) {
-        if (state is QualityDashboardState) {
+        if (state is QualityProductionState) {
           return Documents().documentsButtons(
               context: context,
               alignment: Alignment.center,
@@ -833,7 +833,7 @@ class QualityDashboard extends StatelessWidget {
       {required QualityBloc blocProvider}) {
     return BlocBuilder<QualityBloc, QualityState>(
       builder: (context, state) {
-        if (state is QualityDashboardState) {
+        if (state is QualityProductionState) {
           return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             SizedBox(
                 width: 400,
@@ -864,7 +864,7 @@ class QualityDashboard extends StatelessWidget {
                               'workcentre_id': state.workcentre,
                               'workstation_id': state.workstation
                             });
-                        blocProvider.add(QualityDashboardEvents(
+                        blocProvider.add(QualityProductionEvents(
                           isInspectionStarted: true,
                           barcode: state.barcode,
                           startInspection: time,
@@ -888,7 +888,7 @@ class QualityDashboard extends StatelessWidget {
             QuickFixUi.horizontalSpace(width: 30),
             BlocBuilder<QualityBloc, QualityState>(
               builder: (context, state) {
-                if (state is QualityDashboardState) {
+                if (state is QualityProductionState) {
                   return Container(
                     width: 400,
                     height: 45,

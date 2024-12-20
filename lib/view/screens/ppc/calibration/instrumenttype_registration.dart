@@ -47,6 +47,7 @@ class InstrumentTypeRegistration extends StatelessWidget {
       {required double screenWidth,
       required double screenHeight,
       required CalibrationBloc blocProvider}) {
+    double rowHeight = Platform.isAndroid ? 45 : 35;
     return Center(child: BlocBuilder<CalibrationBloc, CalibrationState>(
         builder: (context, state) {
       TextEditingController instrumentType = TextEditingController();
@@ -76,7 +77,8 @@ class InstrumentTypeRegistration extends StatelessWidget {
                             screenHeight: screenHeight,
                             context: context,
                             state: state,
-                            blocProvider: blocProvider)
+                            blocProvider: blocProvider,
+                            rowHeight: rowHeight)
                       ],
                     ),
                   ),
@@ -96,7 +98,8 @@ class InstrumentTypeRegistration extends StatelessWidget {
                             screenHeight: screenHeight,
                             context: context,
                             state: state,
-                            blocProvider: blocProvider)
+                            blocProvider: blocProvider,
+                            rowHeight: rowHeight)
                       ],
                     ),
                   )
@@ -116,7 +119,8 @@ class InstrumentTypeRegistration extends StatelessWidget {
       required double screenHeight,
       required BuildContext context,
       required InstrumentTypeRegistrationState state,
-      required CalibrationBloc blocProvider}) {
+      required CalibrationBloc blocProvider,
+      required double rowHeight}) {
     return Container(
       width: (screenWidth - 20) / 2,
       height: screenHeight - 260,
@@ -125,21 +129,22 @@ class InstrumentTypeRegistration extends StatelessWidget {
           tablewidth: (screenWidth - 20) / 2,
           tableheight: screenHeight - 210,
           showIndex: true,
-          rowHeight: 45,
+          rowHeight: rowHeight,
           tableOutsideBorder: true,
           enableRowBottomBorder: true,
           tableheaderColor: Theme.of(context).colorScheme.errorContainer,
           headerStyle: AppTheme.labelTextStyle(isFontBold: true),
           column: [
             ColumnData(
-                width: ((screenWidth - 20) / 2) - 160,
+                width: ((screenWidth - 20) / 2) - (112 + (rowHeight * 2)),
                 label: 'Manufacturer name'),
             ColumnData(width: 100, label: 'Action')
           ],
           rows: state.manufacturerData
               .map((e) => RowData(cell: [
                     TableDataCell(
-                        width: ((screenWidth - 20) / 2) - 160,
+                        width:
+                            ((screenWidth - 20) / 2) - (112 + (rowHeight * 2)),
                         label: Text(
                           e.manufacturer.toString(),
                           style: AppTheme.labelTextStyle(),
@@ -271,7 +276,8 @@ class InstrumentTypeRegistration extends StatelessWidget {
       required double screenHeight,
       required BuildContext context,
       required InstrumentTypeRegistrationState state,
-      required CalibrationBloc blocProvider}) {
+      required CalibrationBloc blocProvider,
+      required double rowHeight}) {
     return Container(
       width: (screenWidth - 20) / 2,
       height: screenHeight - 260,
@@ -280,21 +286,22 @@ class InstrumentTypeRegistration extends StatelessWidget {
           tablewidth: (screenWidth - 20) / 2,
           tableheight: screenHeight - 210,
           showIndex: true,
-          rowHeight: 45,
+          rowHeight: rowHeight,
           tableOutsideBorder: true,
           enableRowBottomBorder: true,
           tableheaderColor: Theme.of(context).primaryColorLight,
           headerStyle: AppTheme.labelTextStyle(isFontBold: true),
           column: [
             ColumnData(
-                width: ((screenWidth - 20) / 2) - 160,
+                width: ((screenWidth - 20) / 2) - (112 + (rowHeight * 2)),
                 label: 'Instrument type'),
             ColumnData(width: 100, label: 'Action')
           ],
           rows: state.instrumentsTypeList
               .map((e) => RowData(cell: [
                     TableDataCell(
-                        width: ((screenWidth - 20) / 2) - 160,
+                        width:
+                            ((screenWidth - 20) / 2) - (112 + (rowHeight * 2)),
                         label: Text(
                           e.description.toString(),
                           style: AppTheme.labelTextStyle(),

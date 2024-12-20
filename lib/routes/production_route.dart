@@ -19,7 +19,7 @@ class ProductionRoute {
   }
 
   void gotoQuality(BuildContext context, ScanState state) {
-    Navigator.pushNamed(context, RouteName.qualityScreen, arguments: {
+    Navigator.pushNamed(context, RouteName.productionProcessScreen, arguments: {
       'barcode': state.barcode,
     });
   }
