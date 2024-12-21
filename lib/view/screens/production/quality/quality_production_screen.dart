@@ -12,6 +12,7 @@ import '../../../../bloc/production/quality/quality_dashboard_event.dart';
 import '../../../../bloc/production/quality/quality_dashboard_state.dart';
 import '../../../../services/model/machine/workcentre.dart';
 import '../../../../services/model/operator/oprator_models.dart';
+import '../../../../services/model/product/product_route.dart';
 import '../../../../services/model/quality/quality_models.dart';
 import '../../../../services/repository/product/product_machine_route_repository.dart';
 import '../../../../services/repository/quality/quality_repository.dart';
@@ -20,6 +21,7 @@ import '../../../../utils/common/quickfix_widget.dart';
 import '../../../../utils/responsive.dart';
 import '../../../widgets/appbar.dart';
 import '../../../widgets/barcode_session.dart';
+import '../../../widgets/production_process_widget.dart';
 import '../../../widgets/table/custom_table.dart';
 import '../../common/documents.dart';
 
@@ -30,15 +32,18 @@ class QualityProductionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Barcode? barcode = arguments['barcode'];
+    ProductAndProcessRouteModel route = arguments['selected_process'][0];
     final blocProvider = BlocProvider.of<QualityBloc>(context);
-    blocProvider.add(QualityProductionEvents(barcode: barcode!));
+    blocProvider.add(QualityProductionEvents(
+        barcode: barcode!, productAndProcessRouteModel: route));
     TextEditingController remarkController = TextEditingController();
     return MakeMeResponsiveScreen(
         horixontaltab: productInspect(
             context: context,
             barcode: barcode,
             blocProvider: blocProvider,
-            remarkController: remarkController),
+            remarkController: remarkController,
+            route: route),
         verticaltab: QuickFixUi.notVisible(),
         windows: QuickFixUi.notVisible(),
         linux: QuickFixUi.notVisible(),
@@ -49,7 +54,8 @@ class QualityProductionScreen extends StatelessWidget {
       {required BuildContext context,
       required Barcode barcode,
       required QualityBloc blocProvider,
-      required TextEditingController remarkController}) {
+      required TextEditingController remarkController,
+      required ProductAndProcessRouteModel route}) {
     return Scaffold(
       appBar: CustomAppbar()
           .appbar(context: context, title: 'Product inspection screen'),
@@ -64,15 +70,25 @@ class QualityProductionScreen extends StatelessWidget {
             return ListView(children: [
               BarcodeSession().barcodeData(
                   context: context, parentWidth: 1280, barcode: barcode),
+              Padding(
+                padding: const EdgeInsets.only(left: 5, right: 5, bottom: 10),
+                child: ProductionProcessWidget().processTable(
+                    context: context,
+                    productProcessRouteList: arguments['selected_process'],
+                    barcode: barcode),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   productInspectionStatus(
-                      barcode: barcode, context: context, state: state),
+                      barcode: barcode,
+                      context: context,
+                      state: state,
+                      route: route),
                   QuickFixUi.horizontalSpace(width: 10),
                 ],
               ),
-              startInspection(blocProvider: blocProvider),
+              startInspection(blocProvider: blocProvider, route: route),
               QuickFixUi.verticalSpace(height: 20),
               documents(),
               documentsVersions(),
@@ -93,7 +109,8 @@ class QualityProductionScreen extends StatelessWidget {
   SizedBox productInspectionStatus(
       {required Barcode barcode,
       required BuildContext context,
-      required QualityProductionState state}) {
+      required QualityProductionState state,
+      required ProductAndProcessRouteModel route}) {
     return SizedBox(
       width: 200,
       height: 40,
@@ -105,7 +122,8 @@ class QualityProductionScreen extends StatelessWidget {
             'product_id': barcode.productid,
             'rms_issue_id': barcode.rawmaterialissueid,
             'workcentre_id': state.workcentre,
-            'revision_number': barcode.revisionnumber
+            'revision_number': barcode.revisionnumber,
+            'process_sequence': route.combinedSequence
           });
           if (inspectionStatus.isNotEmpty) {
             Future.delayed(const Duration(milliseconds: 500), () {
@@ -253,7 +271,7 @@ class QualityProductionScreen extends StatelessWidget {
           } else {
             QuickFixUi().showCustomDialog(
                 context: context,
-                errorMessage: 'This product is not inspected yet');
+                errorMessage: 'This product is not inspected yet.');
           }
         },
         label: const Text('Status'),
@@ -830,7 +848,8 @@ class QualityProductionScreen extends StatelessWidget {
   }
 
   BlocBuilder<QualityBloc, QualityState> startInspection(
-      {required QualityBloc blocProvider}) {
+      {required QualityBloc blocProvider,
+      required ProductAndProcessRouteModel route}) {
     return BlocBuilder<QualityBloc, QualityState>(
       builder: (context, state) {
         if (state is QualityProductionState) {
@@ -852,7 +871,8 @@ class QualityProductionScreen extends StatelessWidget {
                             'workstation_id': state.workstation,
                             'employee_id': state.userid,
                             'revision_number':
-                                state.barcode.revisionnumber.toString()
+                                state.barcode.revisionnumber.toString(),
+                            'process_sequence': route.combinedSequence
                           },
                           token: state.token,
                         );
@@ -865,10 +885,10 @@ class QualityProductionScreen extends StatelessWidget {
                               'workstation_id': state.workstation
                             });
                         blocProvider.add(QualityProductionEvents(
-                          isInspectionStarted: true,
-                          barcode: state.barcode,
-                          startInspection: time,
-                        ));
+                            isInspectionStarted: true,
+                            barcode: state.barcode,
+                            startInspection: time,
+                            productAndProcessRouteModel: route));
                       } else {
                         QuickFixUi.errorMessage(
                             'The inspection is currently underway.', context);

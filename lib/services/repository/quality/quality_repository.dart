@@ -60,14 +60,18 @@ class QualityInspectionRepository {
       if (payload.isNotEmpty) {
         http.Response response =
             await API().postApiResponse(AppUrl.inspectionTime, token, payload);
-        var data = jsonDecode(response.body);
-        dynamic parsedDate =
-            DateTime.parse(data[0]['startprocesstime'].toString())
-                .toLocal()
-                .toString()
-                .split('.')[0];
+        List<dynamic> data = jsonDecode(response.body);
+        if (data.isNotEmpty) {
+          dynamic parsedDate =
+              DateTime.parse(data[0]['startprocesstime'].toString())
+                  .toLocal()
+                  .toString()
+                  .split('.')[0];
 
-        return parsedDate.toString();
+          return parsedDate.toString();
+        } else {
+          return '';
+        }
       } else {
         return 'Payload is empty';
       }

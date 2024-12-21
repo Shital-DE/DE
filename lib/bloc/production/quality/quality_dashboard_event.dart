@@ -3,6 +3,7 @@
 // // Description : ERPX_PPC -> Quality event
 
 import '../../../services/model/operator/oprator_models.dart';
+import '../../../services/model/product/product_route.dart';
 
 abstract class QualityEvents {}
 
@@ -11,11 +12,12 @@ class QualityProductionEvents extends QualityEvents {
   final bool isInspectionStarted;
   final Barcode barcode;
   final String startInspection;
-
+  ProductAndProcessRouteModel? productAndProcessRouteModel;
   QualityProductionEvents({
     this.isInspectionStarted = false,
     required this.barcode,
     this.startInspection = '',
+    this.productAndProcessRouteModel,
   });
 }
 

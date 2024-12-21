@@ -1,19 +1,20 @@
 // Author : Shital Gayakwad
-// Created Date :  March 2023
-// Description : ERPX_PPC -> Quality process screen
+// Created Date :  20 Dec 2024
+// Description : ERPX_PPC -> Production process screen
+
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:de/bloc/production/quality/quality_dashboard_event.dart';
 import 'package:de/bloc/production/quality/quality_dashboard_state.dart';
-import 'package:de/utils/app_theme.dart';
+import 'package:de/services/repository/product/product_route_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../bloc/production/quality/quality_dashboard_bloc.dart';
 import '../../../routes/route_names.dart';
 import '../../../services/model/operator/oprator_models.dart';
-import '../../../utils/app_colors.dart';
 import '../../widgets/appbar.dart';
 import '../../widgets/barcode_session.dart';
-import '../../widgets/table/custom_table.dart';
+import '../../widgets/production_process_widget.dart';
 
 class ProductionProcessScreen extends StatelessWidget {
   final Map<String, dynamic> arguments;
@@ -29,14 +30,7 @@ class ProductionProcessScreen extends StatelessWidget {
       appBar: CustomAppbar()
           .appbar(context: context, title: 'Production processes screen'),
       body: BlocBuilder<QualityBloc, QualityState>(builder: (context, state) {
-        if (state is QualityProductionProcessesState &&
-            state.productprocessseqlist.isNotEmpty) {
-          double rowHeight = 45,
-              tableHeight =
-                  ((state.productprocessseqlist.length + 1) * rowHeight) >
-                          (size.height - 150)
-                      ? (size.height - 150)
-                      : ((state.productprocessseqlist.length + 1) * rowHeight);
+        if (state is QualityProductionProcessesState) {
           return Container(
             width: size.width,
             height: size.height,
@@ -47,68 +41,81 @@ class ProductionProcessScreen extends StatelessWidget {
                     context: context,
                     parentWidth: size.width - 10,
                     barcode: barcode),
-                SizedBox(
-                  width: size.width,
-                  height: tableHeight,
-                  child: CustomTable(
-                      tablewidth: size.width - 10,
-                      tableheight: tableHeight,
-                      columnWidth: 150,
-                      headerHeight: rowHeight,
-                      rowHeight: rowHeight,
-                      headerBorderThickness: .5,
-                      tableOutsideBorder: true,
-                      enableHeaderBottomBorder: true,
-                      enableRowBottomBorder: true,
-                      tableheaderColor: AppColors.whiteTheme,
-                      tablebodyColor: AppColors.whiteTheme,
-                      headerBorderColor: AppColors.blackColor,
-                      headerStyle: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),
-                      column: state.tableColumnsList
-                          .map((column) => ColumnData(
-                              width: column == 'Instruction'
-                                  ? ((size.width - 12) - (150 * 4))
-                                  : 150,
-                              label: column))
-                          .toList(),
-                      rows: state.productprocessseqlist.map((row) {
-                        return RowData(cell: [
-                          tableDataCell(text: row.seqno.toString()),
-                          TableDataCell(
-                              width: ((size.width - 12) - (150 * 4)),
-                              label: Text(
-                                row.instruction.toString().trim(),
-                                textAlign: TextAlign.center,
-                                style: AppTheme.labelTextStyle(),
-                              )),
-                          tableDataCell(text: row.setupminutes.toString()),
-                          tableDataCell(text: row.runtimeminutes.toString()),
-                          TableDataCell(
-                              label: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: proceedButton(
-                                context: context, barcode: barcode),
-                          ))
-                        ]);
-                      }).toList()),
-                ),
+                state.productProcessRouteList.isNotEmpty
+                    ? ProductionProcessWidget().processTable(
+                        context: context,
+                        productProcessRouteList: state.productProcessRouteList,
+                        barcode: barcode,
+                        wantAction: true)
+                    : SizedBox(
+                        width: size.width,
+                        height: 60,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            FilledButton(
+                                onPressed: () async {
+                                  String response =
+                                      await ProductRouteRepository()
+                                          .registerProductRoute(
+                                              token: state.token,
+                                              payload: {
+                                        'product_id': barcode.productid,
+                                        'created_by': state.userId,
+                                        'productbillofmaterial_id': '',
+                                        'workstation_id': state.workstationId,
+                                        'workcentre_id': state.workcentreId,
+                                        'setup_min': '0',
+                                        'runtime_min': '0',
+                                        'revision_number':
+                                            barcode.revisionnumber,
+                                        'sequencenumber': '25',
+                                        'description': 'In process inspection',
+                                        'top_bottom_data_aaray': '',
+                                        'new_process_id': ''
+                                      });
+                                  if (response ==
+                                      'Product route registered successfully') {
+                                    blocProvider.add(
+                                        QualityProductionProcessesEvents(
+                                            barcode: barcode));
+                                    // Navigator.pushNamed(
+                                    //     context, RouteName.qualityScreen,
+                                    //     arguments: {
+                                    //       'barcode': barcode,
+                                    //     });
+                                  }
+                                },
+                                child: const Text('In process inspection')),
+                            const SizedBox(width: 10),
+                            FilledButton(
+                                onPressed: () async {
+                                  String response =
+                                      await ProductRouteRepository()
+                                          .fillDefaultProductRoute(
+                                              token: state.token,
+                                              payload: {
+                                        'product_id': barcode.productid,
+                                        'revision_number':
+                                            barcode.revisionnumber,
+                                        'created_by': state.userId
+                                      });
+                                  if (response == 'success') {
+                                    blocProvider.add(
+                                        QualityProductionProcessesEvents(
+                                            barcode: barcode));
+                                    // Navigator.pushNamed(
+                                    //     context, RouteName.qualityScreen,
+                                    //     arguments: {
+                                    //       'barcode': barcode,
+                                    //     });
+                                  }
+                                },
+                                child: const Text('Final inspection')),
+                          ],
+                        )),
               ],
             ),
-          );
-        } else if (state is QualityProductionProcessesState &&
-            state.productprocessseqlist.isEmpty) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'No product routes are available.',
-                style: AppTheme.labelTextStyle(isFontBold: true),
-              ),
-              proceedButton(context: context, barcode: barcode),
-            ],
           );
         } else {
           return Center(
@@ -118,25 +125,5 @@ class ProductionProcessScreen extends StatelessWidget {
         }
       }),
     );
-  }
-
-  ElevatedButton proceedButton(
-      {required BuildContext context, required Barcode barcode}) {
-    return ElevatedButton(
-        onPressed: () {
-          Navigator.pushNamed(context, RouteName.qualityScreen, arguments: {
-            'barcode': barcode,
-          });
-        },
-        child: const Text('Proceed'));
-  }
-
-  TableDataCell tableDataCell({required String text}) {
-    return TableDataCell(
-        label: Text(
-      text.toString().trim(),
-      textAlign: TextAlign.center,
-      style: AppTheme.labelTextStyle(),
-    ));
   }
 }

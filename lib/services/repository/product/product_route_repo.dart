@@ -138,4 +138,39 @@ class ProductRouteRepository {
       return e.toString();
     }
   }
+
+  Future<String> fillDefaultProductRoute(
+      {required String token, required Map<String, dynamic> payload}) async {
+    try {
+      http.Response response = await API()
+          .postApiResponse(AppUrl.defaultProductRoute, token, payload);
+
+      List<dynamic> data = jsonDecode(response.body);
+      return data[0]['insert_default_product_route']['message'].toString();
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  // One workcentre product process route
+  Future<List<ProductAndProcessRouteModel>> oneWorkcentreProductRoute(
+      {required String token,
+      required String productId,
+      required String revision,
+      required String workcentreId}) async {
+    try {
+      http.Response response = await API().getApiResponse(
+          '${AppUrl.oneWorkcentreProductRoute}?product_id=$productId&revision=$revision&workcentre_id=$workcentreId',
+          {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          });
+      // debugPrint(response.body);
+      List<dynamic> data = jsonDecode(response.body);
+      return data.map((e) => ProductAndProcessRouteModel.fromJson(e)).toList();
+    } catch (e) {
+      return [];
+    }
+  }
 }

@@ -232,12 +232,12 @@ class BarcodeSession {
                         Text('$name :',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 17,
+                              fontSize: 15,
                             )),
                         Text(
                           ' $data',
                           style: const TextStyle(
-                            fontSize: 17,
+                            fontSize: 15,
                           ),
                         ),
                       ],

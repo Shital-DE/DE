@@ -5,6 +5,7 @@
 import '../../../services/model/common/document_model.dart';
 import '../../../services/model/machine/workcentre.dart';
 import '../../../services/model/operator/oprator_models.dart';
+import '../../../services/model/product/product_route.dart';
 import '../../../services/model/quality/quality_models.dart';
 
 abstract class QualityState {}
@@ -60,8 +61,14 @@ class QualityErrorState extends QualityState {
 }
 
 class QualityProductionProcessesState extends QualityState {
-  List<Productprocessseq> productprocessseqlist;
-  List<String> tableColumnsList;
+  List<ProductAndProcessRouteModel> productProcessRouteList;
+  // List<String> tableColumnsList;
+  String token, userId, workcentreId, workstationId;
   QualityProductionProcessesState(
-      {required this.productprocessseqlist, required this.tableColumnsList});
+      {required this.productProcessRouteList,
+      // required this.tableColumnsList,
+      required this.token,
+      required this.userId,
+      required this.workcentreId,
+      required this.workstationId});
 }

@@ -368,6 +368,10 @@ class AppUrl {
   static var processes = '$baseUrl/common/data/processes'; // Product processes
   static var filledProductAndProcessRoute =
       '$baseUrl/product/product-route/filled-product-route'; // Filled product and process route
+  static var defaultProductRoute =
+      '$baseUrl/product/product-route/fill-default-product-route'; // Fill default product route
+  static var oneWorkcentreProductRoute =
+      '$baseUrl/product/product-route/one-workstation-product-route'; // One workcentre product route
 
   // Product machine route
   static var productMachineRouteInsert =
