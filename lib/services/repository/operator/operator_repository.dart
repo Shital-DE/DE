@@ -283,30 +283,15 @@ class OperatorRepository {
   }
 
   static Future ompstartsettinginsert(
-      String productid,
-      String rmsIssueid,
-      String workcentreid,
-      String workstationid,
-      String employeeid,
-      String revisionno,
-      String token,
-      BuildContext context) async {
-    Map<String, dynamic> payload = {};
+      {required String token,
+      required BuildContext context,
+      required Map<String, dynamic> payload}) async {
     try {
-      payload = {
-        'product_id': productid,
-        'rms_issue_id': rmsIssueid,
-        'workcentre_id': workcentreid,
-        'workstation_id': workstationid,
-        'employee_id': employeeid,
-        'revisionno': revisionno,
-      };
-
       if (payload.isNotEmpty) {
         var response =
             await API().postApiResponse(AppUrl.ompstartsetting, token, payload);
         if (response.body.toString() == 'Inserted successfully') {
-          return QuickFixUi.successMessage('Product Setting Start', context);
+          return QuickFixUi.successMessage('Setting Start', context);
         }
       }
     } catch (e) {
@@ -347,27 +332,8 @@ class OperatorRepository {
   }
 
   Future getpreviousprodutiontime(
-    String productid,
-    String rmsIssueid,
-    String workcentreid,
-    String workstationid,
-    String employeeid,
-    String productrevisionno,
-    String productionstatusid,
-    String token,
-  ) async {
-    Map<String, dynamic> payload = {};
+      {required Map<String, dynamic> payload, required String token}) async {
     try {
-      payload = {
-        'product_id': productid,
-        'rms_issue_id': rmsIssueid,
-        'workcentre_id': workcentreid,
-        'workstation_id': workstationid,
-        'employee_id': employeeid,
-        'revision_number': productrevisionno,
-        'productionstatusid': productionstatusid
-      };
-
       if (payload.isNotEmpty) {
         var response = await API()
             .postApiResponse(AppUrl.getpreviousproductiontime, token, payload);

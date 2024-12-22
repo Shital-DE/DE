@@ -75,7 +75,8 @@ class QualityProductionScreen extends StatelessWidget {
                 child: ProductionProcessWidget().processTable(
                     context: context,
                     productProcessRouteList: arguments['selected_process'],
-                    barcode: barcode),
+                    barcode: barcode,
+                    screenName: 'Inspection'),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -513,8 +514,15 @@ class QualityProductionScreen extends StatelessWidget {
                     shortQty.dispose();
                     rejectedResons.dispose();
                     remarkController.dispose();
-                    finalEndInspectionConfirmation(
-                        context: context, state: state);
+                    if (state.productAndProcessRouteModel.combinedSequence ==
+                        900) {
+                      finalEndInspectionConfirmation(
+                          context: context, state: state);
+                    } else {
+                      for (int i = 0; i <= 1; i++) {
+                        Navigator.of(context).pop();
+                      }
+                    }
                   } else {
                     QuickFixUi().showCustomDialog(
                         context: context, errorMessage: response.toString());
@@ -565,7 +573,7 @@ class QualityProductionScreen extends StatelessWidget {
                         'productid': state.barcode.productid,
                         'rmsissueid': state.barcode.rawmaterialissueid,
                         'workcentreid': state.workcentre,
-                        'revision_number': state.barcode.revisionnumber
+                        'revision_number': state.barcode.revisionnumber,
                       });
                 },
                 child: const Text('Yes')),
@@ -872,7 +880,9 @@ class QualityProductionScreen extends StatelessWidget {
                             'employee_id': state.userid,
                             'revision_number':
                                 state.barcode.revisionnumber.toString(),
-                            'process_sequence': route.combinedSequence
+                            'process_sequence': route.combinedSequence,
+                            'processroute_id':
+                                route.processRouteId.toString().trim()
                           },
                           token: state.token,
                         );

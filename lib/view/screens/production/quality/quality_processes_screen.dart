@@ -1,6 +1,6 @@
 // Author : Shital Gayakwad
 // Created Date :  20 Dec 2024
-// Description : ERPX_PPC -> Production process screen
+// Description : ERPX_PPC -> Quality production process screen
 
 // ignore_for_file: use_build_context_synchronously
 
@@ -9,16 +9,15 @@ import 'package:de/bloc/production/quality/quality_dashboard_state.dart';
 import 'package:de/services/repository/product/product_route_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../bloc/production/quality/quality_dashboard_bloc.dart';
-import '../../../routes/route_names.dart';
-import '../../../services/model/operator/oprator_models.dart';
-import '../../widgets/appbar.dart';
-import '../../widgets/barcode_session.dart';
-import '../../widgets/production_process_widget.dart';
+import '../../../../bloc/production/quality/quality_dashboard_bloc.dart';
+import '../../../../services/model/operator/oprator_models.dart';
+import '../../../widgets/appbar.dart';
+import '../../../widgets/barcode_session.dart';
+import '../../../widgets/production_process_widget.dart';
 
-class ProductionProcessScreen extends StatelessWidget {
+class QualityProductionProcessScreen extends StatelessWidget {
   final Map<String, dynamic> arguments;
-  const ProductionProcessScreen({super.key, required this.arguments});
+  const QualityProductionProcessScreen({super.key, required this.arguments});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,7 @@ class ProductionProcessScreen extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: CustomAppbar()
-          .appbar(context: context, title: 'Production processes screen'),
+          .appbar(context: context, title: 'Quality processes screen'),
       body: BlocBuilder<QualityBloc, QualityState>(builder: (context, state) {
         if (state is QualityProductionProcessesState) {
           return Container(
@@ -46,7 +45,8 @@ class ProductionProcessScreen extends StatelessWidget {
                         context: context,
                         productProcessRouteList: state.productProcessRouteList,
                         barcode: barcode,
-                        wantAction: true)
+                        wantAction: true,
+                        screenName: 'Inspection')
                     : SizedBox(
                         width: size.width,
                         height: 60,
@@ -79,11 +79,6 @@ class ProductionProcessScreen extends StatelessWidget {
                                     blocProvider.add(
                                         QualityProductionProcessesEvents(
                                             barcode: barcode));
-                                    // Navigator.pushNamed(
-                                    //     context, RouteName.qualityScreen,
-                                    //     arguments: {
-                                    //       'barcode': barcode,
-                                    //     });
                                   }
                                 },
                                 child: const Text('In process inspection')),
@@ -104,11 +99,6 @@ class ProductionProcessScreen extends StatelessWidget {
                                     blocProvider.add(
                                         QualityProductionProcessesEvents(
                                             barcode: barcode));
-                                    // Navigator.pushNamed(
-                                    //     context, RouteName.qualityScreen,
-                                    //     arguments: {
-                                    //       'barcode': barcode,
-                                    //     });
                                   }
                                 },
                                 child: const Text('Final inspection')),

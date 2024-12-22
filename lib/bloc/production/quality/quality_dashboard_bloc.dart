@@ -121,6 +121,7 @@ class QualityBloc extends Bloc<QualityEvents, QualityState> {
           workcentrelist: workcentrelist,
           rejectedReasonsList: rejectedReasonsList,
           inspectionId: inspectionId,
+          productAndProcessRouteModel: event.productAndProcessRouteModel!,
         ));
       }
     });

@@ -62,10 +62,13 @@ class RouteName {
   static const String machineProgramSequance = 'machineProgramSequance';
 
   static const String cuttingScreen = 'cuttingScreen'; //Cutting screen
+  static const String cuttingProductionProcessScreen =
+      'cuttingProductionProcessScreen'; // Cutting production process screen
   static const String packingScreen = 'packingScreen'; // Packing screen
   static const String stock = 'stock'; // Stock
   static const String qualityScreen = 'qualityScreen'; //Quality screen
-  static const String productionProcessScreen = 'qualityProcessScreen';
+  static const String qualityProductionProcessScreen =
+      'qualityProductionProcessScreen'; // Quality production process screen
 
   // Calibration
   static const String calibration = 'calibration'; // Calibration

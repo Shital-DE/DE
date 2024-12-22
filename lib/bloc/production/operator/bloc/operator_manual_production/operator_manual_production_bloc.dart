@@ -12,7 +12,7 @@ import '../../../../../services/session/user_login.dart';
 import 'operator_manual_production_event.dart';
 import 'operator_manual_production_state.dart';
 
-class OMPBloc extends Bloc<OMPEvent, OMPState> {
+class OMPBloc extends Bloc<OMP, OMPState> {
   OMPBloc(BuildContext context) : super(OMPinitialState()) {
     on<OMPEvent>((event, emit) async {
       String employeeId = '',
@@ -27,7 +27,7 @@ class OMPBloc extends Bloc<OMPEvent, OMPState> {
       Map<String, dynamic> previousprodutiontime = {};
       List<OperatorRejectedReasons> operatorrejresons = [];
       final saveddata = await UserData.getUserData();
-      // bool isAlreadyEndProduction;
+
       //Token
       String token = saveddata['token'].toString();
 
@@ -35,9 +35,7 @@ class OMPBloc extends Bloc<OMPEvent, OMPState> {
         employeeId = userdata['id'];
       }
 
-      //if (event.rejqty > 0) {
       operatorrejresons = await OperatorRepository.rejectedReasons(token);
-      // }
 
       final machinedata = await MachineData.geMachineData();
       for (var element in machinedata) {
@@ -64,9 +62,6 @@ class OMPBloc extends Bloc<OMPEvent, OMPState> {
         imageType = element.imagetypeCode.toString().trim();
       }
 
-      // List<Tools> toollist =
-      //     await OperatorRepository.gettoolslist(wcid: workcentreid);
-
       String productionstatusid = await QualityInspectionRepository()
           .getproductworkstationJobStatusId(token: token, payload: {
         'product_id': event.barcode.productid.toString(),
@@ -74,20 +69,20 @@ class OMPBloc extends Bloc<OMPEvent, OMPState> {
         'workcentre_id': workcentreid,
         'workstation_id': workstationid,
         'employee_id': saveddata['data'][0]['id'],
-        'revision_number': event.barcode.revisionnumber.toString()
+        'revision_number': event.barcode.revisionnumber.toString(),
+        'process_sequence': '0'
       });
 
-      final getpreviousproductiontime =
-          await OperatorRepository().getpreviousprodutiontime(
-        event.barcode.productid.toString(),
-        event.barcode.rawmaterialissueid.toString(),
-        workcentreid,
-        workstationid,
-        employeeId,
-        event.barcode.revisionnumber.toString(),
-        productionstatusid,
-        token,
-      );
+      final getpreviousproductiontime = await OperatorRepository()
+          .getpreviousprodutiontime(token: token, payload: {
+        'product_id': event.barcode.productid.toString(),
+        'rms_issue_id': event.barcode.rawmaterialissueid.toString(),
+        'workcentre_id': workcentreid,
+        'workstation_id': workstationid,
+        'employee_id': employeeId,
+        'revision_number': event.barcode.revisionnumber.toString(),
+        'productionstatusid': productionstatusid
+      });
 
       if (getpreviousproductiontime.toString() ==
           'Previous data not avilable') {
@@ -96,45 +91,14 @@ class OMPBloc extends Bloc<OMPEvent, OMPState> {
         previousprodutiontime = getpreviousproductiontime;
         debugPrint(previousprodutiontime['startproductiontime']);
       }
-      //debugPrint(previousprodutiontime['startproductiontime']);
-////////////////////////////////////////////////////
-      // isAlreadyEndProduction = await OperatorRepository()
-      //     .finalProductionJobStatusCheck(
-      //         event.barcode.productid.toString(),
-      //         event.barcode.revisionnumber.toString(),
-      //         event.barcode.rawmaterialissueid.toString(),
-      //         token,
-      //         workcentreid,
-      //         '',
-      //         '');
-      // debugPrint("already production check.");
-      // debugPrint(isAlreadyEndProduction.toString());
-////////////////////////////////////////////////////
-      // final bomid = await OperatorRepository().getProductBOMid(
-      //   event.barcode.productid.toString(),
-      //   token,
-      // );
-      // Map<String, dynamic> productbomid = bomid;
 
-////////////////////////////////////////////////////
-      // final lastproroutedetails =
-      //     await OperatorRepository().getlastProductroutedetails(
-      //   event.barcode.productid.toString(),
-      //   event.barcode.revisionnumber.toString(),
-      //   token,
-      // );
-      //  Map<String, dynamic> productRouteDetails = lastproroutedetails;
-
-///////////////////////////////////////////////////////
       emit(OMPLoadingState(
         event.selectedItems,
         token,
         employeeId,
         event.settingtime,
         event.startproductiontime,
-        // toollist,
         event.okqty,
-        // event.selectedtoollist,
         workcentreid,
         workstationid,
         pdfmdocid,
@@ -151,9 +115,6 @@ class OMPBloc extends Bloc<OMPEvent, OMPState> {
         productionstatusid,
         previousprodutiontime,
         event.rejresons,
-        // isAlreadyEndProduction
-        // productbomid,
-        // productRouteDetails
       ));
     });
   }

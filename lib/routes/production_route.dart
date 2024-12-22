@@ -19,9 +19,10 @@ class ProductionRoute {
   }
 
   void gotoQuality(BuildContext context, ScanState state) {
-    Navigator.pushNamed(context, RouteName.productionProcessScreen, arguments: {
-      'barcode': state.barcode,
-    });
+    Navigator.pushNamed(context, RouteName.qualityProductionProcessScreen,
+        arguments: {
+          'barcode': state.barcode,
+        });
   }
 
   void gotoPacking(BuildContext context, ScanState state) {
@@ -31,9 +32,10 @@ class ProductionRoute {
   }
 
   void gotoCutting(BuildContext context, ScanState state) {
-    Navigator.pushNamed(context, RouteName.cuttingScreen, arguments: {
-      'barcode': state.barcode,
-    });
+    Navigator.pushNamed(context, RouteName.cuttingProductionProcessScreen,
+        arguments: {
+          'barcode': state.barcode,
+        });
   }
 
   Future<void> gotoOperatorScreen(
@@ -55,11 +57,7 @@ class ProductionRoute {
           Navigator.pushNamed(
             context,
             RouteName.operatorManualProduction,
-            arguments: {
-              'barcode': barcode,
-              //'processList': state.machineprocess,
-              'machinedata': machineData
-            },
+            arguments: {'barcode': barcode, 'machinedata': machineData},
           );
         } else if (element.isautomatic.toString() == 'Y') {
           Navigator.pushNamed(context, RouteName.operatorAutoProduction,

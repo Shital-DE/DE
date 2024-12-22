@@ -6,13 +6,19 @@ import '../../../services/model/operator/oprator_models.dart';
 
 abstract class CuttingEvent {}
 
-class CuttingLoadingEvent extends CuttingEvent {
+// Cutting Production Event
+class CuttingProductionEvent extends CuttingEvent {
   final Barcode barcode;
   final String cuttingQty;
   final Map<String, dynamic> machinedata;
-  CuttingLoadingEvent(
-    this.barcode,
-    this.cuttingQty,
-    this.machinedata,
-  );
+  CuttingProductionEvent(
+      {required this.barcode,
+      required this.cuttingQty,
+      required this.machinedata});
+}
+
+// Cutting Production Event
+class CuttingProductionProcessesEvent extends CuttingEvent {
+  final Barcode barcode;
+  CuttingProductionProcessesEvent({required this.barcode});
 }

@@ -70,11 +70,18 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) => RouteData.getRouteData(
                 context, RouteName.machineProgramSequance, args!));
-
+      // Cutting
       case RouteName.cuttingScreen:
         return MaterialPageRoute(
+            builder: (BuildContext context) => RouteData.getRouteData(context,
+                RouteName.cuttingScreen, args!)); // Cutting production screen
+
+      case RouteName.cuttingProductionProcessScreen:
+        return MaterialPageRoute(
             builder: (BuildContext context) => RouteData.getRouteData(
-                context, RouteName.cuttingScreen, args!)); // Cutting dashboard
+                context,
+                RouteName.cuttingProductionProcessScreen,
+                args!)); // Cutting process screen
 
       case RouteName.overtime:
         return MaterialPageRoute(
@@ -87,12 +94,12 @@ class Routes {
             builder: (BuildContext context) => RouteData.getRouteData(context,
                 RouteName.qualityScreen, args!)); // Quality production screen
 
-      case RouteName.productionProcessScreen:
+      case RouteName.qualityProductionProcessScreen:
         return MaterialPageRoute(
             builder: (BuildContext context) => RouteData.getRouteData(
                 context,
-                RouteName.productionProcessScreen,
-                args!)); // Production process screen
+                RouteName.qualityProductionProcessScreen,
+                args!)); // Quality production process screen
 
       case RouteName.calibration: // Calibration screen
         return MaterialPageRoute(

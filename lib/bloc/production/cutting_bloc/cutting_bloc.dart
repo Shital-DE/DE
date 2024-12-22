@@ -9,12 +9,14 @@ import 'package:de/services/repository/common/documents_repository.dart';
 import 'package:de/services/repository/operator/cutting_repository.dart';
 import 'package:de/services/session/user_login.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../services/model/product/product_route.dart';
+import '../../../services/repository/product/product_route_repo.dart';
 import 'cutting_event.dart';
 import 'cutting_state.dart';
 
 class CuttingBloc extends Bloc<CuttingEvent, CuttingState> {
   CuttingBloc() : super(CuttingInitialState()) {
-    on<CuttingLoadingEvent>((event, emit) async {
+    on<CuttingProductionEvent>((event, emit) async {
       Map<String, dynamic> pdfdoc = {}, modeldoc = {}, productStatus = {};
       String employeeid = '';
       int producedQuantity = event.barcode.issueQty!.toInt();
@@ -119,7 +121,7 @@ class CuttingBloc extends Bloc<CuttingEvent, CuttingState> {
             producedQuantity == int.parse(event.cuttingQty);
           }
 
-          emit(CuttingLoadingState(
+          emit(CuttingProductionState(
             barcode: event.barcode,
             pdfdoc: pdfdoc,
             modeldoc: modeldoc,
@@ -135,6 +137,27 @@ class CuttingBloc extends Bloc<CuttingEvent, CuttingState> {
           ));
         }
       }
+    });
+
+    on<CuttingProductionProcessesEvent>((event, emit) async {
+      final userdata = await UserData.getUserData();
+      final machineData = await MachineData.geMachineData();
+      final macData = jsonDecode(machineData.toString());
+
+      List<ProductAndProcessRouteModel> productProcessRouteList =
+          await ProductRouteRepository().oneWorkcentreProductRoute(
+        token: userdata['token'],
+        productId: event.barcode.productid.toString(),
+        revision: event.barcode.revisionnumber.toString(),
+        workcentreId: macData[0]['wr_workcentre_id'],
+      );
+      emit(CuttingProductionProcessesState(
+          barcode: event.barcode,
+          productProcessRouteList: productProcessRouteList,
+          token: userdata['token'],
+          userId: userdata['data'][0]['id'],
+          workcentreId: macData[0]['wr_workcentre_id'],
+          workstationId: macData[0]['workstationid']));
     });
   }
 }

@@ -5,7 +5,8 @@ import 'package:de/bloc/sales_order/sales_order_bloc.dart';
 import 'package:de/view/screens/product_assets_management/pam_dashboard.dart';
 import 'package:de/view/screens/product_assets_management/product_registration.dart';
 import 'package:de/view/screens/product_assets_management/product_structure.dart';
-import 'package:de/view/screens/production/production_processes_screen.dart';
+import 'package:de/view/screens/production/cutting/cutting_processes_screen.dart';
+import 'package:de/view/screens/production/quality/quality_processes_screen.dart';
 import 'package:de/view/screens/user/update_employee_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -188,7 +189,8 @@ class RouteData {
           )
         ], child: EmployeeOverTime());
 
-      case RouteName.cuttingScreen: // Cutting screen
+      // Cutting
+      case RouteName.cuttingScreen: // Cutting production screen
         return MultiBlocProvider(
             providers: [
               BlocProvider<AppBarBloc>(
@@ -198,6 +200,20 @@ class RouteData {
                   create: (BuildContext context) => CuttingBloc())
             ],
             child: CuttingScreen(
+              arguments: args,
+            ));
+
+      case RouteName
+            .cuttingProductionProcessScreen: // Cutting production processes screen
+        return MultiBlocProvider(
+            providers: [
+              BlocProvider<AppBarBloc>(
+                create: (BuildContext context) => AppBarBloc(),
+              ),
+              BlocProvider<CuttingBloc>(
+                  create: (BuildContext context) => CuttingBloc())
+            ],
+            child: CuttingProcessesScreen(
               arguments: args,
             ));
 
@@ -212,8 +228,8 @@ class RouteData {
           ),
         ], child: QualityProductionScreen(arguments: args));
 
-      // Quality
-      case RouteName.productionProcessScreen: // Production process screen
+      case RouteName
+            .qualityProductionProcessScreen: // Production process screen
         return MultiBlocProvider(providers: [
           BlocProvider<AppBarBloc>(
             create: (BuildContext context) => AppBarBloc(),
@@ -221,7 +237,7 @@ class RouteData {
           BlocProvider<QualityBloc>(
             create: (BuildContext context) => QualityBloc(),
           ),
-        ], child: ProductionProcessScreen(arguments: args));
+        ], child: QualityProductionProcessScreen(arguments: args));
 
       // Calibration
       case RouteName.calibration:

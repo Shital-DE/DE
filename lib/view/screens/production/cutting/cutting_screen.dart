@@ -13,6 +13,7 @@ import '../../../../bloc/production/cutting_bloc/cutting_event.dart';
 import '../../../../bloc/production/cutting_bloc/cutting_state.dart';
 import '../../../../routes/route_names.dart';
 import '../../../../services/model/operator/oprator_models.dart';
+import '../../../../services/model/product/product_route.dart';
 import '../../../../services/repository/operator/cutting_repository.dart';
 import '../../../../services/repository/product/product_machine_route_repository.dart';
 import '../../../../utils/app_colors.dart';
@@ -30,10 +31,12 @@ class CuttingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Barcode? barcode = arguments['barcode'];
+    ProductAndProcessRouteModel route = arguments['selected_process'][0];
     double parentWidth = MediaQuery.of(context).size.width;
     double parentHeight = MediaQuery.of(context).size.height;
     final blocProvider = BlocProvider.of<CuttingBloc>(context);
-    blocProvider.add(CuttingLoadingEvent(arguments['barcode'], '', {}));
+    blocProvider.add(CuttingProductionEvent(
+        barcode: arguments['barcode'], cuttingQty: '', machinedata: {}));
     return Scaffold(
       appBar: CustomAppbar().appbar(context: context, title: 'Cutting screen'),
       body: MakeMeResponsiveScreen(
@@ -41,12 +44,12 @@ class CuttingScreen extends StatelessWidget {
           child: Center(
             child: BlocConsumer<CuttingBloc, CuttingState>(
                 listener: (context, state) {
-              if (state is CuttingLoadingState &&
+              if (state is CuttingProductionState &&
                   state.productStatus['production_end'] == 1) {
                 cuttingFinishedDialog(context: context);
               }
             }, builder: (context, state) {
-              if (state is CuttingLoadingState &&
+              if (state is CuttingProductionState &&
                   state.productStatus['production_end'] == 1) {
                 return const Stack();
               } else {
@@ -59,12 +62,12 @@ class CuttingScreen extends StatelessWidget {
                     docButtons(),
                     docHorizontal(),
                     cuttingTable(
-                      parentWidth: parentWidth,
-                      parentHeight: parentHeight,
-                      barcode: barcode,
-                      blocProvider: blocProvider,
-                      context: context,
-                    ),
+                        parentWidth: parentWidth,
+                        parentHeight: parentHeight,
+                        barcode: barcode,
+                        blocProvider: blocProvider,
+                        context: context,
+                        route: route),
                     cuttingStatus(parentWidth, parentHeight),
                   ],
                 );
@@ -115,7 +118,7 @@ class CuttingScreen extends StatelessWidget {
   BlocBuilder<CuttingBloc, CuttingState> docVertical() {
     return BlocBuilder<CuttingBloc, CuttingState>(
       builder: (context, state) {
-        if (state is CuttingLoadingState) {
+        if (state is CuttingProductionState) {
           return Documents().verticalVersions(
               context: context,
               topMargin: 20,
@@ -145,7 +148,7 @@ class CuttingScreen extends StatelessWidget {
       margin: const EdgeInsets.only(top: 20),
       child: BlocBuilder<CuttingBloc, CuttingState>(
         builder: (context, state) {
-          if (state is CuttingLoadingState && state.status.isNotEmpty) {
+          if (state is CuttingProductionState && state.status.isNotEmpty) {
             return CustomTable(
                 tablewidth: parentWidth,
                 tableheight: parentHeight,
@@ -195,6 +198,7 @@ class CuttingScreen extends StatelessWidget {
     required Barcode? barcode,
     required CuttingBloc blocProvider,
     required BuildContext context,
+    required ProductAndProcessRouteModel route,
   }) {
     StreamController<String> quantity = StreamController<String>.broadcast();
     return SizedBox(
@@ -224,7 +228,7 @@ class CuttingScreen extends StatelessWidget {
               editQuantity(quantity: quantity),
               TableDataCell(label: BlocBuilder<CuttingBloc, CuttingState>(
                 builder: (context, state) {
-                  if (state is CuttingLoadingState &&
+                  if (state is CuttingProductionState &&
                       state.productStatus['start_time'] != null &&
                       state.productStatus['end_time'] == null) {
                     DateTime date = DateTime.parse(
@@ -237,7 +241,7 @@ class CuttingScreen extends StatelessWidget {
               )),
               TableDataCell(label: BlocBuilder<CuttingBloc, CuttingState>(
                 builder: (context, state) {
-                  if (state is CuttingLoadingState &&
+                  if (state is CuttingProductionState &&
                       state.productStatus['end_time'] == null) {
                     return const Text('');
                   } else {
@@ -248,7 +252,7 @@ class CuttingScreen extends StatelessWidget {
               cuttingStatusTextWidget(),
               TableDataCell(label: BlocBuilder<CuttingBloc, CuttingState>(
                 builder: (context, state) {
-                  if (state is CuttingLoadingState) {
+                  if (state is CuttingProductionState) {
                     if (state.productStatus['start_time'] != null &&
                         state.productStatus['end_time'] == null) {
                       return endCutting(
@@ -261,13 +265,22 @@ class CuttingScreen extends StatelessWidget {
                         state.productStatus['end_time'] != null) {
                       return Row(
                         children: [
-                          startCutting(blocProvider, state, barcode, context),
+                          startCutting(
+                              blocProvider: blocProvider,
+                              state: state,
+                              barcode: barcode,
+                              context: context,
+                              route: route),
                           finishCutting(blocProvider, state, context),
                         ],
                       );
                     } else {
                       return startCutting(
-                          blocProvider, state, barcode, context);
+                          blocProvider: blocProvider,
+                          state: state,
+                          barcode: barcode,
+                          context: context,
+                          route: route);
                     }
                   }
                   return const Text('');
@@ -281,7 +294,7 @@ class CuttingScreen extends StatelessWidget {
   TableDataCell cuttingStatusTextWidget() {
     return TableDataCell(label: BlocBuilder<CuttingBloc, CuttingState>(
       builder: (context, state) {
-        if (state is CuttingLoadingState &&
+        if (state is CuttingProductionState &&
             state.productStatus['end_time'] == null) {
           if (state.productStatus['status'] == 0) {
             return Container(
@@ -325,7 +338,7 @@ class CuttingScreen extends StatelessWidget {
     return TableDataCell(label:
         BlocBuilder<CuttingBloc, CuttingState>(builder: (context, state) {
       TextEditingController qty = TextEditingController();
-      if (state is CuttingLoadingState) {
+      if (state is CuttingProductionState) {
         if (state.tobeProducedQuantity < 0) {
           qty.text = '0';
           qty.selection = TextSelection.fromPosition(
@@ -342,7 +355,7 @@ class CuttingScreen extends StatelessWidget {
           stream: quantity.stream,
           builder: (context, snapshot) {
             if (snapshot.data != null) {
-              if (state is CuttingLoadingState) {
+              if (state is CuttingProductionState) {
                 if ((state.productStatus['start_time'] != null &&
                         state.productStatus['end_time'] != null) ||
                     state.productStatus.isEmpty) {
@@ -363,7 +376,7 @@ class CuttingScreen extends StatelessWidget {
               controller: qty,
               textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
-              readOnly: state is CuttingLoadingState
+              readOnly: state is CuttingProductionState
                   ? ((state.productStatus['start_time'] != null &&
                               state.productStatus['end_time'] != null) ||
                           state.productStatus.isEmpty)
@@ -376,7 +389,7 @@ class CuttingScreen extends StatelessWidget {
                       color: AppColors.blackColor,
                       fontWeight: FontWeight.normal)),
               onTap: () {
-                if (state is CuttingLoadingState) {
+                if (state is CuttingProductionState) {
                   if ((state.productStatus['start_time'] != null &&
                           state.productStatus['end_time'] != null) ||
                       state.productStatus.isEmpty) {
@@ -404,7 +417,7 @@ class CuttingScreen extends StatelessWidget {
   BlocBuilder<CuttingBloc, CuttingState> docHorizontal() {
     return BlocBuilder<CuttingBloc, CuttingState>(
       builder: (context, state) {
-        if (state is CuttingLoadingState) {
+        if (state is CuttingProductionState) {
           return Documents().horizontalVersions(
               context: context,
               topMargin: 0,
@@ -427,23 +440,30 @@ class CuttingScreen extends StatelessWidget {
     );
   }
 
-  InkWell startCutting(CuttingBloc blocProvider, CuttingLoadingState state,
-      Barcode? barcode, BuildContext context) {
+  InkWell startCutting(
+      {required CuttingBloc blocProvider,
+      required CuttingProductionState state,
+      required Barcode? barcode,
+      required BuildContext context,
+      required ProductAndProcessRouteModel route}) {
     return InkWell(
       onTap: () async {
-        blocProvider.add(
-            CuttingLoadingEvent(arguments['barcode'], '', state.machinedata));
+        blocProvider.add(CuttingProductionEvent(
+            barcode: arguments['barcode'],
+            cuttingQty: '',
+            machinedata: state.machinedata));
 
         String inspectionStarted = await CuttingRepository()
             .startCutting(token: state.token, payload: {
           'productid': barcode!.productid.toString().trim(),
-          'seq': '0',
           'rawmaterialissueid': barcode.rawmaterialissueid.toString().trim(),
           'workcentreid':
               state.machinedata['wr_workcentre_id'].toString().trim(),
           'workstationid': state.machinedata['workstationid'].toString().trim(),
           'employeeid': state.employeeid.toString().trim(),
-          'revision_number': barcode.revisionnumber.toString().trim()
+          'revision_number': barcode.revisionnumber.toString().trim(),
+          'process_sequence': route.combinedSequence,
+          'processroute_id': route.processRouteId.toString().trim()
         });
         await ProductMachineRoute()
             .registerProductMachineRoute(token: state.token, payload: {
@@ -473,14 +493,14 @@ class CuttingScreen extends StatelessWidget {
     );
   }
 
-  InkWell finishCutting(CuttingBloc blocProvider, CuttingLoadingState state,
+  InkWell finishCutting(CuttingBloc blocProvider, CuttingProductionState state,
       BuildContext context) {
     return InkWell(
       onTap: () async {
-        blocProvider.add(CuttingLoadingEvent(
-          arguments['barcode'],
-          state.cuttingQty,
-          state.machinedata,
+        blocProvider.add(CuttingProductionEvent(
+          barcode: arguments['barcode'],
+          cuttingQty: state.cuttingQty,
+          machinedata: state.machinedata,
         ));
         String finishCutting = await CuttingRepository()
             .finishCutting(token: state.token, payload: {
@@ -512,7 +532,7 @@ class CuttingScreen extends StatelessWidget {
 
   StreamBuilder<String> endCutting(
       {required CuttingBloc blocProvider,
-      required CuttingLoadingState state,
+      required CuttingProductionState state,
       required BuildContext context,
       required StreamController<String> quantity}) {
     return StreamBuilder<String>(
@@ -537,12 +557,12 @@ class CuttingScreen extends StatelessWidget {
 
                 if (endCutting == 'Updated successfully') {
                   Future.delayed(const Duration(seconds: 1), () {
-                    blocProvider.add(CuttingLoadingEvent(
-                        arguments['barcode'],
-                        snapshot.data == null
+                    blocProvider.add(CuttingProductionEvent(
+                        barcode: arguments['barcode'],
+                        cuttingQty: snapshot.data == null
                             ? state.tobeProducedQuantity.toString()
                             : snapshot.data.toString(),
-                        {}));
+                        machinedata: {}));
 
                     FocusScope.of(context).unfocus();
                     return QuickFixUi.successMessage(
@@ -574,7 +594,7 @@ class CuttingScreen extends StatelessWidget {
   BlocBuilder<CuttingBloc, CuttingState> docButtons() {
     return BlocBuilder<CuttingBloc, CuttingState>(
       builder: (context, state) {
-        if (state is CuttingLoadingState) {
+        if (state is CuttingProductionState) {
           return Documents().documentsButtons(
               context: context,
               alignment: Alignment.center,

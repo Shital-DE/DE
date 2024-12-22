@@ -130,17 +130,16 @@ class OAPBloc extends Bloc<OAPEvent, OAPState> {
 
         // ///////////////////////////////////////////////////////////////////
 
-        final getpreviousproductiontime =
-            await OperatorRepository().getpreviousprodutiontime(
-          event.barcode.productid.toString(),
-          event.barcode.rawmaterialissueid.toString(),
-          data['wr_workcentre_id'],
-          data['workstationid'],
-          employeeId,
-          event.barcode.revisionnumber.toString(),
-          productionstatusid,
-          token,
-        );
+        final getpreviousproductiontime = await OperatorRepository()
+            .getpreviousprodutiontime(token: token, payload: {
+          'product_id': event.barcode.productid.toString(),
+          'rms_issue_id': event.barcode.rawmaterialissueid.toString(),
+          'workcentre_id': data['wr_workcentre_id'],
+          'workstation_id': data['workstationid'],
+          'employee_id': employeeId,
+          'revision_number': event.barcode.revisionnumber.toString(),
+          'productionstatusid': productionstatusid
+        });
         // debugPrint("-----------$getpreviousproductiontime");
         if (getpreviousproductiontime.toString() ==
             'Previous data not avilable') {

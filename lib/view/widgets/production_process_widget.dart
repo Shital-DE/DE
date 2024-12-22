@@ -17,7 +17,8 @@ class ProductionProcessWidget {
       {required BuildContext context,
       required List<ProductAndProcessRouteModel> productProcessRouteList,
       required Barcode barcode,
-      bool wantAction = false}) {
+      bool wantAction = false,
+      required String screenName}) {
     Size size = MediaQuery.of(context).size;
     List<String> tableColumnsList = [
       'Sequence number',
@@ -98,12 +99,22 @@ class ProductionProcessWidget {
                       padding: const EdgeInsets.all(6.0),
                       child: ElevatedButton(
                           onPressed: () {
-                            Navigator.pushNamed(
-                                context, RouteName.qualityScreen,
-                                arguments: {
-                                  'barcode': barcode,
-                                  'selected_process': [row]
-                                });
+                            if (screenName == 'Inspection') {
+                              Navigator.pushNamed(
+                                  context, RouteName.qualityScreen,
+                                  arguments: {
+                                    'barcode': barcode,
+                                    'selected_process': [row]
+                                  });
+                            } else if (screenName == 'Cutting') {
+                              debugPrint(row.combinedSequence.toString());
+                              Navigator.pushNamed(
+                                  context, RouteName.cuttingScreen,
+                                  arguments: {
+                                    'barcode': barcode,
+                                    'selected_process': [row]
+                                  });
+                            }
                           },
                           child: const Text('Proceed')),
                     ))

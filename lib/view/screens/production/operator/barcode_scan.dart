@@ -90,8 +90,7 @@ class BarcodeScan extends StatelessWidget {
                                                     cprunnumber: '',
                                                     cpchildid: '');
                                           } else {
-                                            // debugPrint(
-                                            //     '----------------------${data.programname}');
+                                            debugPrint("No program found");
                                           }
                                         }
                                       }

@@ -33,6 +33,7 @@ class QualityProductionState extends QualityState {
   final List<DocumentDetails> modelsDetails;
   final List<Workcentre> workcentrelist;
   final List<QualityRejectedReasons> rejectedReasonsList;
+  ProductAndProcessRouteModel productAndProcessRouteModel;
   QualityProductionState(
       {required this.isInspectionStarted,
       required this.barcode,
@@ -52,7 +53,7 @@ class QualityProductionState extends QualityState {
       required this.workcentrelist,
       required this.rejectedReasonsList,
       required this.inspectionId,
-      required});
+      required this.productAndProcessRouteModel});
 }
 
 class QualityErrorState extends QualityState {
