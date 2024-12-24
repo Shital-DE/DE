@@ -13,8 +13,6 @@ class MachineProgramSequanceLoadingState extends MachineProgramSequanceState {
       workstationid = '',
       machineid = '',
       machinename = '';
-  //final List<PendingProductlistforoperator> pendingproductlist;
-  //List<Wcprogramlist> folderList;
 
   List<Productprocessseq> productprocessList;
 

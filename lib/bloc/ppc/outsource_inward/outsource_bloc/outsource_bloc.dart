@@ -17,7 +17,7 @@ class OutsourceBloc extends Bloc<OutsourceEvent, OutsourceState> {
       List<Outsource> list = await OutsourceRepository.getOutsourceList(
           fromdate: event.fromDate, todate: event.toDate);
       List<Outsource> outsourceList = [];
-      
+
       outsourceList = list.where((e) => e.isinhouse == 'N').toList();
 
       emit(OutsourceAllListState(
@@ -37,16 +37,16 @@ class OutsourceBloc extends Bloc<OutsourceEvent, OutsourceState> {
       }
       if (event.option == ToggleOption.outsource) {
         List<Outsource> outsourceList = [];
-        
+
         outsourceList = list.where((e) => e.isinhouse == 'N').toList();
-        
+
         emit(OutsourceAllListState(
             option: event.option,
             outsourceList: outsourceList,
             mainList: list));
       } else {
         List<Outsource> inhouseList = [];
-      
+
         inhouseList = list.where((e) => e.isinhouse == 'Y').toList();
 
         emit(OutsourceAllListState(
@@ -95,7 +95,6 @@ class OutsourceBloc extends Bloc<OutsourceEvent, OutsourceState> {
     on<SendEmailEvent>((event, emit) async {
       await OutsourceRepository.sendMail(
           challanNo: event.challanNo, pdf: event.pdfdata);
-      // emit(OutsourceInitial());
     });
   }
 }

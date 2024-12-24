@@ -11,7 +11,7 @@ class OutsourceListEvent extends OutsourceEvent {
   final String fromDate, toDate;
   const OutsourceListEvent(
       {required this.option, required this.fromDate, required this.toDate});
-} // all list
+}
 
 class SelectToggleEvent extends OutsourceEvent {
   final String fromDate, toDate;
@@ -38,7 +38,7 @@ class CheckListItemEvent extends OutsourceEvent {
     required this.subList,
     required this.mainList,
   });
-} //select check box
+}
 
 class SearchProductEvent extends OutsourceEvent {
   final String product;
@@ -47,7 +47,7 @@ class SearchProductEvent extends OutsourceEvent {
     required this.product,
     required this.subList,
   });
-} //search product
+}
 
 class CreateChallanEvent extends OutsourceEvent {
   final String challanNo;

@@ -23,7 +23,6 @@ class InwardBloc extends Bloc<InwardEvent, InwardState> {
       List<InwardChallan> inwardList = await OutsourceRepository.getInwardList(
           subcontractorId: event.subcontractorid);
       emit(InwardListLoadedState(inwardList: inwardList, check: false));
-      // emit(InwardListLoadedState(inwardList: inwardList));
     });
 
     on<FinishedInwardListLoadEvent>((event, emit) async {

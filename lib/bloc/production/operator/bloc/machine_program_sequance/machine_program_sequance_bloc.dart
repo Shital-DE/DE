@@ -14,10 +14,7 @@ class MachineProgramSequanceBloc
   MachineProgramSequanceBloc(this.context)
       : super(MachineProgramSequanceInitial()) {
     on<MachineProgramSequanceInitialEvent>((event, emit) async {
-      // List<PendingProductlistforoperator> pendingproductlist = [];
-
       String employeeId = '';
-      // String employeeName = '';
       String workcentreid = '';
       String workstationid = '';
       String machineid = '';
@@ -30,7 +27,6 @@ class MachineProgramSequanceBloc
 
       for (var userdata in saveddata['data']) {
         employeeId = userdata['id'];
-        // employeeName = userdata['firstname'];
       }
 
       final machinedata = await MachineData.geMachineData();
@@ -42,16 +38,6 @@ class MachineProgramSequanceBloc
         machinename = data['machinename'].toString();
       }
 
-      // List mdoclist = await OperatorRepository.getMachineProgramMdocid(
-      //     event.barcode.productid.toString(), token);
-      // //debugPrint(mdoclist.toString())
-      // List<Wcprogramlist> folderListone = await OperatorRepository()
-      //     .machineprogramlist(
-      //         workcentreid: workcentreid,
-      //         token: token,
-      //         productid: event.barcode.productid.toString(),
-      //         revisionno: event.barcode.revisionnumber.toString());
-      // List<Wcprogramlist>
       List<Productprocessseq> productprocessseqlist = await OperatorRepository()
           .productprocessseq(
               workcentreid: workcentreid,
@@ -59,7 +45,6 @@ class MachineProgramSequanceBloc
               productid: event.barcode.productid.toString(),
               revisionno: event.barcode.revisionnumber.toString());
 
-      //List<Wcprogramlist> folderList = folderListone;
       List<Productprocessseq> productprocessList = productprocessseqlist;
 
       prmessagestatuscheck = await OperatorRepository()
@@ -72,9 +57,6 @@ class MachineProgramSequanceBloc
               event.barcode.lineitemnumber.toString(),
               workcentreid);
 
-      // debugPrint("Pr message check status------>>>>");
-      // debugPrint(prmessagestatuscheck.toString());
-//
       emit(MachineProgramSequanceLoadingState(
         event.barcode,
         productprocessList: productprocessList,
@@ -82,11 +64,9 @@ class MachineProgramSequanceBloc
         workcentreid: workcentreid,
         workstationid: workstationid,
         machineid: machineid,
-        machinename: machinename, prmessagestatuscheck: prmessagestatuscheck,
+        machinename: machinename,
+        prmessagestatuscheck: prmessagestatuscheck,
         employeeid: employeeId,
-
-        // pendingproductlist: pendingproductlist,
-        //folderList: folderList,
       ));
     });
   }

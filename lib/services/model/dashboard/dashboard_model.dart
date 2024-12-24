@@ -75,8 +75,6 @@ class MachineAutomaticCheck {
   }
 }
 
-// id,workstation_id, machine, total_current_tagid
-
 class Workstationtotalcurrenttagid {
   String? id;
   String? wsid;
@@ -410,13 +408,13 @@ class EfficiencyData {
 }
 
 class FeedData {
-  FeedData(this.x, this.y); //this.size);
+  FeedData(this.x, this.y);
   final DateTime x;
   final double y;
 }
 
 class TotalCurrentspiks {
-  TotalCurrentspiks(this.x, this.y); //this.size);
+  TotalCurrentspiks(this.x, this.y);
   final DateTime x;
   final double y;
 }
@@ -498,25 +496,8 @@ class MachineUtilizationData {
   }
 }
 
-/*class MachineCurrentData {
-  final DateTime timestamp;
-  final double currentR;
-  final double currentY;
-  final double currentB;
-  final double currentTotal;
-
-  MachineCurrentData({
-    required this.timestamp,
-    required this.currentR,
-    required this.currentY,
-    required this.currentB,
-    required this.currentTotal,
-  });
-}*/
-
 class MachineCurrentData {
-  MachineCurrentData(
-      this.timestamp, this.currentTotal, this.r, this.y, this.b); //this.size);
+  MachineCurrentData(this.timestamp, this.currentTotal, this.r, this.y, this.b);
   final DateTime timestamp;
   final double currentTotal;
   final double r;
@@ -541,9 +522,6 @@ class ProductionUtilizationData {
   final int productionTime;
   final int idleTime;
   final int machineON;
-  // final DateTime endDate;
-  // final DateTime hour;
-  // final double reportTime;
 
   ProductionUtilizationData({
     required this.production,
@@ -551,9 +529,6 @@ class ProductionUtilizationData {
     required this.productionTime,
     required this.idleTime,
     required this.machineON,
-    // required this.endDate,
-    // required this.hour,
-    // required this.reportTime,
   });
 
   factory ProductionUtilizationData.fromJson(Map<String, dynamic> json) {
@@ -563,9 +538,6 @@ class ProductionUtilizationData {
       productionTime: json['productionTime'],
       idleTime: json['idleTime'],
       machineON: json['machineON'],
-      //  endDate: json['endDate'],
-      //  hour: json['hour'],
-      //   reportTime: json['reportTime'],
     );
   }
 }
@@ -641,36 +613,34 @@ class FactoryOEEData {
 }
 
 class FactoryEfficency {
-  final DateTime endTime; // Changed from String to DateTime
+  final DateTime endTime;
   final double efficency;
 
   FactoryEfficency({required this.endTime, required this.efficency});
 
   factory FactoryEfficency.fromMap(Map<String, dynamic> map) {
     return FactoryEfficency(
-      endTime: DateTime.parse(
-          map['endTime'] as String), // Parsing String to DateTime
+      endTime: DateTime.parse(map['endTime'] as String),
       efficency: map['efficency'] as double,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'endTime':
-          endTime.toIso8601String(), // Convert DateTime to String for storage
+      'endTime': endTime.toIso8601String(),
       'efficency': efficency,
     };
   }
 }
 
 class CentralOEE {
-  CentralOEE(this.time, this.oee); //this.size);
+  CentralOEE(this.time, this.oee);
   final DateTime time;
   final double oee;
 }
 
 class FactoryOEE {
-  FactoryOEE(this.time, this.oee); //this.size);
+  FactoryOEE(this.time, this.oee);
   final DateTime time;
   final double oee;
 }

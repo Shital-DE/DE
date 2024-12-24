@@ -26,7 +26,7 @@ class ProductionRoute {
   }
 
   void gotoPacking(BuildContext context, ScanState state) {
-    Navigator.pushNamed(context, RouteName.packingScreen, arguments: {
+    Navigator.pushNamed(context, RouteName.packingProcessesScreen, arguments: {
       'barcode': state.barcode,
     });
   }

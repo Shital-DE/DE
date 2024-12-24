@@ -6,7 +6,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../../utils/app_url.dart';
 import '../../common/api.dart';
@@ -118,7 +117,6 @@ class ProductResourceManagementRepository {
             url: AppUrl.deleteNewproductionproduct,
             token: token,
             payload: payload);
-        debugPrint(response.body.toString());
         if (response.body.toString() == 'Deleted successfully') {
           return 'Deleted successfully';
         } else {

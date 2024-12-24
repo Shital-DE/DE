@@ -11,9 +11,6 @@ class WorkstationShiftBloc
     extends Bloc<WorkstationShiftEvent, WorkstationShiftState> {
   WorkstationShiftBloc()
       : super(const WorkstationShiftInitial(workcentre: [])) {
-    // on<WorkstationShiftEvent>((event, emit) {
-    //   emit(const WorkstationShiftInitial(workcentre: []));
-    // });
     on<WorkstationShiftEvent>((event, emit) async {
       List<WorkcentreCP> workcentre =
           await CapacityPlanRepository.cpWorkcentreList();
@@ -27,7 +24,6 @@ class WorkstationShiftBloc
       List<WorkstationShift> workstationshift =
           await CapacityPlanRepository.workstationShift(
               workcentreId: event.workcentreId);
-      // emit(const WorkstationShiftInitial(workcentre: []));
 
       int total = 0;
       workstationshift.map(
@@ -56,7 +52,7 @@ class WorkstationShiftBloc
         List<WorkstationShift> workstationshift =
             await CapacityPlanRepository.workstationShift(
                 workcentreId: event.workcentreId);
-        // List<WorkstationShift> wshift =
+
         int total = 0;
         workstationshift.map(
           (element) {

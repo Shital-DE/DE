@@ -488,7 +488,6 @@ class CalibrationScheduleRegistration extends StatelessWidget {
       }
     } else {
       viewPdf.add('');
-      debugPrint('File not found');
     }
   }
 

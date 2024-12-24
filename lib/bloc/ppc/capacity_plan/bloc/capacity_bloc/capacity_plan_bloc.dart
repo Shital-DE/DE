@@ -7,9 +7,6 @@ part 'capacity_plan_state.dart';
 
 class CapacityPlanBloc extends Bloc<CapacityPlanEvent, CapacityPlanState> {
   CapacityPlanBloc() : super(const CapacityPlanInitial(cplist: [])) {
-    // on<FromDateGetEvent>((event, emit) {
-    //   emit(const CapacityPlanInitial(cplist: []));
-    // });
     on<CheckPreviousCPDateEvent>((event, emit) async {
       String data =
           await CapacityPlanRepository.checkDate(fromDate: event.fromDate);
@@ -23,7 +20,6 @@ class CapacityPlanBloc extends Bloc<CapacityPlanEvent, CapacityPlanState> {
               cplist: event.cpList,
               message: "select date after ${date.toString().split(' ')[0]}"));
         } else {
-          // emit(CapacityPlanInitial(cplist: event.cpList));
           emit(CapacityPlanListState(cplist: event.cpList));
         }
       }

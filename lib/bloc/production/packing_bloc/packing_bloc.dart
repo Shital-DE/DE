@@ -11,6 +11,7 @@ import '../../../services/repository/common/documents_repository.dart';
 import '../../../services/repository/packing/packing_repository.dart';
 import '../../../services/repository/product/product_machine_route_repository.dart';
 import '../../../services/repository/product/product_repository.dart';
+import '../../../services/repository/product/product_route_repo.dart';
 import '../../../services/repository/quality/quality_repository.dart';
 import '../../../services/session/user_login.dart';
 import 'packing_event.dart';
@@ -18,8 +19,8 @@ import 'packing_state.dart';
 
 class PackingBloc extends Bloc<PackingEvent, PackingState> {
   PackingBloc() : super(PackingInitialState()) {
-    // Packing worklog  event and state management
-    on<PackingWorkLogEvent>((event, emit) async {
+    // Packing production  bloc handler
+    on<PackingProductionEvent>((event, emit) async {
       bool isAlreadyInspected = false;
       String pdfmdocid = '',
           pdfRevisionNo = '',
@@ -38,7 +39,8 @@ class PackingBloc extends Bloc<PackingEvent, PackingState> {
         'product_id': event.barcode!.productid,
         'rmsissueid': event.barcode!.rawmaterialissueid,
         'workcentre_id': macData[0]['wr_workcentre_id'],
-        'revision_number': event.barcode!.revisionnumber
+        'revision_number': event.barcode!.revisionnumber,
+        'process_sequence': event.productAndProcessRouteModel!.combinedSequence
       });
       if (isAlreadyInspected == true) {
         emit(PackingErrorState(
@@ -73,7 +75,9 @@ class PackingBloc extends Bloc<PackingEvent, PackingState> {
               'workcentre_id': macData[0]['wr_workcentre_id'],
               'workstation_id': macData[0]['workstationid'],
               'employee_id': saveddata['data'][0]['id'],
-              'revision_number': event.barcode!.revisionnumber.toString()
+              'revision_number': event.barcode!.revisionnumber.toString(),
+              'process_sequence':
+                  event.productAndProcessRouteModel!.combinedSequence
             });
 
         if (packingId == '') {
@@ -91,7 +95,13 @@ class PackingBloc extends Bloc<PackingEvent, PackingState> {
               'workcentre_id': macData[0]['wr_workcentre_id'],
               'workstation_id': macData[0]['workstationid'],
               'employee_id': saveddata['data'][0]['id'],
-              'revision_number': event.barcode!.revisionnumber.toString()
+              'revision_number': event.barcode!.revisionnumber.toString(),
+              'process_sequence':
+                  event.productAndProcessRouteModel!.combinedSequence,
+              'processroute_id': event
+                  .productAndProcessRouteModel!.processRouteId
+                  .toString()
+                  .trim()
             },
             token: saveddata['token'],
           );
@@ -104,11 +114,13 @@ class PackingBloc extends Bloc<PackingEvent, PackingState> {
                 'workcentre_id': macData[0]['wr_workcentre_id'],
                 'workstation_id': macData[0]['workstationid'],
                 'employee_id': saveddata['data'][0]['id'],
-                'revision_number': event.barcode!.revisionnumber.toString()
+                'revision_number': event.barcode!.revisionnumber.toString(),
+                'process_sequence':
+                    event.productAndProcessRouteModel!.combinedSequence
               });
         }
 
-        emit(PackingWorkLogState(
+        emit(PackingProductionState(
             barcode: event.barcode,
             token: saveddata['token'],
             pdfMdocId: pdfmdocid,
@@ -124,6 +136,27 @@ class PackingBloc extends Bloc<PackingEvent, PackingState> {
       }
     });
 
+    // Production process bloc handler
+    on<PackingProcessesEvent>((event, emit) async {
+      final userdata = await UserData.getUserData();
+      final machineData = await MachineData.geMachineData();
+      final macData = jsonDecode(machineData.toString());
+
+      List<ProductAndProcessRouteModel> productProcessRouteList =
+          await ProductRouteRepository().oneWorkcentreProductRoute(
+        token: userdata['token'],
+        productId: event.barcode.productid.toString(),
+        revision: event.barcode.revisionnumber.toString(),
+        workcentreId: macData[0]['wr_workcentre_id'],
+      );
+      emit(PackingProcessesState(
+          productProcessRouteList: productProcessRouteList,
+          token: userdata['token'],
+          userid: userdata['data'][0]['id'],
+          workcentreId: macData[0]['wr_workcentre_id'],
+          workstationId: macData[0]['workstationid']));
+    });
+
     // Stock event and state management
     on<StockEvent>((event, emit) async {
       List<ProductRevision> revision = [];
@@ -131,7 +164,6 @@ class PackingBloc extends Bloc<PackingEvent, PackingState> {
       List<AvailableStock> availableStock = await PackingRepository()
           .availableStock(token: saveddata['token'].toString());
       if (event.productid != '') {
-        // Product revision
         revision = await ProductRepository().productRevision(
             token: saveddata['token'].toString(),
             payload: {'product_id': event.productid});

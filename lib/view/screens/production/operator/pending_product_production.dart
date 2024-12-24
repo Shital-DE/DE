@@ -223,8 +223,6 @@ class PendingProduction extends StatelessWidget {
                                                     ),
                                                     onPressed: () async {
                                                       if (state.isScan) {
-                                                        // debugPrint(
-                                                        //     "${item.capacityplanChildId}-------${item.runnumber}---------------->>>");
                                                         Navigator.pushNamed(
                                                             context,
                                                             RouteName
@@ -240,8 +238,6 @@ class PendingProduction extends StatelessWidget {
                                                                   .capacityplanChildId,
                                                             });
                                                       } else {
-                                                        // debugPrint(
-                                                        //     "${item.id}-------${item.runnumber}---------------->>>");
                                                         showErrorDialog(
                                                             context: context,
                                                             message:
@@ -532,7 +528,6 @@ class PendingProduction extends StatelessWidget {
               return StreamBuilder<bool>(
                   stream: processing.stream,
                   builder: (context, snapshot) {
-                    //debugPrint(snapshot.data.toString());
                     return FilledButton(
                       onPressed: () async {
                         processing.add(true);
@@ -617,7 +612,6 @@ class PendingProduction extends StatelessWidget {
             "https://apps.wawatext.com/api/send?number=${whatsappno[i]}&type=text&message=$message&instance_id=661F8FED28545&access_token=648abb0bdf0bf";
         var request = http.MultipartRequest('GET', Uri.parse(url));
         // ignore: unused_local_variable
-        //       debugPrint(request.toString());
         final response = await request.send();
         response;
       } catch (e) {

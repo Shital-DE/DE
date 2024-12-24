@@ -12,7 +12,6 @@ class GetWorkstationShiftEvent extends WorkstationShiftEvent {
 }
 
 class SelectShiftEvent extends WorkstationShiftEvent {
-  // Checkboxlist checkbox;
   bool value;
   String wsStatusId, workcentreId;
   SelectShiftEvent(

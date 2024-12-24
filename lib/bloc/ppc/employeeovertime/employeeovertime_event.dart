@@ -12,10 +12,8 @@ class EOvertime {
 class EOvertimeEvent extends EOvertime {
   final List<Employee> operator;
   final List<EmpOvertimeWorkstation> empovertimews;
-  final String employeeid, wsid, token, remark; // soid, productid,
+  final String employeeid, wsid, token, remark;
   final List<EmployeeOvertimedata> empovertimedata;
-//  final List<Polist> polist;
-  // final List<Productlist> productlist;
   final List<AllProductModel> selectedtoollist;
   final ToggleOvertimeOption option;
   final String fromDate, toDate, viewdetailsid;
@@ -23,7 +21,6 @@ class EOvertimeEvent extends EOvertime {
   final Outsource item;
   bool isCheckVal;
   List<Outsource> productselectedList;
-  // final List<Outsource> mainList;
   EOvertimeEvent({
     required this.operator,
     required this.empovertimews,

@@ -1,7 +1,6 @@
 import 'package:de/utils/app_icons.dart';
 import 'package:de/utils/responsive.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../routes/route_names.dart';
 import '../../../../services/model/dashboard/dashboard_model.dart';
 import '../../../widgets/appbar.dart';

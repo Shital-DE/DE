@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../view/widgets/product_structure_widget.dart';
 
 class AppColors {
@@ -78,7 +77,6 @@ class AppColors {
       quantity = 0;
     } else if (currentStock == 0) {
       return colorWithDefinitions[0]['color'];
-      // Colors.red;
     } else {
       quantity = (currentStock / (requiredQuantity - issuedQuantity)) * 100;
     }

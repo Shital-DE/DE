@@ -17,21 +17,9 @@ class PlanDateCubit extends Cubit<PlanDateState> {
         emit(POPlanDateLoad(so: list, po: po));
       }
     } catch (e) {
-      // emit(RuntimeMasterDataError(
+      //
     }
   }
-
-  // Future<void> selectNewDate(
-  //     {required String newdate, required String po}) async {
-  //   try {
-  //     SalesOrder list = await CapacityPlanRepository.searchPO(po: po);
-  //     list.plandate = newdate;
-
-  //     emit(POPlanDateLoad(so: list, po: po));
-  //   } catch (e) {
-  //     // emit(RuntimeMasterDataError(
-  //   }
-  // }
 
   Future<void> editallPOPlanDate(
       {required String poid,
@@ -45,16 +33,11 @@ class PlanDateCubit extends Cubit<PlanDateState> {
         emit(POPlanDateLoad(so: list, po: po));
       }
     } catch (e) {
-      // emit(RuntimeMasterDataError(
-      //     errorMessage: e.toString(), runtimeMasterData: const []));
+      //
     }
   }
 
-  Future<void> editsinglePOProductPlanDate(
-      // {required String po,
-      // required String poProductId,
-      // required String plandate}
-      {
+  Future<void> editsinglePOProductPlanDate({
     required SalesOrderDetails soDeails,
     required String po,
   }) async {
@@ -64,11 +47,9 @@ class PlanDateCubit extends Cubit<PlanDateState> {
       if (result == 'Success') {
         SalesOrder list = await CapacityPlanRepository.searchPO(po: po);
         emit(POPlanDateLoad(so: list, po: po));
-        // emit(POPlanDateLoad(list));
       }
     } catch (e) {
-      // emit(RuntimeMasterDataError(
-      //     errorMessage: e.toString(), runtimeMasterData: const []));
+      //
     }
   }
 }

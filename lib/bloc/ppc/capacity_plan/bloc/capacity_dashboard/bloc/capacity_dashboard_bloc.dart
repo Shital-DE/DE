@@ -11,8 +11,6 @@ class CapacityDashboardBloc
         'Workcentre Shift',
         'New CP',
         'CP Execution',
-        // 'PO Date Change',
-        // 'Update CP',
       ];
       emit(CapacityDashboardLoading(
           selectedIndex: event.selectedIndex,

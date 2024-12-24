@@ -61,7 +61,7 @@ class VerifiedMachineProgramsState extends ProductResourceManagementState {
       required this.index});
 }
 
-//=========================================================================  New Production Product  List/////////////////////////////
+//=========================================================================  New Production Product ----------------------------
 class NewProductionproductState extends ProductResourceManagementState {
   final String token, userId;
   final List<NewProductionProductmodel> newProductionproduct;

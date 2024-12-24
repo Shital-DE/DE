@@ -1,5 +1,3 @@
-//import 'dart:convert';
-
 class Barcode {
   String? po;
   String? product;
@@ -241,25 +239,18 @@ class ProgramMdocId {
 }
 
 class ProgramListfromMachine {
-  // final int srno;
   final String name;
   final int size;
   final DateTime date;
 
   ProgramListfromMachine(
-      {
-      // required this.srno,
-      required this.name,
-      required this.size,
-      required this.date});
+      {required this.name, required this.size, required this.date});
 }
 
 class Programfoldername {
-  // final int srno;
   final String folername;
 
   Programfoldername({
-    // required this.srno,
     required this.folername,
   });
 }

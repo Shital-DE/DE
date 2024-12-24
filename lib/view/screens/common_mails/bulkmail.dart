@@ -6,13 +6,11 @@ import 'package:excel/excel.dart' as newexcel;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../bloc/common_mail/mails/common_mails_bloc.dart';
 import '../../../bloc/common_mail/mails/common_mails_event.dart';
 import '../../../bloc/common_mail/mails/common_mails_state.dart';
 import '../../../services/repository/common/common_repository.dart';
 import '../../../utils/common/quickfix_widget.dart';
-
 import '../../widgets/table/custom_table.dart';
 
 class BulkmailsModule extends StatelessWidget {
@@ -24,12 +22,10 @@ class BulkmailsModule extends StatelessWidget {
     blocProvider.add(BulkmailsendEvent());
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      // appBar: CustomAppbar().appbar(context: context, title: 'Bulk Mails'),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // QuickFixUi.verticalSpace(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -53,7 +49,7 @@ class BulkmailsModule extends StatelessWidget {
           BlocBuilder<CommonMailsBloc, CommonMailState>(
               builder: (context, state) {
             if (state is UploadOrderState && state.excelData.isNotEmpty) {
-              double rowHeight = 45, // tableheight = 99449;
+              double rowHeight = 45,
                   tableheight = size.height - (Platform.isAndroid ? 230 : 190);
               return Container(
                 color: Colors.green,
@@ -150,15 +146,12 @@ class BulkmailsModule extends StatelessWidget {
                                   .map((cell) => cell.toString())
                                   .toList();
                             }).toList();
-                            debugPrint(tabledata.toString());
-                            // debugPrint(tabledata[0][1].toString());
 
                             String response = await CommonRepository()
                                 .sendbulkmail(
                                     token: state.token,
                                     payload: {'tabledata': tabledata});
 
-                            debugPrint(response);
                             Map<String, dynamic> jsonResponse =
                                 jsonDecode(response);
                             int statusCode = jsonResponse['status code'];
@@ -168,8 +161,7 @@ class BulkmailsModule extends StatelessWidget {
                                   'Send all mails successfully ', context);
                             }
                           } catch (e) {
-                            // QuickFixUi.errorMessage(
-                            //     'Something went wrong.', context);
+                            //
                           }
                         },
                         child: const Text(

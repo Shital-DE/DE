@@ -271,7 +271,6 @@ class AllDocuments extends StatelessWidget {
           )
         ])),
       ),
-      // ),
     );
   }
 
@@ -544,7 +543,6 @@ class Documents {
       if (docData.toString() == 'Something went wrong') {
         QuickFixUi.errorMessage('Server has some error', context);
       } else {
-        // show the dialog
         showDialog(
           context: context,
           builder: (BuildContext context) {

@@ -63,11 +63,9 @@ class QualityErrorState extends QualityState {
 
 class QualityProductionProcessesState extends QualityState {
   List<ProductAndProcessRouteModel> productProcessRouteList;
-  // List<String> tableColumnsList;
   String token, userId, workcentreId, workstationId;
   QualityProductionProcessesState(
       {required this.productProcessRouteList,
-      // required this.tableColumnsList,
       required this.token,
       required this.userId,
       required this.workcentreId,

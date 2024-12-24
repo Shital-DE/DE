@@ -105,17 +105,14 @@ class MyIconGenerator {
       case 'tablet':
         return const Icon(
           Icons.tablet_android,
-          // color: iconColor,
         );
       case 'machine':
         return const Icon(
           Icons.precision_manufacturing,
-          // color: iconColor,
         );
       case 'employee':
         return const Icon(
           Icons.person,
-          // color: iconColor,
         );
       case 'delete':
         return Icon(
@@ -130,12 +127,10 @@ class MyIconGenerator {
       case 'dashboard':
         return const Icon(
           Icons.dashboard,
-          // color: iconColor,
         );
       case 'status':
         return const Icon(
           Icons.work_history,
-          // color: iconColor,
         );
       case 'Cutting':
         return Icon(

@@ -5,7 +5,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../../utils/app_url.dart';
 import '../../common/api.dart';
@@ -24,7 +23,7 @@ class DocumentsRepository {
         pdfDetailsList = jsonDecode(response.body);
       }
     } catch (e) {
-      debugPrint(e.toString());
+      //
     }
     return pdfDetailsList.map((e) => DocumentDetails.fromJson(e)).toList();
   }
@@ -41,7 +40,7 @@ class DocumentsRepository {
         modelDetailsList = jsonDecode(response.body);
       }
     } catch (e) {
-      debugPrint(e.toString());
+      //
     }
     return modelDetailsList.map((e) => DocumentDetails.fromJson(e)).toList();
   }
@@ -57,7 +56,7 @@ class DocumentsRepository {
         return response.body;
       }
     } catch (e) {
-      debugPrint(e.toString());
+      //
     }
   }
 
@@ -83,10 +82,7 @@ class DocumentsRepository {
 
   Future documentsfolderdetails(String token, List mdocid) async {
     try {
-      Map<String, dynamic> payload = {
-        'mdocidlist': mdocid
-        // .join().trim(),
-      };
+      Map<String, dynamic> payload = {'mdocidlist': mdocid};
       if (payload.isNotEmpty) {
         var response =
             await API().postApiResponse(AppUrl.mdocidfolder, token, payload);
@@ -95,7 +91,7 @@ class DocumentsRepository {
         return "No Programgs found";
       }
     } catch (e) {
-      debugPrint(e.toString());
+      //
     }
   }
 
@@ -117,14 +113,14 @@ class DocumentsRepository {
         }
       }
     } catch (e) {
-      debugPrint(e.toString());
+      //
     }
     return '';
   }
 
   Future<String> getprogramListFromMachine(String machineID) async {
     String programsfrommachines = '';
-    // debugPrint("machine programe calling-----------------------------");
+
     try {
       var url = Uri.parse(
           "http://192.168.0.55:3213/v1/industry40/getProgramFileList?machineid=$machineID");
@@ -137,14 +133,14 @@ class DocumentsRepository {
 
       if (response.statusCode == 200) {
         programsfrommachines = response.body;
-        // debugPrint(responseBody);
+
         return programsfrommachines;
       } else {
         throw Exception(
             'API request failed with status code ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint(e.toString());
+      //
     }
     return programsfrommachines;
   }
@@ -168,11 +164,9 @@ class DocumentsRepository {
         final responseData = await response.stream.bytesToString();
         datagiven = responseData;
         return responseData.toString();
-      } else {
-        debugPrint(response.reasonPhrase);
       }
     } catch (e) {
-      debugPrint(e.toString());
+      return '';
     }
     return datagiven;
   }

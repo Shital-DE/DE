@@ -1,10 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../../services/model/common/document_model.dart';
 import '../../../../../services/model/operator/oprator_models.dart';
 import '../../../../../services/repository/common/documents_repository.dart';
@@ -45,13 +43,9 @@ class OAPBloc extends Bloc<OAPEvent, OAPState> {
 
       for (var userdata in saveddata['data']) {
         employeeId = userdata['id'];
-        // employeeName = userdata['firstname'];
       }
-      // if (event.rejqty > 0) {
+
       operatorrejresons = await OperatorRepository.rejectedReasons(token);
-      // debugPrint("operator rejected resons-=-=-=-=-=-=-==========");
-      // debugPrint(operatorrejresons.toString());
-      // }
 
       final machinedata = await MachineData.geMachineData();
 
@@ -87,7 +81,6 @@ class OAPBloc extends Bloc<OAPEvent, OAPState> {
       }
 
       if (isAlreadyEndProduction == false) {
-        ///+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         instruction = await OperatorRepository.getInstructionString(
           processrouteid: event.processrouteid,
           token: token,
@@ -109,10 +102,6 @@ class OAPBloc extends Bloc<OAPEvent, OAPState> {
           imageType = element.imagetypeCode.toString().trim();
         }
 
-        ///////////////////////////////////////////////////////////////////
-        // toollist = await OperatorRepository.toollist(
-        //     workcentreid: data['wr_workcentre_id'], token: token);
-        // ///////////////////////////////////////////////////////////////////
         productionstatusid =
             await OperatorRepository().getproductworkstationJobStatusId(
           event.barcode.productid.toString(),
@@ -125,11 +114,6 @@ class OAPBloc extends Bloc<OAPEvent, OAPState> {
           token,
         );
 
-        // debugPrint(
-        //     "Production statusid--------898989>>>>>>>>  ${productionstatusid.toString()}");
-
-        // ///////////////////////////////////////////////////////////////////
-
         final getpreviousproductiontime = await OperatorRepository()
             .getpreviousprodutiontime(token: token, payload: {
           'product_id': event.barcode.productid.toString(),
@@ -140,7 +124,7 @@ class OAPBloc extends Bloc<OAPEvent, OAPState> {
           'revision_number': event.barcode.revisionnumber.toString(),
           'productionstatusid': productionstatusid
         });
-        // debugPrint("-----------$getpreviousproductiontime");
+
         if (getpreviousproductiontime.toString() ==
             'Previous data not avilable') {
           final timeofProductionNotAvailable =
@@ -153,9 +137,6 @@ class OAPBloc extends Bloc<OAPEvent, OAPState> {
               starttimeproduction['startprocesstime'].toString());
         }
 
-        // debugPrint("++++++$productionstart");
-        //////////////////////////////////////////////////////////////////////
-
         final bomid = await OperatorRepository().getProductBOMid(
           event.barcode.productid.toString(),
           token,
@@ -163,23 +144,17 @@ class OAPBloc extends Bloc<OAPEvent, OAPState> {
 
         Map<String, dynamic> productbomid = bomid;
 
-        // debugPrint("===============$productbomid");
-
-        /////////////////////////////////////////////////////////////////////
         final lastproroutedetails =
             await OperatorRepository().getlastProductroutedetails(
           event.barcode.productid.toString(),
           event.barcode.revisionnumber.toString(),
           token,
         );
-        // debugPrint(")))))))))))))))))))))) $lastproroutedetails");
 
         if (lastproroutedetails == 'Product route not availbale') {
         } else {
           productRouteDetails = lastproroutedetails;
-          // debugPrint(productRouteDetails['Route_version'].toString());
         }
-        ///////////////////////////////////////////////////////////////////
 
         if (getpreviousproductiontime.toString() ==
             'Previous data not avilable') {
@@ -220,10 +195,6 @@ class OAPBloc extends Bloc<OAPEvent, OAPState> {
             event.seqno,
             token,
           );
-
-          // debugPrint(
-          //     "this is id of productionstatusid 111111111111111------>>>>");
-          // debugPrint(productionstatusid.toString());
         }
 
         emit(OAPLoadingState(
@@ -243,8 +214,6 @@ class OAPBloc extends Bloc<OAPEvent, OAPState> {
           workstationid: data['workstationid'].toString(),
           machineid: data['machineid'].toString(),
           getpreviousproductiontime: productionstart.toLocal().toString(),
-          // previousprodutiontime['startprocesstime'].toString(),
-          //settingtime: settingtime,
           toollist: toollist,
           selectedtoollist: event.selectedtoollist,
           operatorrejresons: operatorrejresons,
@@ -252,11 +221,7 @@ class OAPBloc extends Bloc<OAPEvent, OAPState> {
           productRouteDetails: productRouteDetails,
           productbomid: productbomid,
           isAlreadyEndProduction: isAlreadyEndProduction,
-          // okqty: event.okqty,
-          // rejqty: event.rejqty, rejectedresonsid: event.rejectedresonsid,
           instruction: instruction,
-          // productiontimedata: {},
-          // selectedtoolsItems: event.selectedtoolsItems,
         ));
       }
       emit(OAPLoadingState(
@@ -276,7 +241,6 @@ class OAPBloc extends Bloc<OAPEvent, OAPState> {
         workstationid: data['workstationid'].toString(),
         machineid: data['machineid'].toString(),
         getpreviousproductiontime: productionstart.toLocal().toString(),
-        // settingtime: '',
         toollist: toollist,
         selectedtoollist: event.selectedtoollist,
         operatorrejresons: operatorrejresons,
@@ -284,12 +248,7 @@ class OAPBloc extends Bloc<OAPEvent, OAPState> {
         productRouteDetails: {},
         productbomid: {},
         isAlreadyEndProduction: isAlreadyEndProduction,
-        // okqty: event.okqty,
-        // rejqty: event.rejqty,
-        // rejectedresonsid: event.rejectedresonsid,
         instruction: instruction,
-        // productiontimedata: {},
-        //  selectedtoolsItems: event.selectedtoolsItems
       ));
     });
   }

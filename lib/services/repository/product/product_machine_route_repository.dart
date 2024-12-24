@@ -4,7 +4,6 @@
 
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../../utils/app_url.dart';
 import '../../common/api.dart';
@@ -16,7 +15,7 @@ class ProductMachineRoute {
       if (payload.isNotEmpty) {
         http.Response response = await API()
             .postApiResponse(AppUrl.productMachineRouteInsert, token, payload);
-        debugPrint(response.body.toString());
+
         if (response.body.toString() == 'Inserted successfully') {
           return 'Product route registered successfully';
         } else {

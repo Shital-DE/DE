@@ -1,28 +1,17 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
-
 import 'package:bottom_bar_matu/bottom_bar_matu.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-// import 'package:syncfusion_flutter_gauges/gauges.dart';
-//  import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../../bloc/admindashboard/admindashboard_bloc.dart';
 import '../../../../bloc/admindashboard/admindashboard_event.dart';
 import '../../../../bloc/admindashboard/admindashboard_state.dart';
 import '../../../../routes/route_data.dart';
 import '../../../../routes/route_names.dart';
 import '../../../../services/model/dashboard/dashboard_model.dart';
-// import 'package:scroll_loop_auto_scroll/scroll_loop_auto_scroll.dart';
-// import 'package:socket_io_client/socket_io_client.dart' as io;
-
-// import 'timer_service.dart';
-// import '../../../../utils/common/buttons.dart';
-// import '../../../../utils/common/quickfix_widget.dart';
-// import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 class Dashboardresponsive extends StatefulWidget {
   final List<Programs> programsList;
@@ -34,13 +23,8 @@ class Dashboardresponsive extends StatefulWidget {
 class _DashboardresponsiveState extends State<Dashboardresponsive> {
   @override
   Widget build(BuildContext context) {
-    return // MaterialApp(
-        // home:
-        Scaffold(
+    return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      // appBar: AppBar(
-      //   title: const Text("Dashboard Demo"),
-      // ),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
@@ -51,11 +35,6 @@ class _DashboardresponsiveState extends State<Dashboardresponsive> {
                 'context': context,
                 'programsList': widget.programsList
               });
-              // return Admindashboard(
-              //   crossAxisCount: 1,
-              //   childAspectRatio: 0.9,
-              //   context: context,
-              // );
             } else if (constraints.maxWidth > 801 &&
                 constraints.maxWidth < 1000) {
               return RouteData.getRouteData(context, RouteName.admindashboard, {
@@ -64,12 +43,6 @@ class _DashboardresponsiveState extends State<Dashboardresponsive> {
                 'context': context,
                 'programsList': widget.programsList
               });
-
-              // Admindashboard(
-              //     crossAxisCount: 2,
-              //     childAspectRatio: 1.0,
-              //     context: context,
-              //     programsList: widget.programsList);
             } else if (constraints.maxWidth > 1001 &&
                 constraints.maxWidth < 1400) {
               return RouteData.getRouteData(context, RouteName.admindashboard, {
@@ -78,11 +51,6 @@ class _DashboardresponsiveState extends State<Dashboardresponsive> {
                 'context': context,
                 'programsList': widget.programsList
               });
-              // Admindashboard(
-              //     crossAxisCount: 3,
-              //     childAspectRatio: 1.0,
-              //     context: context,
-              //     programsList: widget.programsList);
             } else {
               return RouteData.getRouteData(context, RouteName.admindashboard, {
                 'crossAxisCount': 4,
@@ -90,17 +58,10 @@ class _DashboardresponsiveState extends State<Dashboardresponsive> {
                 'context': context,
                 'programsList': widget.programsList
               });
-              // Admindashboard(
-              //     crossAxisCount: 4,
-              //     childAspectRatio: 1.0,
-              //     context: context,
-              //     programsList: widget.programsList);
             }
           },
         ),
       ),
-
-      //  ),
     );
   }
 }
@@ -110,8 +71,6 @@ class Admindashboard extends StatelessWidget {
   final double childAspectRatio;
   final BuildContext context;
   final List<Programs> programsList;
-
-  // final TimerService _timerService = TimerService();
 
   const Admindashboard(
       {super.key,
@@ -131,8 +90,6 @@ class Admindashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // _timerService.startTimer(() => refreshData(context));
-
     double screenWidth = MediaQuery.of(context).size.width;
 
     final blocProvider = BlocProvider.of<ADBBloc>(context);
@@ -140,9 +97,6 @@ class Admindashboard extends StatelessWidget {
     final blocprovidersecond = BlocProvider.of<ADBsecondBloc>(context);
     blocprovidersecond.add(ADBsecondEvent(
         buttonIndex: 0, selectedCentreBotton: 6, dashboardindex: 0));
-
-    // final blocProviderrr = BlocProvider.of<SocketIoDataBloc>(context);
-    // blocProviderrr.add(SocketioEvent());
 
     StreamController<bool> iscentraloee = StreamController<bool>.broadcast();
     StreamController<bool> ismachinewiseEnergy =
@@ -162,10 +116,8 @@ class Admindashboard extends StatelessWidget {
           children: [
             BlocBuilder<ADBBloc, ADBState>(builder: (context, state) {
               if (state is ADBLoadingState) {
-                // debugPrint(MediaQuery.of(context).size.width.toString());
-
                 return Scrollbar(
-                  thumbVisibility: true, // Vertical scrollbar visibility
+                  thumbVisibility: true,
                   thickness: 10,
                   controller: horizontalScrollController,
                   child: SingleChildScrollView(
@@ -193,7 +145,7 @@ class Admindashboard extends StatelessWidget {
                                               ? MediaQuery.of(context)
                                                       .size
                                                       .width -
-                                                  10 // For screens less than 500 width
+                                                  10
                                               : MediaQuery.of(context)
                                                               .size
                                                               .width >
@@ -217,7 +169,7 @@ class Admindashboard extends StatelessWidget {
                                                       : MediaQuery.of(context)
                                                               .size
                                                               .width -
-                                                          400, // For screens between 500 and 1000 width
+                                                          400,
                                           child: SfCartesianChart(
                                             title: const ChartTitle(
                                               text: 'Factory OEE',
@@ -339,13 +291,10 @@ class Admindashboard extends StatelessWidget {
                                   const SizedBox(width: 20),
                                   SizedBox(
                                       height: 340,
-                                      // width: 350,
-                                      // width:
-                                      //     MediaQuery.of(context).size.width - 10,
                                       width: MediaQuery.of(context).size.width <
                                               500
                                           ? MediaQuery.of(context).size.width -
-                                              10 // For screens less than 500 width
+                                              10
                                           : MediaQuery.of(context).size.width >
                                                       1000 &&
                                                   MediaQuery.of(context)
@@ -367,7 +316,7 @@ class Admindashboard extends StatelessWidget {
                                                   : MediaQuery.of(context)
                                                           .size
                                                           .width -
-                                                      400, // For screens between 500 and 1000 width
+                                                      400,
                                       child: SfCartesianChart(
                                         title: const ChartTitle(
                                           text: 'Centrewise OEE',
@@ -387,7 +336,6 @@ class Admindashboard extends StatelessWidget {
                                             yValueMapper:
                                                 (EfficiencyData data, _) =>
                                                     data.y,
-                                            // Map color for each data points from the data source
                                             pointColorMapper:
                                                 (EfficiencyData data, _) =>
                                                     data.color,
@@ -397,8 +345,8 @@ class Admindashboard extends StatelessWidget {
                                               textStyle: TextStyle(
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.bold,
-                                                color: Color.fromARGB(255, 0, 0,
-                                                    0), // Set text color
+                                                color: Color.fromARGB(
+                                                    255, 0, 0, 0),
                                               ),
                                             ),
                                           ),
@@ -426,8 +374,6 @@ class Admindashboard extends StatelessWidget {
                                               fontSize: 14,
                                             ),
                                           ),
-                                          // majorGridLines:
-                                          //     const MajorGridLines(width: 0),
                                         ),
                                         tooltipBehavior: TooltipBehavior(
                                           enable: true,
@@ -441,15 +387,11 @@ class Admindashboard extends StatelessWidget {
                                         ),
                                       )),
                                   SizedBox(
-                                      //  color: const Color.fromARGB(255, 7, 7, 7),
                                       height: 330,
-                                      // width: 400,
-                                      // width:
-                                      //     MediaQuery.of(context).size.width - 10,
                                       width: MediaQuery.of(context).size.width <
                                               500
                                           ? MediaQuery.of(context).size.width -
-                                              10 // For screens less than 500 width
+                                              10
                                           : MediaQuery.of(context).size.width >
                                                       1000 &&
                                                   MediaQuery.of(context)
@@ -477,7 +419,6 @@ class Admindashboard extends StatelessWidget {
                                             text:
                                                 'Centre Wise Energy Consumption in kWh',
                                             borderWidth: 2,
-                                            // Aligns the chart title to left
                                             alignment: ChartAlignment.center,
                                             textStyle: TextStyle(
                                               color: Colors.red,
@@ -499,8 +440,6 @@ class Admindashboard extends StatelessWidget {
                                                           _) =>
                                                       data.y,
                                               explode: true,
-                                              // Explode all the segments
-                                              // explodeAll: true,
                                               dataLabelSettings:
                                                   const DataLabelSettings(
                                                 isVisible: true,
@@ -508,21 +447,15 @@ class Admindashboard extends StatelessWidget {
                                                   fontSize: 10,
                                                   fontWeight: FontWeight.bold,
                                                   color: Color.fromARGB(
-                                                      255,
-                                                      255,
-                                                      255,
-                                                      255), // Set text color
+                                                      255, 255, 255, 255),
                                                 ),
                                               ))
                                         ],
                                         legend: const Legend(
                                           isVisible: true,
-                                          // Overflowing legend content will be wraped
-                                          // overflowMode: LegendItemOverflowMode.scroll
                                           position: LegendPosition.bottom,
                                           textStyle: TextStyle(
                                             color: Colors.black,
-                                            // Set the color for the legend labels
                                             fontSize: 12,
                                             fontWeight: FontWeight.normal,
                                           ),
@@ -673,49 +606,6 @@ class Admindashboard extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-
-                                  /* Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          children: [
-                                            const Text(
-                                              "Total Machine Energy Consumption",
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                                fontFamily: 'Times',
-                                                fontStyle: FontStyle.normal,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Container(
-                                                height: 150,
-                                                // width: 300,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width -
-                                                    150,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(15),
-                                                  //color: Color.fromARGB(255, 168, 168, 168),
-                                                  color: const Color.fromARGB(
-                                                      255, 250, 247, 247),
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    "${state.totalenergy} kWh",
-                                                    style: const TextStyle(
-                                                      color: Color.fromARGB(
-                                                          255, 241, 150, 31),
-                                                      fontFamily: 'Times',
-                                                      fontStyle: FontStyle.normal,
-                                                      fontSize: 18,
-                                                    ),
-                                                  ),
-                                                ))
-                                          ],
-                                        ),
-                                      ),*/
                                   const SizedBox(
                                     width: 20,
                                   )
@@ -730,8 +620,6 @@ class Admindashboard extends StatelessWidget {
                       ),
                     ),
                   ),
-
-                  ///),
                 );
               } else {
                 return const Padding(
@@ -740,7 +628,6 @@ class Admindashboard extends StatelessWidget {
                       child: CircularProgressIndicator(
                     color: Color.fromARGB(255, 45, 190, 235),
                     backgroundColor: Color.fromARGB(255, 215, 216, 216),
-                    // value: 0.50,
                   )),
                 );
               }
@@ -749,9 +636,6 @@ class Admindashboard extends StatelessWidget {
               builder: (context, state) {
                 if (state is ADBLoadingState) {
                   return SingleChildScrollView(
-                    // delay: const Duration(seconds: 5),
-                    // duration: const Duration(seconds: 250),
-                    // gap: 2,
                     scrollDirection: Axis.horizontal,
                     child: SizedBox(
                       height: 330,
@@ -763,13 +647,9 @@ class Admindashboard extends StatelessWidget {
                             state.factoryEfficency.isNotEmpty
                                 ? SizedBox(
                                     height: 330,
-                                    // width: 390,
-                                    // width: MediaQuery.of(context).size.width -
-                                    //     10,
                                     width: MediaQuery.of(context).size.width <
                                             500
-                                        ? MediaQuery.of(context).size.width -
-                                            10 // For screens less than 500 width
+                                        ? MediaQuery.of(context).size.width - 10
                                         : MediaQuery.of(context).size.width >
                                                     1000 &&
                                                 MediaQuery.of(context)
@@ -802,10 +682,7 @@ class Admindashboard extends StatelessWidget {
                                           fontSize: 14,
                                         ),
                                       ),
-                                      primaryXAxis: const DateTimeAxis(
-                                          // majorGridLines: MajorGridLines(width: 0),
-                                          ), // Set X-axis as DateTime
-
+                                      primaryXAxis: const DateTimeAxis(),
                                       primaryYAxis: const NumericAxis(
                                         title: AxisTitle(
                                           text: 'efficincy in %',
@@ -816,7 +693,7 @@ class Admindashboard extends StatelessWidget {
                                             fontSize: 14,
                                           ),
                                         ),
-                                      ), // Set Y-axis as Numeric
+                                      ),
                                       tooltipBehavior: TooltipBehavior(
                                         enable: true,
                                         header: 'efficiency',
@@ -850,19 +727,11 @@ class Admindashboard extends StatelessWidget {
                                             end: Alignment.bottomCenter,
                                           ),
                                           markerSettings: const MarkerSettings(
-                                            isVisible:
-                                                true, // Enable data points
-                                            color: Color.fromARGB(255, 176, 206,
-                                                235), // Customize the color of the markers
-                                            shape: DataMarkerType
-                                                .horizontalLine, // Shape of the markers (circle, square, etc.)
-                                            // borderWidth:
-                                            //     1, // Width of the marker border
-                                            // borderColor: Color.fromARGB(
-                                            //     255,
-                                            //     183,
-                                            //     215,
-                                            //     216), // Color of the marker border
+                                            isVisible: true,
+                                            color: Color.fromARGB(
+                                                255, 176, 206, 235),
+                                            shape:
+                                                DataMarkerType.horizontalLine,
                                           ),
                                         ),
                                       ],
@@ -907,11 +776,8 @@ class Admindashboard extends StatelessWidget {
                             ),
                             SizedBox(
                                 height: 330,
-                                // width: 350,
-                                // width: MediaQuery.of(context).size.width - 10,
                                 width: MediaQuery.of(context).size.width < 500
-                                    ? MediaQuery.of(context).size.width -
-                                        10 // For screens less than 500 width
+                                    ? MediaQuery.of(context).size.width - 10
                                     : MediaQuery.of(context).size.width >
                                                 1000 &&
                                             MediaQuery.of(context).size.width <
@@ -945,7 +811,6 @@ class Admindashboard extends StatelessWidget {
                                           data.x,
                                       yValueMapper: (EfficiencyData data, _) =>
                                           data.y,
-                                      // Map color for each data points from the data source
                                       pointColorMapper:
                                           (EfficiencyData data, _) =>
                                               data.color,
@@ -995,13 +860,9 @@ class Admindashboard extends StatelessWidget {
                                   ),
                                   SizedBox(
                                     height: 288,
-                                    // width: 300,
-                                    // width: MediaQuery.of(context).size.width -
-                                    //     10,
                                     width: MediaQuery.of(context).size.width <
                                             500
-                                        ? MediaQuery.of(context).size.width -
-                                            10 // For screens less than 500 width
+                                        ? MediaQuery.of(context).size.width - 10
                                         : MediaQuery.of(context).size.width >
                                                     1000 &&
                                                 MediaQuery.of(context)
@@ -1024,12 +885,6 @@ class Admindashboard extends StatelessWidget {
                                                         .size
                                                         .width -
                                                     400,
-                                    // decoration: BoxDecoration(
-                                    //   borderRadius: BorderRadius.circular(15),
-                                    //   //color: Color.fromARGB(255, 168, 168, 168),
-                                    //   color: const Color.fromARGB(
-                                    //       255, 248, 248, 248),
-                                    // ),
                                     child: CircularPercentIndicator(
                                       radius: 90,
                                       lineWidth: 20,
@@ -1048,10 +903,6 @@ class Admindashboard extends StatelessWidget {
                                       animationDuration: 1000,
                                       onAnimationEnd: () {},
                                       startAngle: 180,
-                                      // header: const Text(
-                                      //   "Shop Flor Efficiency",
-                                      //   style: TextStyle(fontSize: 15,),
-                                      // ),
                                     ),
                                   ),
                                 ],
@@ -1072,7 +923,6 @@ class Admindashboard extends StatelessWidget {
                         child: CircularProgressIndicator(
                       color: Color.fromARGB(255, 45, 190, 235),
                       backgroundColor: Color.fromARGB(255, 215, 216, 216),
-                      // value: 0.50,
                     )),
                   );
                 }
@@ -1125,13 +975,11 @@ class Admindashboard extends StatelessWidget {
                                           dataLabelSettings:
                                               const DataLabelSettings(
                                             isVisible: true,
-                                            // color: Colors
-                                            //     .white, // Set the background color for data labels
                                             textStyle: TextStyle(
                                               fontSize: 10,
                                               fontWeight: FontWeight.bold,
-                                              color: Color.fromARGB(255, 0, 0,
-                                                  0), // Set text color
+                                              color:
+                                                  Color.fromARGB(255, 0, 0, 0),
                                             ),
                                           ),
                                         ),
@@ -1146,10 +994,8 @@ class Admindashboard extends StatelessWidget {
                                             fontSize: 14,
                                           ),
                                         ),
-                                        // labelRotation: 90
                                         labelIntersectAction:
-                                            AxisLabelIntersectAction
-                                                .wrap, // Adjust as needed
+                                            AxisLabelIntersectAction.wrap,
                                       ),
                                       primaryYAxis: const NumericAxis(
                                         title: AxisTitle(
@@ -1213,7 +1059,6 @@ class Admindashboard extends StatelessWidget {
                             Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
-                                  // color: Color.fromARGB(255, 168, 168, 168),
                                   color:
                                       const Color.fromARGB(255, 248, 248, 248),
                                 ),
@@ -1257,10 +1102,7 @@ class Admindashboard extends StatelessWidget {
                                                     fontSize: 10,
                                                     fontWeight: FontWeight.bold,
                                                     color: Color.fromARGB(
-                                                        255,
-                                                        0,
-                                                        0,
-                                                        0), // Set text color
+                                                        255, 0, 0, 0),
                                                   ),
                                                 ),
                                               ),
@@ -1275,10 +1117,8 @@ class Admindashboard extends StatelessWidget {
                                                   fontSize: 14,
                                                 ),
                                               ),
-                                              // labelRotation: 90
                                               labelIntersectAction:
-                                                  AxisLabelIntersectAction
-                                                      .wrap, // Adjust as needed
+                                                  AxisLabelIntersectAction.wrap,
                                             ),
                                             primaryYAxis: const NumericAxis(
                                               title: AxisTitle(
@@ -1370,16 +1210,10 @@ class Admindashboard extends StatelessWidget {
                     children: List.generate(state.workstationstatuslist2.length,
                         (index) {
                       var workstation = state.workstationstatuslist2[index];
-                      // debugPrint("++-->>");
-                      // debugPrint(
-                      //     '${state.productionStatusMap['status']}   @@@@@');
-                      // debugPrint(
-                      //     '${state.productionStatusMap['machineName']}   @@@@@');
+
                       return Center(
                         child: SelectCard(
                           workstationstatuslist: workstation,
-                          // productionStatusMap: state
-                          //     .productionStatusMap, // Pass production status map
                         ),
                       );
                     }),
@@ -1406,9 +1240,8 @@ class Admindashboard extends StatelessWidget {
                     selectedCentreBotton: 6,
                     dashboardindex: 0));
               },
-              backgroundColor: const Color.fromARGB(
-                  255, 245, 147, 82), // Button background color
-              foregroundColor: Colors.white, // Icon color
+              backgroundColor: const Color.fromARGB(255, 245, 147, 82),
+              foregroundColor: Colors.white,
               shape: const CircleBorder(),
               child: const Icon(Icons.refresh),
             )
@@ -1437,7 +1270,7 @@ class Admindashboard extends StatelessWidget {
                 }
               },
             )
-          : null, // Show bottom navigation bar only if screen width is less than 600
+          : null,
     ));
   }
 
@@ -1446,15 +1279,9 @@ class Admindashboard extends StatelessWidget {
       BottomBarItem(
         iconData: Icons.home_outlined,
       ),
-      // BottomBarItem(
-      //   iconData: Icons.chat_outlined,
-      // ),
       BottomBarItem(
         iconData: Icons.notifications_outlined,
       ),
-      // BottomBarItem(
-      //   iconData: Icons.calendar_month_outlined,
-      // ),
       BottomBarItem(
         iconData: Icons.settings_outlined,
       ),
@@ -1498,7 +1325,6 @@ class Admindashboard extends StatelessWidget {
                           onPressed: () async {
                             processingCNC.add(true);
 
-                            // Perform your async operation here
                             BlocProvider.of<ADBsecondBloc>(context).add(
                               ADBsecondEvent(
                                 buttonIndex: 1,
@@ -1507,13 +1333,11 @@ class Admindashboard extends StatelessWidget {
                               ),
                             );
 
-                            // After your async operation completes
                             processingCNC.add(false);
                           },
                         );
                       },
                     ),
-
                     StreamBuilder<bool>(
                       stream: processingVMC.stream,
                       builder: (context, snapshot) {
@@ -1555,7 +1379,6 @@ class Admindashboard extends StatelessWidget {
                           onPressed: () async {
                             processingI700.add(true);
 
-                            // Perform your async operation here
                             BlocProvider.of<ADBsecondBloc>(context).add(
                               ADBsecondEvent(
                                 buttonIndex: 3,
@@ -1564,7 +1387,6 @@ class Admindashboard extends StatelessWidget {
                               ),
                             );
 
-                            // After your async operation completes
                             processingI700.add(false);
                           },
                         );
@@ -1585,7 +1407,6 @@ class Admindashboard extends StatelessWidget {
                           onPressed: () async {
                             processingMAZAK.add(true);
 
-                            // Perform your async operation here
                             BlocProvider.of<ADBsecondBloc>(context).add(
                               ADBsecondEvent(
                                 buttonIndex: 4,
@@ -1593,14 +1414,11 @@ class Admindashboard extends StatelessWidget {
                                 dashboardindex: 0,
                               ),
                             );
-
-                            // After your async operation completes
                             processingMAZAK.add(false);
                           },
                         );
                       },
                     ),
-
                     StreamBuilder<bool>(
                       stream: processingCNC.stream,
                       builder: (context, snapshot) {
@@ -1615,8 +1433,6 @@ class Admindashboard extends StatelessWidget {
                               : const Text('DMG'),
                           onPressed: () async {
                             processingDMG.add(true);
-
-                            // Perform your async operation here
                             BlocProvider.of<ADBsecondBloc>(context).add(
                               ADBsecondEvent(
                                 buttonIndex: 5,
@@ -1624,18 +1440,11 @@ class Admindashboard extends StatelessWidget {
                                 dashboardindex: 0,
                               ),
                             );
-
-                            // After your async operation completes
                             processingDMG.add(false);
                           },
                         );
                       },
                     ),
-                    // centresbutton(context, 1, 'CNCL'),
-                    // centresbutton(context, 2, 'VMC'),
-                    // centresbutton(context, 3, 'I-700'),
-                    // centresbutton(context, 4, 'MAZAK'),
-                    // centresbutton(context, 5, 'DMG'),
                   ],
                 ),
               ),
@@ -1650,27 +1459,16 @@ class Admindashboard extends StatelessWidget {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///
-///
-//
-//
 
 class SelectCard extends StatelessWidget {
-  // final Map<String, int> productionStatusMap;
   const SelectCard({
     super.key,
     required this.workstationstatuslist,
-    // required this.productionStatusMap,
   });
   final WorkstationStatusModel workstationstatuslist;
 
-  // final int machinestatus;
   @override
   Widget build(BuildContext context) {
-    // final blocprovider = BlocProvider.of<ADBBloc>(context);
-
-    // Get the machine name from the workstationstatuslist
-
     return GestureDetector(
       onTap: () async {
         Navigator.pushNamed(context, RouteName.machinedashboard,
@@ -1689,7 +1487,6 @@ class SelectCard extends StatelessWidget {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  //getCardItem(),
                   Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: Row(
@@ -1699,7 +1496,6 @@ class SelectCard extends StatelessWidget {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                             color: const Color.fromARGB(255, 255, 255, 255),
-                            // color: Theme.of(context).colorScheme.primaryContainer,
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.5),
@@ -1725,36 +1521,6 @@ class SelectCard extends StatelessWidget {
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
-                              // Container(
-                              //   margin:
-                              //       const EdgeInsets.only(left: 10, top: 10),
-                              //   child: listtyleWidget(
-                              //     color: _getColorForValue(value: 1),
-                              //     operation: _getState(value: 1),
-                              //   ),
-                              // ),
-                              /* BlocBuilder<SocketIoDataBloc, Socketiostate>(
-                                builder: (context, state) {
-                                  if (state is SocketioLoadingState) {
-                                    for (var element
-                                        in state.socketIODataList) {
-                                      debugPrint(
-                                          "+++++++++++++++++++++++++++++++++++++++++");
-                                      debugPrint(
-                                          "${element.machineName}  ${element.state}");
-                                    }
-                                    return Container(
-                                      margin: const EdgeInsets.only(
-                                          left: 10, top: 10),
-                                      child: SocketIOdata(
-                                        socketIOData: state.socketIODataList,
-                                      ),
-                                    );
-                                  } else {
-                                    return const Stack();
-                                  }
-                                },
-                              ),*/
                             ],
                           ),
                         ),
@@ -2076,36 +1842,6 @@ class SelectCard extends StatelessWidget {
       ]),
     );
   }
-
-  // Color _getColorForValue({required int value}) {
-  //   switch (value) {
-  //     case 0:
-  //       return Colors.yellow.shade600; // Idel
-  //     case 1:
-  //       return Colors.green.shade600; // Production
-  //     case 898989:
-  //       return Colors.red.shade600; // Offline
-  //     case 3:
-  //       return Colors.orange.shade600; // Other
-  //     default:
-  //       return Colors.blue.shade600;
-  //   }
-  // }
-
-  // String _getState({required int value}) {
-  //   switch (value) {
-  //     case 0:
-  //       return 'Idle'; // Idel
-  //     case 1:
-  //       return 'Productive'; // Production
-  //     case 898989:
-  //       return 'Offline'; // Offline
-  //     case 3:
-  //       return 'Other'; // Other
-  //     default:
-  //       return '';
-  //   }
-  // }
 }
 
 // ShiftButton widget
@@ -2132,17 +1868,8 @@ class ShiftButton extends StatelessWidget {
       padding: const EdgeInsets.all(7.0),
       child: ElevatedButton(
         onPressed: onPressed,
-        // style: ButtonStyle(
-        //   backgroundColor: MaterialStateProperty.all<Color>(
-        //     isSelected
-        //         ? Colors.green
-        //         : Theme.of(context).primaryColor, // Set your desired colors
-        //   ),
-        // ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: isSelected
-              ? color
-              : Theme.of(context).primaryColor, // Set color based on selection
+          backgroundColor: isSelected ? color : Theme.of(context).primaryColor,
         ),
         child: Text(
           label,
@@ -2159,7 +1886,6 @@ class ShiftButton extends StatelessWidget {
 }
 
 class SocketIOdata extends StatefulWidget {
-  // const SocketIOdata({super.key, required this.socketIOData});
   final List<MachineSocketIO> socketIOData;
 
   const SocketIOdata({super.key, required this.socketIOData});
@@ -2175,7 +1901,6 @@ class SocketIOdataState extends State<SocketIOdata> {
   void initState() {
     super.initState();
     socketIOData.add(widget.socketIOData);
-    debugPrint("section one for socket IO--------------------->>>> 1");
   }
 
   @override
@@ -2186,35 +1911,16 @@ class SocketIOdataState extends State<SocketIOdata> {
 
   @override
   Widget build(BuildContext context) {
-    return
-        // Column(
-        //   children: [
-        // Stack(
-        //   children: [
-        //       Row(
-        //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //  children: [
-        StreamBuilder<List<MachineSocketIO>>(
+    return StreamBuilder<List<MachineSocketIO>>(
       stream: socketIOData.stream,
       builder: (context, datasocket) {
-        debugPrint("section one for socket IO--------------------->>>> 2");
-        // debugPrint(datasocket.data!.length.toString());
-        debugPrint("+++++++++++++++++++++++++++++++++");
         if (datasocket.hasData) {
-          for (var element in datasocket.data!) {
-            debugPrint(
-                'Machine Name222: ${element.machineName}, State: ${element.state}');
-          }
         } else if (datasocket.hasError) {
-          debugPrint("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-          debugPrint('Error: ${datasocket.error}');
         } else {
           return const CircularProgressIndicator();
         }
 
-        // debugPrint(datasocket.data![0].state.toString());
         if (datasocket.data!.isNotEmpty) {
-          // if()
           return listtyleWidget(
               color: _getColorForValue(value: datasocket.data![0].state),
               operation: _getState(value: datasocket.data![0].state));
@@ -2223,12 +1929,9 @@ class SocketIOdataState extends State<SocketIOdata> {
         }
       },
     );
-    //   ]),
-    // ]);
   }
 
   listtyleWidget({required Color color, required String operation}) {
-    debugPrint("section one for socket IO--------------------->>>> 3");
     return Container(
       margin: const EdgeInsets.all(5),
       child: Row(children: [
@@ -2246,7 +1949,6 @@ class SocketIOdataState extends State<SocketIOdata> {
   }
 
   Color _getColorForValue({required int value}) {
-    debugPrint("section one for socket IO--------------------->>>> 4");
     switch (value) {
       case 0:
         return Colors.yellow.shade600; // Idel
@@ -2262,7 +1964,6 @@ class SocketIOdataState extends State<SocketIOdata> {
   }
 
   String _getState({required int value}) {
-    debugPrint("section one for socket IO--------------------->>>> 5");
     switch (value) {
       case 0:
         return 'Idle'; // Idel

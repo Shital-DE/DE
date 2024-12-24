@@ -6,10 +6,6 @@ class CpInitialEvent extends CapacityPlanEvent {
   CpInitialEvent();
 }
 
-// class FromDateGetEvent extends CapacityPlanEvent {
-//   FromDateGetEvent();
-// }
-
 class CheckPreviousCPDateEvent extends CapacityPlanEvent {
   final String fromDate;
   List<CapacityPlanData> cpList;

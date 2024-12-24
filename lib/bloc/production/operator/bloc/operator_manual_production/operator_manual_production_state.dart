@@ -7,7 +7,6 @@ class OMPinitialState extends OMPState {}
 
 class OMPLoadingState extends OMPState {
   final List<String> selectedItems;
-  //final List<Tools> toollist, selectedtoollist;
   final List<DocumentDetails> pdfDetails;
   final List<DocumentDetails> modelsDetails;
   final List<OperatorRejectedReasons> operatorrejresons;
@@ -27,20 +26,15 @@ class OMPLoadingState extends OMPState {
       productionstatusid,
       rejresons;
   final Barcode barcode;
-  // bool isAlreadyEndProduction;
 
   Map<String, dynamic> getpreviousproductiontime;
-  //Map<String, dynamic> productRouteDetails;
-  //Map<String, dynamic> productbomid;
   OMPLoadingState(
       this.selectedItems,
       this.token,
       this.employeeID,
       this.settingtime,
       this.startproductiontime,
-      // this.toollist,
       this.okqty,
-      //this.selectedtoollist,
       this.workcentreid,
       this.workstationid,
       this.pdfmdocid,
@@ -56,9 +50,6 @@ class OMPLoadingState extends OMPState {
       this.operatorrejresons,
       this.productionstatusid,
       this.getpreviousproductiontime,
-      //this.isAlreadyEndProduction,
-      // this.productbomid,
-      // this.productRouteDetails
       this.rejresons);
 }
 

@@ -28,7 +28,7 @@ class AssignedmachineRepository {
         return 'Android id not available';
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
     return assignedMachineDataList
         .map((machine) => AssignedMachine.fromJson(machine))

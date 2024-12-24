@@ -818,7 +818,6 @@ class ProductResourceManagement extends StatelessWidget {
               documentsList.insert(
                   0, ProductionInstructionsWithDocuments(id: 'DE_123'));
               if (documentsList.isNotEmpty) {
-                debugPrint(documentsList.toString());
                 uploadedFilesList.add(documentsList);
               }
               QuickFixUi()
@@ -922,7 +921,6 @@ class ProductResourceManagement extends StatelessWidget {
               QuickFixUi().showCustomDialog(
                   context: context, errorMessage: 'File deleted successfully.');
             } catch (e) {
-              debugPrint(e.toString());
               QuickFixUi().showCustomDialog(
                   context: context, errorMessage: 'Unable to open file.');
             }

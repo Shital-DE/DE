@@ -198,12 +198,7 @@ class _DashboardState extends State<Dashboard> {
                 return quality(context, state);
               } else if (state.folder['name'] == 'Account') {
                 return const Text('');
-              }
-              // else if (state.folder['name'] == 'Common Reports') {
-              //   // return RouteData.getRouteData(
-              //   //     context, RouteName.mailmoduledashbord, {});
-              // }
-              else if (state.folder['name'] == 'Dashboard') {
+              } else if (state.folder['name'] == 'Dashboard') {
                 return Dashboardresponsive(
                   programsList: state.programsList,
                 );

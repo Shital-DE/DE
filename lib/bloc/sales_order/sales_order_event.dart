@@ -18,16 +18,3 @@ class IssueStockForAsssemblyEvent extends SalesOrderEvent {
 
   IssueStockForAsssemblyEvent({this.selectedProduct});
 }
- // String
-  // recordId,
-  //     selectedProductId,
-  //     selectedProduct,
-  //     selectedQuantity,
-  //     revisionNumber,
-  //     soDetailsId;
-  //   this.recordId = '',
-      // this.selectedProductId = '',
-      // this.selectedProduct = '',
-      // this.revisionNumber = '',
-      // this.selectedQuantity = '1',
-      // this.soDetailsId = ''

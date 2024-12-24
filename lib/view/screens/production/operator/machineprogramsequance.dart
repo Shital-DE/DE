@@ -509,8 +509,7 @@ class MachinesequancePrograme extends StatelessWidget {
                     await notifierMessage(barcode, whatsappno, message);
                     whatsappno = [];
                   } else {
-                    // debugPrint(
-                    //     "already PR message sent and inserted in table");
+                    //
                   }
 
                   String checkresponce =
@@ -526,8 +525,6 @@ class MachinesequancePrograme extends StatelessWidget {
                     context: context,
                   );
 
-                  // debugPrint('5-------------------$checkresponce');
-
                   if (checkresponce == 'success') {
                     QuickFixUi.successMessage(checkresponce, context);
                     // isLoading = true;
@@ -541,13 +538,8 @@ class MachinesequancePrograme extends StatelessWidget {
                         cpchildid: arguments['cpchildid']);
                   } else {
                     QuickFixUi.errorMessage(checkresponce, context);
-                    // debugPrint(checkresponce.toString());
                   }
                 },
-                // style: ButtonStyle(
-                //     backgroundColor: MaterialStateProperty.resolveWith(
-                //         (states) => const Color.fromARGB(255, 109, 165, 167)))),
-                //   ],
               ));
         });
   }
@@ -641,7 +633,7 @@ class MachinesequancePrograme extends StatelessWidget {
   //                     String message1 =
   //                         "For ${barcodedata.product} has no product route or instruction set for ${data['workcentre'].toString().trim()} workcentre., Available Product route is:- ,${prd.toString().trim()},";
   //                     String message = formatString(message1);
-  //                     //  debugPrint(message.toString());
+  //                     //
 
   //                     await OperatorRepository.prmessageinsert(
   //                         productid: barcodedata.productid.toString(),
@@ -659,8 +651,7 @@ class MachinesequancePrograme extends StatelessWidget {
   //                     await notifierMessage(barcodedata, whatsappno, message);
   //                     whatsappno = [];
   //                   } else {
-  //                     // debugPrint(
-  //                     //     "already PR message sent and inserted in table");
+  //                     //
   //                   }
   //                 }
 
@@ -685,7 +676,7 @@ class MachinesequancePrograme extends StatelessWidget {
   //                       seqno: '00');
   //                 } else {
   //                   QuickFixUi.errorMessage(checkresponce, context);
-  //                   // debugPrint(checkresponce.toString());
+  //                   //
   //                 }
 
   //                 // await ProductionRoute().gotoOperatorScreen(
@@ -723,10 +714,7 @@ class MachinesequancePrograme extends StatelessWidget {
         var request = http.MultipartRequest('POST', Uri.parse(url));
         final response = await request.send();
         response;
-        // debugPrint(url.toString());
-        // debugPrint(response.toString());
       } catch (e) {
-        // debugPrint('Error reading file: $e');
         return "File Not Transfer";
       }
     }

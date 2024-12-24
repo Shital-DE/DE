@@ -12,8 +12,6 @@ import 'employeeovertime_state.dart';
 enum ToggleOvertimeOption { outsource, inhouse }
 
 class EOvertimeBLoc extends Bloc<EOvertime, EOvertimeState> {
-  // final BuildContext context;
-
   EOvertimeBLoc(contex) : super(OvertimeinitialState()) {
     on<EOvertimeEvent>((event, emit) async {
       String token = '', loginid = '';

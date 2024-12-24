@@ -3,7 +3,6 @@ part of 'dragdrop_bloc.dart';
 abstract class DragDropState extends Equatable {
   const DragDropState({required this.products});
   final List<ProductDragDrop> products;
-  // final List
 }
 
 class DragdropInitial extends DragDropState {

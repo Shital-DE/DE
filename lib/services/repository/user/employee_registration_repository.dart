@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
 import '../../../utils/app_url.dart';
 import 'package:http/http.dart' as http;
 import '../../../view/widgets/image_utility.dart';
@@ -168,7 +167,6 @@ class UserRegistrationRepository {
       if (payload.isNotEmpty) {
         http.Response response = await API()
             .postApiResponse(AppUrl.registerEmployee, token, payload);
-        debugPrint(response.body.toString());
         if (response.body.toString() == 'Inserted successfully') {
           return 'Inserted successfully';
         } else {

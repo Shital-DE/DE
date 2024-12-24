@@ -4,10 +4,7 @@
 // Modified Date :21 May 2023
 
 import 'dart:convert';
-// import 'package:de_opc/services/model/machine/assigned_machine.dart';
-// import 'package:de_opc/services/model/user/login_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../model/machine/assigned_machine.dart';
 import '../model/user/login_model.dart';
 
@@ -69,7 +66,7 @@ class MachineData {
           assignedMachineList.map((item) => jsonEncode(item)).toList();
       preferences.setStringList('machinedata', dataList);
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
     return true;
   }

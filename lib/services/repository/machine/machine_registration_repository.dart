@@ -35,7 +35,7 @@ class MachineRegistrationRepository {
             .toList();
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
   }
 
@@ -55,7 +55,7 @@ class MachineRegistrationRepository {
         return shiftPatternList.map((e) => ShiftPattern.fromJson(e)).toList();
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
   }
 
@@ -110,7 +110,7 @@ class MachineRegistrationRepository {
         }
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
   }
 
@@ -145,7 +145,7 @@ class MachineRegistrationRepository {
         }
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
   }
 }

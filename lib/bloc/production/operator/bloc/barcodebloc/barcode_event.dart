@@ -13,7 +13,7 @@ abstract class Operatormanual {}
 class OperatorScreenEvent extends Operatormanual {
   final List<String> selectedItems;
   final List<Tools> selectedtoollist;
-  //final List<OperatorRejectedReasons> operatorrejresons;
+
   final String settingtime, startproductiontime, rejresons;
   final int okqty, rejqty;
   final Barcode barcode;
@@ -28,7 +28,6 @@ class OperatorScreenEvent extends Operatormanual {
       this.barcode,
       this.machinedata,
       this.rejqty,
-      //this.operatorrejresons
       this.rejresons);
 }
 

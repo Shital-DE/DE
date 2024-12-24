@@ -32,7 +32,7 @@ class TabletRepository {
         return workcentreList.map((wc) => Workcentre.fromJson(wc)).toList();
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
   }
 
@@ -55,7 +55,7 @@ class TabletRepository {
         }
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
   }
 
@@ -113,7 +113,7 @@ class TabletRepository {
         }
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
   }
 

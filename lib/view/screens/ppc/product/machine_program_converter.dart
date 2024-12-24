@@ -8,13 +8,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-
 import '../../../../bloc/ppc/machine_program_conveter/program_converter_bloc.dart';
 import '../../../../bloc/ppc/machine_program_conveter/program_converter_event.dart';
 import '../../../../bloc/ppc/machine_program_conveter/program_converter_state.dart';
-
 import '../../../../services/model/product/product.dart';
-
 import 'package:open_file/open_file.dart' as open_file;
 
 // ignore: must_be_immutable
@@ -38,7 +35,6 @@ class MachineProgramConverter extends StatelessWidget {
   Future<List<File>> _pickFiles() async {
     var result = await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result == null) {
-      //  debugPrint("No file selected");
       return [];
     } else {
       List<File> files = result.files.map((file) => File(file.path!)).toList();
@@ -70,8 +66,6 @@ class MachineProgramConverter extends StatelessWidget {
     ];
     String categoryone = '', categorytwo = '';
     return Scaffold(
-      // appBar: CustomAppbar()
-      //     .appbar(context: context, title: 'Machine Program Conveter'),
       body: MakeMeResponsiveScreen(
         horixontaltab: programconverter(
             blocProvider, context, machineFormat, categoryone, categorytwo),
@@ -115,8 +109,6 @@ class MachineProgramConverter extends StatelessWidget {
                                     fontWeight: FontWeight.normal,
                                     color: Color.fromARGB(255, 10, 9, 10)),
                               ),
-                              // Container(
-                              //     width: 300, height: 50, child: Text("data")),
                               const SizedBox(
                                 height: 25,
                               ),
@@ -170,7 +162,7 @@ class MachineProgramConverter extends StatelessWidget {
                                     onChanged: (value) {
                                       convertedfiles = [];
                                       categoryone = value!.id.toString();
-                                      // debugPrint(categoryone);
+
                                       f1tof3.text = '';
                                       f1toHF.text = '';
                                       convertedProgram.text = '';
@@ -187,7 +179,6 @@ class MachineProgramConverter extends StatelessWidget {
                                   ),
                                 ),
                               ),
-
                               SizedBox(
                                 child: ElevatedButton(
                                   onPressed: () async {
@@ -215,8 +206,7 @@ class MachineProgramConverter extends StatelessWidget {
                                             String oldfilePath =
                                                 pickedFiles[i].path;
                                             oldprogrampath.add(oldfilePath);
-                                            // debugPrint(
-                                            //     'File Name: ${path.basename(pickedFiles[i].path)}');
+
                                             f1tof3.text = program.trim();
                                             String siemensProgram =
                                                 translateF1ToF3(f1tof3.text);
@@ -258,8 +248,6 @@ class MachineProgramConverter extends StatelessWidget {
                                             String oldfilePath =
                                                 pickedFiles[i].path;
                                             oldprogrampath.add(oldfilePath);
-                                            // debugPrint(
-                                            //     'File Name: ${path.basename(pickedFiles[i].path)}');
 
                                             f1toHF.text = program.trim();
                                             String siemensProgram =
@@ -280,9 +268,6 @@ class MachineProgramConverter extends StatelessWidget {
                                             file.writeAsString(
                                                 siemensProgram.trim());
                                             convertedfiles.add(file);
-
-                                            // String program1334 = await file.readAsString();
-                                            // debugPrint(program1334.toString());
                                           }
                                           blocProvider.add(
                                               ProgramConverterEvent(
@@ -391,7 +376,6 @@ class MachineProgramConverter extends StatelessWidget {
                                   child: const Text("Pick files"),
                                 ),
                               ),
-
                               const SizedBox(
                                 height: 23,
                               ),
@@ -470,78 +454,6 @@ class MachineProgramConverter extends StatelessWidget {
                                                 const SizedBox(
                                                   width: 21,
                                                 ),
-                                                /* IconButton(
-                                                  onPressed: () async {
-                                                    convertedProgram.text = '';
-                                                    oldProgram.text = '';
-                                                    convertedProgramlength = 0;
-                                                    oldProgramlength = 0;
-                                                    debugPrint(state
-                                                        .convertedfiles[index]
-                                                        .path
-                                                        .toString());
-
-                                                    convertedProgram.text =
-                                                        await state
-                                                            .convertedfiles[
-                                                                index]
-                                                            .readAsString();
-
-                                                    // List<String> newlines =
-                                                    //     convertedProgram.text
-                                                    //         .split('\n');
-
-                                                    // convertedProgramlength =
-                                                    //     newlines.length;
-                                                    List<String> liness =
-                                                        await state
-                                                            .convertedfiles[
-                                                                index]
-                                                            .readAsLines();
-                                                    convertedProgramlength =
-                                                        liness.length;
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                                    File oldfilepath = File(
-                                                        oldprogrampath[index]);
-                                                    // debugPrint(
-                                                    //     "old file path:----> ${oldfilepath.path}");
-                                                    String oldp =
-                                                        await oldfilepath
-                                                            .readAsString();
-                                                    oldProgram.text =
-                                                        oldp.toString().trim();
-
-                                                    List<String> lines =
-                                                        await oldfilepath
-                                                            .readAsLines();
-                                                    oldProgramlength =
-                                                        lines.length;
-
-                                                    // List<String> oldlines =
-                                                    //     oldProgram.text
-                                                    //         .split('\n');
-
-                                                    // oldProgramlength =
-                                                    //     oldlines.length;
-
-                                                    open_file.OpenFile.open(
-                                                        oldprogrampath[index]);
-
-                                                    blocProvider.add(
-                                                        ProgramConverterEvent(
-                                                            machinecategoryindex:
-                                                                categoryone,
-                                                            convertedfiles:
-                                                                convertedfiles,
-                                                            newProgramlength:
-                                                                convertedProgramlength,
-                                                            oldProgramlength:
-                                                                oldProgramlength));
-                                                  },
-                                                  icon: const Icon(
-                                                      Icons.visibility),
-                                                  color: Colors.blue,
-                                                ),*/
                                                 IconButton(
                                                   onPressed: () async {
                                                     File file = state

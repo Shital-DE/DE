@@ -179,12 +179,18 @@ class Routes {
                 context, RouteName.rejectedInstruments, {}));
 
       // Packing
-      case RouteName.packingScreen: // Packing screen
+      case RouteName.packingProductionScreen: // Packing production screen
         return MaterialPageRoute(
             builder: (BuildContext context) => RouteData.getRouteData(
-                context, RouteName.packingScreen, args!));
+                context, RouteName.packingProductionScreen, args!));
 
-      case RouteName.stock: // Stock
+      case RouteName.packingProcessesScreen: // Packing process screen
+        return MaterialPageRoute(
+            builder: (BuildContext context) => RouteData.getRouteData(
+                context, RouteName.packingProcessesScreen, args!));
+
+      // Stock
+      case RouteName.stock:
         return MaterialPageRoute(
             builder: (BuildContext context) =>
                 RouteData.getRouteData(context, RouteName.stock, {}));

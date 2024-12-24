@@ -4,12 +4,12 @@
 
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:de/bloc/production/quality/quality_dashboard_event.dart';
-import 'package:de/bloc/production/quality/quality_dashboard_state.dart';
+import 'package:de/bloc/production/quality/quality_event.dart';
+import 'package:de/bloc/production/quality/quality_state.dart';
 import 'package:de/services/repository/product/product_route_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../bloc/production/quality/quality_dashboard_bloc.dart';
+import '../../../../bloc/production/quality/quality_bloc.dart';
 import '../../../../services/model/operator/oprator_models.dart';
 import '../../../widgets/appbar.dart';
 import '../../../widgets/barcode_session.dart';
@@ -27,7 +27,7 @@ class QualityProductionProcessScreen extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: CustomAppbar()
-          .appbar(context: context, title: 'Quality processes screen'),
+          .appbar(context: context, title: 'Inspection processes '),
       body: BlocBuilder<QualityBloc, QualityState>(builder: (context, state) {
         if (state is QualityProductionProcessesState) {
           return Container(

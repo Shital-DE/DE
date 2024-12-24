@@ -17,7 +17,6 @@ import '../../../utils/responsive.dart';
 import '../../widgets/appbar.dart';
 import '../../widgets/dropdown/month.dart';
 import '../../widgets/table/custom_table.dart';
-// import '../common/internet_connection.dart';
 import '../common/server.dart';
 
 class MachineStatus extends StatelessWidget {
@@ -25,22 +24,17 @@ class MachineStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-        // InternetConnectionCheck(
-        //     widget:
-        Scaffold(
-            appBar: CustomAppbar()
-                .appbar(context: context, title: 'Machine status'),
-            body: SingleChildScrollView(
-              child: MakeMeResponsiveScreen(
-                  horixontaltab: getmachineStatusUi(context: context),
-                  verticaltab: getmachineStatusUi(context: context),
-                  windows: getmachineStatusUi(context: context),
-                  linux: getmachineStatusUi(context: context),
-                  mobile: getmachineStatusUi(context: context)),
-            )
-            // )
-            );
+    return Scaffold(
+        appBar:
+            CustomAppbar().appbar(context: context, title: 'Machine status'),
+        body: SingleChildScrollView(
+          child: MakeMeResponsiveScreen(
+              horixontaltab: getmachineStatusUi(context: context),
+              verticaltab: getmachineStatusUi(context: context),
+              windows: getmachineStatusUi(context: context),
+              linux: getmachineStatusUi(context: context),
+              mobile: getmachineStatusUi(context: context)),
+        ));
   }
 
   Widget getmachineStatusUi({required BuildContext context}) {

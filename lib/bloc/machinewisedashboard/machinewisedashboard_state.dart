@@ -1,5 +1,4 @@
 import '../../services/model/dashboard/dashboard_model.dart';
-// import '../../view/screens/dashboard/admin/machinewise_dashboard.dart';
 
 abstract class MWDState {}
 
@@ -15,7 +14,6 @@ class MWDLoadingState extends MWDState {
   List<MachineVolatgeData> voltageData = [];
   List<ProductionCyclevalue> cs = [];
   List<Industry4WorkstationTagId> wstagid = [];
-  //int switchValues = 0;
   int selectedShift = 1;
   String starttime = '';
   String endtime = '';
@@ -25,7 +23,6 @@ class MWDLoadingState extends MWDState {
 
   MWDLoadingState(
       {required this.workstationstatuslist,
-      // // required this.centrewiseenergyData
       required this.feedData,
       required this.currentspikes,
       required this.productiontimeData,
@@ -33,7 +30,6 @@ class MWDLoadingState extends MWDState {
       required this.efficiency,
       required this.cs,
       required this.partcount,
-      //required this.switchValues,
       required this.selectedShift,
       required this.starttime,
       required this.endtime,

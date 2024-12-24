@@ -13,8 +13,7 @@ class DragDropBloc extends Bloc<DragDropEvent, DragDropState> {
     on<RunnumberEvent>((event, emit) async {
       List<ProductDragDrop> products =
           await CapacityPlanRepository.cpDragAndDrop(event.runnumber);
-      // List<WorkstationCP> workstation =
-      //     await CapacityPlanRepository.cpWorkstationList();
+
       List<WorkcentreCP> workcentre =
           await CapacityPlanRepository.cpWorkcentreList();
       emit(DragdropLoadedList(
@@ -29,8 +28,7 @@ class DragDropBloc extends Bloc<DragDropEvent, DragDropState> {
           product: event.product, workcentreId: event.workcentre);
       List<ProductDragDrop> products =
           await CapacityPlanRepository.cpDragAndDrop(event.product.runnumber!);
-      // List<WorkstationCP> workstation =
-      //     await CapacityPlanRepository.cpWorkstationList();
+
       List<WorkcentreCP> workcentre =
           await CapacityPlanRepository.cpWorkcentreList();
       emit(DragdropLoadedList(
@@ -44,9 +42,6 @@ class DragDropBloc extends Bloc<DragDropEvent, DragDropState> {
       String str = await CapacityPlanRepository.saveAllDragDropProduct(
           product: event.product);
       if (str == 'success') {
-        // List<ProductDragDrop> products =
-        //     await CapacityPlanRepository.cpDragAndDrop(event.runnumber);
-
         List<WorkcentreCP> workcentre =
             await CapacityPlanRepository.cpWorkcentreList();
         emit(DragdropLoadedList(

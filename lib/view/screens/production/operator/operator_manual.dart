@@ -296,9 +296,7 @@
 //                                                       value!.id.toString()));
 //                                               toolselectItem =
 //                                                   value.id.toString();
-//                                               // debugPrint(
-//                                               //     "resonsselectlist.....;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
-//                                               // debugPrint(toolselectItem);
+//                                               /
 //                                             }
 //                                           }
 //                                         }
@@ -481,7 +479,7 @@
 //                                   state.workcentreid &&
 //                               state.productRouteDetails['wcid'] !=
 //                                   '4028817165f0a36c0165f0a95e1c0006') {
-//                             debugPrint("The values are not same of wc machine");
+//                            
 //                             if (state.workcentreid ==
 //                                 '4028817165f0a36c0165f0a89c410004') {
 //                               nseqno = 800;
@@ -496,8 +494,7 @@
 //                             }
 
 //                             ver = state.productRouteDetails['Route_version'];
-//                             debugPrint(
-//                                 "new diff seqno.....$ver/////>>>>>>>>>>>>>>>>>>>>");
+//                             
 
 //                             ///create function here for revision route create
 //                             OperatorRepository
@@ -516,14 +513,14 @@
 //                                   state.barcode.productid.toString() &&
 //                               state.productRouteDetails['wcid'] !=
 //                                   state.workcentreid) {
-//                             debugPrint("previous workcenter is same");
+//                            
 //                           } else if (state.productRouteDetails['productid'] ==
 //                                   state.barcode.productid.toString() &&
 //                               state.productRouteDetails['wcid'] ==
 //                                   '4028817165f0a36c0165f0a95e1c0006') {
 //                             if (state.workcentreid ==
 //                                 '4028817165f0a36c0165f0a95e1c0006') {
-//                               debugPrint("First Product route complete");
+//                               
 //                             } else if (state.productRouteDetails['wcid'] !=
 //                                 state.workcentreid) {
 //                               int rversion =
@@ -542,8 +539,7 @@
 //                                 context,
 //                               );
 
-//                               debugPrint(
-//                                   "new version new route----------$rversion");
+//                               
 //                             }
 //                           }
 //                         }
@@ -778,7 +774,7 @@
 //                                       .id
 //                                       .toString());
 //                                 }
-//                                 // debugPrint(selectedItems.toString());
+//                                 
 //                                 BlocProvider.of<OperatorManualScreenBloc>(
 //                                         context)
 //                                     .add(OperatorScreenEvent(
@@ -989,7 +985,7 @@
 //                                             Navigator.of(context).pop();
 //                                           });
 //                                         } catch (e) {
-//                                           debugPrint(e.toString());
+//                                           
 //                                         }
 //                                       },
 //                                       style: AppTheme.roundedButtonStyle(),
@@ -1022,7 +1018,7 @@
 //                                             Navigator.of(context).pop();
 //                                           });
 //                                         } catch (e) {
-//                                           debugPrint(e.toString());
+//                                           
 //                                         }
 //                                       },
 //                                       style: AppTheme.roundedButtonStyle(),
@@ -1129,7 +1125,7 @@
 //                                             Navigator.of(context).pop();
 //                                           });
 //                                         } catch (e) {
-//                                           debugPrint(e.toString());
+//                                          
 //                                         }
 //                                       },
 //                                       style: AppTheme.roundedButtonStyle(),
@@ -1162,7 +1158,7 @@
 //                                             Navigator.of(context).pop();
 //                                           });
 //                                         } catch (e) {
-//                                           debugPrint(e.toString());
+//                                        
 //                                         }
 //                                       },
 //                                       style: AppTheme.roundedButtonStyle(),

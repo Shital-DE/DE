@@ -9,11 +9,6 @@ void main() {
   runApp(const MyApp());
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
-
-  // SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.landscapeLeft,
-  //   DeviceOrientation.landscapeRight,
-  // ]);
 }
 
 class MyHttpOverrides extends HttpOverrides {

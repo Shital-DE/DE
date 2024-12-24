@@ -80,7 +80,10 @@ class ProductionProcessWidget {
                     child: Text(
                       row.combinedSequence == 900
                           ? 'Final inspection'
-                          : row.instruction.toString().trim(),
+                          : row.instruction == null &&
+                                  row.workcentre.toString().trim() == 'Packing'
+                              ? 'Packing'
+                              : row.instruction.toString().trim(),
                       textAlign: TextAlign.center,
                       style: AppTheme.labelTextStyle(),
                     ),
@@ -107,9 +110,15 @@ class ProductionProcessWidget {
                                     'selected_process': [row]
                                   });
                             } else if (screenName == 'Cutting') {
-                              debugPrint(row.combinedSequence.toString());
                               Navigator.pushNamed(
                                   context, RouteName.cuttingScreen,
+                                  arguments: {
+                                    'barcode': barcode,
+                                    'selected_process': [row]
+                                  });
+                            } else if (screenName == 'Packing') {
+                              Navigator.pushNamed(
+                                  context, RouteName.packingProductionScreen,
                                   arguments: {
                                     'barcode': barcode,
                                     'selected_process': [row]

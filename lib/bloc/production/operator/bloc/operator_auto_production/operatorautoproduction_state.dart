@@ -10,12 +10,8 @@ class OAPLoadingState extends OAPState {
   bool isAlreadyEndProduction;
   final List<DocumentDetails> pdfDetails;
   final List<DocumentDetails> modelsDetails;
-  //final List<String> selectedtoolsItems;
   List<Tools> toollist, selectedtoollist;
   final List<OperatorRejectedReasons> operatorrejresons;
-  //String settingtime;
-  // final int okqty, rejqty;
-  // bool getdataflag = false;
 
   final String token,
       employeeId,
@@ -31,11 +27,9 @@ class OAPLoadingState extends OAPState {
       machineid,
       machinename,
       getpreviousproductiontime,
-      // rejectedresonsid,
       instruction;
   Map<String, dynamic> productRouteDetails;
   Map<String, dynamic> productbomid;
-  //Map<String, dynamic> productiontimedata;
   OAPLoadingState({
     required this.barcode,
     required this.isAlreadyEndProduction,
@@ -49,26 +43,18 @@ class OAPLoadingState extends OAPState {
     required this.imageType,
     required this.pdfDetails,
     required this.modelsDetails,
-    //this.productionstatusid,
-    //required this.selectedtoolsItems,
     required this.toollist,
     required this.selectedtoollist,
-    // required this.okqty,
-    // required this.rejqty,
     required this.operatorrejresons,
     required this.productionstatusid,
     required this.getpreviousproductiontime,
     required this.productbomid,
     required this.productRouteDetails,
-    //required this.settingtime,
     required this.workcentreid,
     required this.workstationid,
-    // this.getdataflag,
     required this.machineid,
     required this.machinename,
-    // required this.rejectedresonsid,
     required this.instruction,
-    // required this.productiontimedata
   });
 }
 

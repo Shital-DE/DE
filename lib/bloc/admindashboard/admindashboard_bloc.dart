@@ -5,8 +5,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-// import 'package:provider/provider.dart';
-
 import '../../services/model/dashboard/dashboard_model.dart';
 import '../../services/repository/dashboard/dashboard_repository.dart';
 import 'admindashboard_event.dart';
@@ -24,12 +22,7 @@ class ADBBloc extends Bloc<ADBEvent, ADBState> {
 
       double shopefficiency = 0;
       double machineMonthwiseEnergyConsumption = 0;
-      String
-          //starttime = '',
-          //    endtime = '',
-          onlynowtime = '',
-          effiStarttime = '',
-          effiEndtime = '';
+      String onlynowtime = '', effiStarttime = '', effiEndtime = '';
       List wc = [];
       List<CentrewiseenergyData> centrewiseenergyData = [];
 
@@ -37,22 +30,10 @@ class ADBBloc extends Bloc<ADBEvent, ADBState> {
       String formattedDate = DateFormat('dd/MM/yyyy').format(today);
       String yearrmonth = DateFormat('yyyy-MM-dd').format(today);
 
-      // debugPrint("yearrmonth mm yyy -->>");
-      // debugPrint(yearrmonth);
-
-      // debugPrint("Today Date :---->>>>" + formattedDate);
-      // final nowdateFormat = DateFormat('dd/MM/yyyy HH:mm:ss');
       DateTime nowcurrentTime = DateTime.now().toLocal();
-      // String nowdatetime = nowdateFormat.format(nowcurrentTime);
 
       onlynowtime = DateFormat('HH:mm:ss').format(nowcurrentTime);
 
-      // DateTime nowDateTime2 = nowdateFormat.parse(nowdatetime);
-      // DateTime adjustedDateTime =
-      //     nowDateTime2.subtract(const Duration(hours: 24));
-      // starttime = nowdateFormat.format(adjustedDateTime);
-      // endtime = nowdatetime;
-      // debugPrint(starttime + '  ' + endtime);
       effiStarttime = "$formattedDate 00:00:01'";
       effiEndtime = "$formattedDate $onlynowtime";
       List<MachineSocketIDData> machineSocketID =
@@ -90,11 +71,6 @@ class ADBBloc extends Bloc<ADBEvent, ADBState> {
         }
       }
 
-      /*machinesByWorkcentreIdAndCode.forEach((id, machinesMap) {
-        machinesMap.forEach((code, machines) {
-          // debugPrint('Workcentre ID: $id, Code: $code, Machines: $machines');
-        });
-      });*/
       // Map to hold the total energy for each workcentre ID and code
       Map<String, double> totalEnergyByWorkcentreIdAndCode = {};
       double totalenergy = 0.0;
@@ -125,13 +101,6 @@ class ADBBloc extends Bloc<ADBEvent, ADBState> {
               double.parse((totalenergy + totalEnergy).toStringAsFixed(2));
         }
       }
-      // double totalenergy = 0.0;
-      // totalEnergyByWorkcentreIdAndCode.forEach((key, totalEnergy) {
-      //   totalenergy += totalEnergy;
-      //   debugPrint('Workcentre and Code: $key, Total Energy: $totalEnergy');
-      // });
-
-      debugPrint("Total energy consumption ---->>" + totalenergy.toString());
 
       Map<String, CentrewiseenergyData> centrewiseEnergyMap = {
         'CNCL': centrewiseenergyData.firstWhere(
@@ -236,22 +205,6 @@ class ADBBloc extends Bloc<ADBEvent, ADBState> {
       List<MachinenameAndData> organizedData =
           processData(centreUtilizationDataList);
       List<CentralOEE> centraloee = [];
-      /* for (var machine in organizedData) {
-        debugPrint("Machine Name: ${machine.machineName}");
-
-        if (machine.machineName == 'Mazak') {
-          for (var metric in machine.metrics) {
-            // debugPrint("End Time: ${metric.endTime}");
-            // debugPrint("OEE: ${metric.oee}");
-
-            DateTime utcDateTime = DateTime.parse(metric.endTime);
-            DateTime localDateTime = utcDateTime.toLocal();
-            // debugPrint(metric.endTime + localDateTime.toString());
-            centraloee.add(CentralOEE(localDateTime, metric.oee.toDouble()));
-          }
-          debugPrint("=================================");
-        }
-      }*/
 
       Map<String, double> averageOEEByMachine =
           calculateAverageOEEofCenters(organizedData);
@@ -293,7 +246,7 @@ class ADBBloc extends Bloc<ADBEvent, ADBState> {
       for (var data in centralizedData) {
         DateTime utcDateTime = DateTime.parse(data.endTime);
         DateTime localDateTime = utcDateTime.toLocal();
-        // debugPrint('End Time: ${data.endTime}, Average OEE: ${data.oee}');
+
         factoryOee.add(FactoryOEE(localDateTime, data.oee));
       }
 
@@ -349,13 +302,10 @@ class ADBBloc extends Bloc<ADBEvent, ADBState> {
       double fshopeffi = shopefficiency / centerEfficencyData.length;
       fshopeffi = double.parse(fshopeffi.toStringAsFixed(2));
 
-      // debugPrint(machineMonthwiseEnergyConsumption.toString());
-
       emit(ADBLoadingState(
           workstationstatuslist: workstationstatuslist,
           centrewiseenergyData: centrewiseenergyData,
           centerOEEData: centerOEEData,
-          //  buttonIndex: event.buttonIndex,
           shopefficiency: fshopeffi,
           centraloee: centraloee,
           factoryOee: factoryOee,
@@ -372,8 +322,7 @@ class ADBsecondBloc extends Bloc<ADBsecondEvent, ADBsecondState> {
   final BuildContext context;
 
   io.Socket? socket;
-  Map<String, int> productionStatusMap =
-      {}; // To store productionStatus for each machine
+  Map<String, int> productionStatusMap = {};
 
   List<Map<String, String>> machineSocketIDList = [
     {'machineName': 'DMG', 'id': '66447cc097413d47f8fae095'},
@@ -405,39 +354,25 @@ class ADBsecondBloc extends Bloc<ADBsecondEvent, ADBsecondState> {
         int productionStatus = int.parse(data['productionStatus'].toString());
         productionStatusMap[machine['machineName'].toString()] =
             productionStatus;
-        productionStatusMap.forEach((machineName, status) {
-          debugPrint(
-              'Machine ID11111: $machineName, Production Status: $status, Type: ${status.runtimeType}');
-        });
-        // add(ADBsecondEvent(
-        //   buttonIndex: 0, // Pass necessary event params
-        //   selectedCentreBotton: 6,
-        //   dashboardindex: 0,
-        // ));
-        // debugPrint(
-        //     'Machine: ${machine['machineName']}, Production Status: $productionStatus');
       });
     }
 
     // Error handling
     socket?.on('connect_error', (data) {
-      debugPrint('Connection Error: $data');
+      //
     });
 
     socket?.on('disconnect', (_) {
-      debugPrint('Disconnected');
+      //
     });
   }
 
   // Clean up socket connection when Bloc is closed
 
   ADBsecondBloc(this.context) : super(ADBsecondinitialState()) {
-    // connectToSocket();
-
     on<ADBsecondEvent>((event, emit) async {
       List<WorkstationStatusModel> workstationstatuslist = [];
-      List<WorkstationStatusModel> workstationstatuslist2 =
-          []; // for specific machines
+      List<WorkstationStatusModel> workstationstatuslist2 = [];
       List<WorkstationStatusModel> cncmachineslist = [], actulmachinelist = [];
       List<WorkstationStatusModel> vmcmachineslist = [],
           vmcenergymachinslist = [];
@@ -446,9 +381,9 @@ class ADBsecondBloc extends Bloc<ADBsecondEvent, ADBsecondState> {
       List<WorkstationStatusModel> dmgmachineslist = [];
 
       String onlynowtime = '', formattedDate = '', starttime = '', endtime = '';
-      // final nowdateFormat = DateFormat('dd/MM/yyyy HH:mm:ss');
+
       DateTime nowcurrentTime = DateTime.now().toLocal();
-      // String nowdatetime = nowdateFormat.format(nowcurrentTime);
+
       onlynowtime = DateFormat('HH:mm:ss').format(nowcurrentTime);
       formattedDate = DateFormat('dd/MM/yyyy').format(nowcurrentTime);
       starttime = "$formattedDate 00:00:01";
@@ -476,8 +411,7 @@ class ADBsecondBloc extends Bloc<ADBsecondEvent, ADBsecondState> {
 
       List<MachinewiseenergyData> machinewiseenergyDatafinal = [];
       List wc = [];
-      // var today = DateTime.now();
-      // String formattedDate = DateFormat('dd/MM/yyyy').format(today);
+
       workstationstatuslist = await DashboardRepository.getworkstationlist();
       List<String> cncl = [];
       List<String> vmc = [];
@@ -580,10 +514,6 @@ class ADBsecondBloc extends Bloc<ADBsecondEvent, ADBsecondState> {
                 energy, // y: Calculated efficiency
                 color, // color: Assigned color
               ));
-              // machinewiseenergyDatafinal.add(
-              //   MachinewiseenergyData(machine.trim(), totalEnergy,
-              //       const Color.fromARGB(255, 57, 165, 192)),
-              // );
             });
           }
           return energyData;
@@ -597,17 +527,13 @@ class ADBsecondBloc extends Bloc<ADBsecondEvent, ADBsecondState> {
         );
         energyConsumption;
       } else if (event.buttonIndex == 2) {
-        // vmc //////////////////////////////////////////////////////////////////////////////////////////////////////////
         workstationstatuslist2 = [];
         wsefficiencyData = [];
         actulmachinelist = [];
-        // vmcwseffi = [];
-        vmcenergymachinslist = [];
-        // double wseffi = 0.0;
-        machinewiseenergyDatafinal = [];
 
-        // MachinewiseenergyData energydata =
-        //     MachinewiseenergyData('', 0, const Color(0));
+        vmcenergymachinslist = [];
+
+        machinewiseenergyDatafinal = [];
 
         for (var item in workstationstatuslist) {
           if (item.wrWorkcentreId == '402881ea5dcffbaa015dd00339660006') {
@@ -620,17 +546,6 @@ class ADBsecondBloc extends Bloc<ADBsecondEvent, ADBsecondState> {
 
             vmcenergymachinslist.removeWhere(
                 (element) => element.id == 'b6baa999c88a4e79a958efa6f8f025de');
-
-            // if (item.idletime != null) {
-            //   workstationsVMCidletimetag.add(item.idletime.toString().trim());
-            // }
-            // if (item.productiontime != null) {
-            //   workstationsVMCproductiontimetag
-            //       .add(item.productiontime.toString().trim());
-            // }
-            // if (item.energy != null) {
-            //   workstationsvmcenergytag.add(item.energy.toString().trim());
-            // }
           }
         }
         workstationstatuslist2 = actulmachinelist;
@@ -671,10 +586,6 @@ class ADBsecondBloc extends Bloc<ADBsecondEvent, ADBsecondState> {
                 energy, // y: Calculated efficiency
                 color, // color: Assigned color
               ));
-              // machinewiseenergyDatafinal.add(
-              //   MachinewiseenergyData(machine.trim(), totalEnergy,
-              //       const Color.fromARGB(255, 57, 165, 192)),
-              // );
             });
           }
           return energyData;
@@ -688,32 +599,16 @@ class ADBsecondBloc extends Bloc<ADBsecondEvent, ADBsecondState> {
         );
         energyConsumption;
       } else if (event.buttonIndex == 3) {
-        //i700 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         workstationstatuslist2 = [];
         wsefficiencyData = [];
         actulmachinelist = [];
-        // i700wseffi = [];
 
-        // double wseffi = 0.0;
         machinewiseenergyDatafinal = [];
-        // MachinewiseenergyData energydata =
-        //     MachinewiseenergyData('', 0, const Color(0));
 
         for (var item in workstationstatuslist) {
           if (item.wrWorkcentreId == '402881ea5dcffbaa015dd004554a0008') {
             actulmachinelist.add(item);
             i700machineslist.add(item);
-
-            // if (item.idletime != null) {
-            //   workstationsi700idletimetag.add(item.idletime.toString().trim());
-            // }
-            // if (item.productiontime != null) {
-            //   workstationsi700productiontimetag
-            //       .add(item.productiontime.toString().trim());
-            // }
-            // if (item.energy != null) {
-            //   workstationsi700energytag.add(item.energy.toString().trim());
-            // }
           }
         }
         workstationstatuslist2 = actulmachinelist;
@@ -753,10 +648,6 @@ class ADBsecondBloc extends Bloc<ADBsecondEvent, ADBsecondState> {
                 energy, // y: Calculated efficiency
                 color, // color: Assigned color
               ));
-              // machinewiseenergyDatafinal.add(
-              //   MachinewiseenergyData(machine.trim(), totalEnergy,
-              //       const Color.fromARGB(255, 57, 165, 192)),
-              // );
             });
           }
           return energyData;
@@ -774,8 +665,7 @@ class ADBsecondBloc extends Bloc<ADBsecondEvent, ADBsecondState> {
         workstationstatuslist2 = [];
         wsefficiencyData = [];
         actulmachinelist = [];
-        // mazakwseffi = [];
-        // double wseffi = 0.0;
+
         machinewiseenergyDatafinal = [];
 
         for (var item in workstationstatuslist) {
@@ -839,18 +729,10 @@ class ADBsecondBloc extends Bloc<ADBsecondEvent, ADBsecondState> {
         //////// dmg        ////////////////////////////////////////////////////////////////////////////////////////
         workstationstatuslist2 = [];
         machinewiseenergyDatafinal = [];
-        // MachinewiseenergyData energydata =
-        //     MachinewiseenergyData('', 0, const Color(0));
 
         for (var item in workstationstatuslist) {
           if (item.wrWorkcentreId == '4028817170aedeb70170af7e2821001e') {
             dmgmachineslist.add(item);
-
-            // if (item.energy != null) {
-            //   workstationsdmgenergytag.add(item.energy.toString().trim());
-            // }
-
-            // debugPrint(item.code.toString());
           }
         }
         workstationstatuslist2 = dmgmachineslist;
@@ -890,10 +772,6 @@ class ADBsecondBloc extends Bloc<ADBsecondEvent, ADBsecondState> {
                 energy, // y: Calculated efficiency
                 color, // color: Assigned color
               ));
-              // machinewiseenergyDatafinal.add(
-              //   MachinewiseenergyData(machine.trim(), totalEnergy,
-              //       const Color.fromARGB(255, 57, 165, 192)),
-              // );
             });
           }
           return energyData;
@@ -906,32 +784,6 @@ class ADBsecondBloc extends Bloc<ADBsecondEvent, ADBsecondState> {
           onlynowtime,
         );
         energyConsumption;
-
-        // workstationsdmgEnergy = await DashboardRepository.workstationenergy(
-        //   tagid: workstationsdmgenergytag,
-        //   formattedDate: formattedDate,
-        // );
-
-        // for (int i = 0; i <= dmgmachineslist.length - 1; i++) {
-        //   // wseffi = (workstationsmazakProduction[i] /
-        //   //     (workstationsmazakProduction[i] + workstationsmazakIdle[i]) *
-        //   //     100);
-        //   // wseffi = double.parse(wseffi.toStringAsFixed(2));
-        //   // mazakwseffi.add(wseffi);
-        //   // EfficiencyData efficiencyData = EfficiencyData(
-        //   //     mazakmachineslist[i].code.toString(),
-        //   //     mazakwseffi[i],
-        //   //     const Color.fromARGB(255, 103, 173, 194));
-        //   // wsefficiencyData.add(efficiencyData);
-
-        //   MachinewiseenergyData dmgenergydata = MachinewiseenergyData(
-        //     dmgmachineslist[i].code.toString().trim(),
-        //     workstationsdmgEnergy[i] != 0 ? workstationsdmgEnergy[i] : 0,
-        //     // Color.fromARGB(255, 94, i + 50, 197)
-        //   );
-
-        //   machinewiseenergyDatafinal.add(dmgenergydata);
-        // }
       }
 
       emit(ADBsecondLoadingState(
@@ -957,230 +809,3 @@ class ADBsecondBloc extends Bloc<ADBsecondEvent, ADBsecondState> {
     });
   }
 }
-
-/*
-class SocketIoDataBloc extends Bloc<SocketioEvent, Socketiostate> {
-  final BuildContext context;
-
-  io.Socket? socket;
-  Map<String, int> productionStatusMap = {};
-  final StreamController<List<MachineSocketIO>> socketIOData;
-
-  List<Map<String, String>> machineSocketIDList = [
-    {'machineName': 'DMG', 'id': '66447cc097413d47f8fae095'},
-    {'machineName': 'CNC-S2', 'id': '66893589241854b309b1012e'},
-    {'machineName': 'CNC-S3', 'id': '668935ad241854b309b10137'},
-    {'machineName': 'CNC-S4', 'id': '668935d1241854b309b10147'},
-    {'machineName': 'VMC-F1', 'id': '668e37fa49dcc80bb42cfa61'},
-    {'machineName': 'VMC-F3', 'id': '668e37bb49dcc80bb42cf9a3'},
-    {'machineName': 'TS', 'id': '668e379949dcc80bb42cf96f'},
-    {'machineName': 'Hartford', 'id': '6691108496d3ae07ec84dc04'},
-    {'machineName': 'Mazak-300', 'id': '668f6992db97d2f2cb150256'},
-  ];
-
-  void connectToSocket() {
-    socket = io.io('http://103.173.51.130:9003', <String, dynamic>{
-      'transports': ['websocket'],
-      'autoConnect': false,
-    });
-    socket?.connect();
-    for (var machine in machineSocketIDList) {
-      String machineId = machine['id']!;
-      String kpiEvent = 'kpi/$machineId';
-      socket?.on(kpiEvent, (data) {
-        int productionStatus = int.parse(data['productionStatus'].toString());
-        productionStatusMap[machine['machineName'].toString()] =
-            productionStatus;
-        List<MachineSocketIO> socketIODataList =
-            productionStatusMap.entries.map(
-          (entry) {
-            return MachineSocketIO(
-              machineName: entry.key,
-              state: entry.value,
-            );
-          },
-        ).toList();
-    socketIOData.add(
-            socketIODataList); // StreamController being used to broadcast data
-
-        for (var machineSocketIO in socketIODataList) {
-          debugPrint(
-              'Machine: ${machineSocketIO.machineName}, Production Status: ${machineSocketIO.state}');
-        }
-      });
-    }
-
-    socket?.on('connect_error', (data) {
-      debugPrint('Connection Error: $data');
-    });
-
-    socket?.on('disconnect', (_) {
-      debugPrint('Disconnected');
-    });
-  }
-
-  SocketIoDataBloc(this.context, this.socketIOData)
-      : super(SocketioinitialState()) {
-    on<SocketioEvent>((event, emit) async {
-      // Establish socket connection and start listening for data
-      debugPrint("starting the socket data");
-      connectToSocket();    
-
-      await emit.forEach<List<MachineSocketIO>>(
-        socketIOData.stream,
-        onData: (updatedData) {
-          return SocketioLoadingState(
-            socketIODataList:
-                updatedData, // Pass the list of MachineSocketIO objects
-          );
-        },
-        onError: (error, stackTrace) {
-          debugPrint("Error in stream: $error");
-          return SocketioErrorState(errorMessage: error.toString());
-        },
-      );
-      @override 
-      Future<void> close() {
-        socket?.dispose(); // Properly close the socket connection
-        debugPrint("this socket connection closing......");
-        return super.close();
-      }
-    });
-  }
-}*/
-/*
-class SocketIoDataBloc extends Bloc<SocketioEvent, Socketiostate> {
-  final BuildContext context;
-  io.Socket? socket;
-  Map<String, int> productionStatusMap = {};
-  final StreamController<List<MachineSocketIO>> socketIOData;
-
-  List<Map<String, String>> machineSocketIDList = [
-    {'machineName': 'CNC-S2', 'id': '66893589241854b309b1012e'},
-    {'machineName': 'CNC-S3', 'id': '668935ad241854b309b10137'},
-    {'machineName': 'CNC-S4', 'id': '668935d1241854b309b10147'},
-    {'machineName': 'CNC-S5', 'id': '66893609241854b309b10154'},
-    {'machineName': 'CNC-S6', 'id': '66893627241854b309b1015d'},
-    {'machineName': 'TS', 'id': '668e379949dcc80bb42cf96f'},
-
-    {'machineName': 'VMC-F1', 'id': '668e37fa49dcc80bb42cfa61'},
-    {'machineName': 'VMC-F2', 'id': '66447ccf97413d47f8fae09f'},
-    {'machineName': 'VMC-F3', 'id': '668e37bb49dcc80bb42cf9a3'},
-    {'machineName': 'VMC-F4', 'id': '668e37dc49dcc80bb42cfa2f'},
-    {'machineName': 'VMC AMS', 'id': '66893646241854b309b10166'},
-    {'machineName': 'VMC BFW', 'id': '6689366c241854b309b1016f'},
-    {'machineName': 'DMG', 'id': '66447cc097413d47f8fae095'},
-    // {'machineName': 'Hartford', 'id': '6691108496d3ae07ec84dc04'},
-    // {'machineName': 'Variaxies-i700', 'id': '668f805a0d15f4cb555a0777'},
-    // {'machineName': 'Mazak-300', 'id': '668f6992db97d2f2cb150256'},
-    // {'machineName': 'Mazak-200', 'id': '6701292c8452ff20864fa34f'},
-  ];
-
-  // Function to connect to the socket
-  void connectToSocket() {
-    socket = io.io('http://103.173.51.130:9003', <String, dynamic>{
-      'transports': ['websocket'],
-      'autoConnect': false,
-    });
-    socket?.connect();
-
-    for (var machine in machineSocketIDList) {
-      String machineId = machine['id']!;
-      String kpiEvent = 'kpi/$machineId';
-      socket?.on(kpiEvent, (data) {
-        try {
-          int productionStatus;
-          var productionStatusString = data['productionStatus']?.toString();
-
-          // Check if productionStatus is null or empty
-          if (productionStatusString == null ||
-              productionStatusString.isEmpty) {
-            debugPrint(
-                'Production status is null or empty for machine ${machine['machineName']}');
-            productionStatus = 898989;
-          } else {
-            productionStatus = int.parse(productionStatusString);
-          }
-
-          // Update the map with the status
-          productionStatusMap[machine['machineName'] ?? 'Unknown'] =
-              productionStatus;
-
-          // Convert map to list and add to the StreamController
-          List<MachineSocketIO> socketIODataList =
-              productionStatusMap.entries.map(
-            (entry) {
-              return MachineSocketIO(
-                machineName: entry.key,
-                state: entry.value,
-              );
-            },
-          ).toList();
-
-          socketIOData.add(socketIODataList);
-        } catch (e) {
-          debugPrint(
-              'Error parsing production status for machine ${machine['machineName']}: $e');
-        }
-      });
-    }
-      socket?.on('connect_error', (data) {
-        debugPrint('Connection Error: $data');
-      });
-      socket?.on('disconnect', (_) {
-        debugPrint('Disconnected');
-      });
-  }
-
-  // Override close method to clean up resources
-  @override
-  Future<void> close() {
-    socket?.disconnect();
-    socket?.dispose(); // Properly close the socket connection
-    debugPrint("Closing socket connection...");
-    socketIOData.close();
-    return super.close();
-  }
- 
-  SocketIoDataBloc(this.context, this.socketIOData)
-      : super(SocketioinitialState()) {
-    on<SocketioEvent>((event, emit) async {    
-      debugPrint("starting the socket data");
-      connectToSocket();
-
-       socketIOData.stream.listen((data) {
-        debugPrint("socketIOData stream emits data: $data");
-        // debugPrint(data.first.machineName + " "+ data.first.state.toString());
-      });
-
-      // Retrieve initial data if available
-      List<MachineSocketIO>? initialData = await socketIOData.stream.first;
-
-      if (initialData.isEmpty) {
-        debugPrint("No data found in the initial socketIOData stream.");
-      } else {        
-        debugPrint("Data received from socketIOData stream:");
-
-        for (var machine in initialData) {
-          debugPrint(
-              "Machine: ${machine.machineName}, Production Status: ${machine.state}");
-        }
-
-        await emit.forEach<List<MachineSocketIO>>(
-          socketIOData.stream,
-          onData: (updatedData) {
-            return SocketioLoadingState(
-              socketIODataList: updatedData,
-            );
-          },
-          onError: (error, stackTrace) {
-            debugPrint("Error in stream: $error");
-            return SocketioErrorState(errorMessage: error.toString());
-          },
-        );
-
-      }
-    });
-  }
-}
-*/

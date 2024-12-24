@@ -2,7 +2,6 @@ part of 'dragdrop_bloc.dart';
 
 abstract class DragDropEvent {
   const DragDropEvent();
-  // final int runnumber;
 }
 
 class RunnumberEvent extends DragDropEvent {

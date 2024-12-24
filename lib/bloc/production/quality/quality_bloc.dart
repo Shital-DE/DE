@@ -7,16 +7,14 @@ import 'package:de/services/repository/product/product_route_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../services/model/common/document_model.dart';
 import '../../../services/model/machine/workcentre.dart';
-// import '../../../services/model/operator/oprator_models.dart';
 import '../../../services/model/product/product_route.dart';
 import '../../../services/model/quality/quality_models.dart';
 import '../../../services/repository/common/documents_repository.dart';
 import '../../../services/repository/common/tablet_repository.dart';
-// import '../../../services/repository/operator/operator_repository.dart';
 import '../../../services/repository/quality/quality_repository.dart';
 import '../../../services/session/user_login.dart';
-import 'quality_dashboard_event.dart';
-import 'quality_dashboard_state.dart';
+import 'quality_event.dart';
+import 'quality_state.dart';
 
 class QualityBloc extends Bloc<QualityEvents, QualityState> {
   QualityBloc() : super(QualityInitialState()) {
@@ -131,13 +129,7 @@ class QualityBloc extends Bloc<QualityEvents, QualityState> {
       final userdata = await UserData.getUserData();
       final machineData = await MachineData.geMachineData();
       final macData = jsonDecode(machineData.toString());
-      // List<String> tableColumnsList = [
-      //   'Sequence number',
-      //   'Instruction',
-      //   'Setup minuts',
-      //   'Runtime minuts',
-      //   'Action'
-      // ];
+
       List<ProductAndProcessRouteModel> productProcessRouteList =
           await ProductRouteRepository().oneWorkcentreProductRoute(
         token: userdata['token'],
@@ -147,7 +139,6 @@ class QualityBloc extends Bloc<QualityEvents, QualityState> {
       );
       emit(QualityProductionProcessesState(
           productProcessRouteList: productProcessRouteList,
-          // tableColumnsList: tableColumnsList,
           token: userdata['token'],
           userId: userdata['data'][0]['id'],
           workcentreId: macData[0]['wr_workcentre_id'],

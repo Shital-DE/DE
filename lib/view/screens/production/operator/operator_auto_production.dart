@@ -344,17 +344,7 @@ class OperatorAutoProduction extends StatelessWidget {
                                         .toStringAsFixed(2)
                                     : "0.00";
 
-                            // debugPrint(pcount.toString());
-                            // debugPrint(productiontime.toString());
-                            // debugPrint(idletime.toString());
-                            // debugPrint(energyconsumed.toString());
-                            //  .toStringAsFixed(2)); //.toStringAsFixed(2);
                             if (state is OAPLoadingState) {
-                              // if (state.selectedtoollist.isEmpty) {
-                              //   QuickFixUi().showCustomDialog(
-                              //       context: context,
-                              //       errorMessage: "Please select tool");
-                              // } else
                               if (newokqty <= 0) {
                                 QuickFixUi().showCustomDialog(
                                     context: context,
@@ -367,24 +357,15 @@ class OperatorAutoProduction extends StatelessWidget {
                                     errorMessage:
                                         "Please select rejected reason");
                               } else {
-                                // List<String> selecttool = [];
-                                // for (var data in state.selectedtoollist) {
-                                //   selecttool.add(data.id.toString());
-                                // }
-                                // String resulttolllist = selecttool.join(', ');
                                 confirmEndProcess(
                                     context: context,
                                     state: state,
-                                    // selectedlisttool: resulttolllist,
                                     newrejqty: snapshot.data != null
                                         ? snapshot.data!
                                         : 0,
                                     okqty: okqty,
                                     rejqty: rejqty,
                                     rejresonsid: rejresonsid,
-                                    // seletedtoollistcontroller:
-                                    //     seletedtoollistcontroller,
-                                    // matchedTools: matchedTools,
                                     producedcount: int.parse(pcount),
                                     productiontime: int.parse(productiontime),
                                     idletime: int.parse(idletime),

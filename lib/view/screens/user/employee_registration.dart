@@ -787,7 +787,7 @@ class EmployeeRegistration extends StatelessWidget {
                       }
                     }
                   } catch (e) {
-                    debugPrint('Error : $e');
+                    //
                   }
                 },
                 child: const Text('Yes')),
@@ -2659,8 +2659,7 @@ class EmployeeRegistration extends StatelessWidget {
                                 365 <
                             18) {
                           return QuickFixUi.errorMessage(
-                              ageValidationMessage,
-                              context);
+                              ageValidationMessage, context);
                         } else {
                           blocProvider.add(GetPersonalInfo(
                             selectedHonorific: innerState.selectedHonorific,
@@ -2696,8 +2695,6 @@ class EmployeeRegistration extends StatelessWidget {
       },
     );
   }
-
-  
 
   BlocBuilder<EmpRegBloc, EmpRegState> lastName(
       {required double conHeight,

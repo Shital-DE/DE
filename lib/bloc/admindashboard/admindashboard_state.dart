@@ -1,5 +1,4 @@
 import '../../services/model/dashboard/dashboard_model.dart';
-// import '../../view/screens/dashboard/dashboard.dart';
 
 abstract class ADBState {}
 
@@ -13,7 +12,7 @@ class ADBLoadingState extends ADBState {
   List<FactoryOEE> factoryOee = [];
   List<FactoryEfficency> factoryEfficency = [];
   List<EfficiencyData> centerEfficencyData = [];
-  // final int buttonIndex;
+
   double shopefficiency = 0.0;
   double totalenergy = 0.0;
   double machineMonthwiseEnergyConsumption = 0;
@@ -46,7 +45,7 @@ class ADBsecondLoadingState extends ADBsecondState {
   List<EfficiencyData> wsefficiencyData;
   int buttonIndex;
   int selectedCentreBotton;
-  Map<String, int> productionStatusMap; // Added productionStatusMap
+  Map<String, int> productionStatusMap;
 
   ADBsecondLoadingState({
     required this.workstationstatuslist,
@@ -60,32 +59,6 @@ class ADBsecondLoadingState extends ADBsecondState {
     required this.wsefficiencyData,
     required this.machinewiseenergyData,
     required this.selectedCentreBotton,
-    required this.productionStatusMap, // Initialize productionStatusMap
+    required this.productionStatusMap,
   });
 }
-
-
-
-/*
-abstract class Socketiostate {}
-class SocketioinitialState extends Socketiostate {}
-
-class SocketioLoadingState extends Socketiostate {
- // Added productionStatusMap
-   final List<MachineSocketIO> socketIODataList;
-  //  final List<MachineSocketIO> socketIODataList;
-  final errorMessage='';
-  SocketioLoadingState({   
-    required this.socketIODataList, // Initialize productionStatusMap
-  });
-  
-
-
-}
-
-class SocketioErrorState extends Socketiostate {
-  final String errorMessage;
-  SocketioErrorState({required this.errorMessage});
-}
-*/
-

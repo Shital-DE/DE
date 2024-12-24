@@ -8,20 +8,15 @@ import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-
 import 'package:de/bloc/machinewisedashboard/machinewisedashboard_bloc.dart';
-
 import '../../../../bloc/machinewisedashboard/machinewisedashboard_event.dart';
 import '../../../../bloc/machinewisedashboard/machinewisedashboard_state.dart';
-
 import '../../../../services/model/dashboard/dashboard_model.dart';
 import '../../../../services/repository/dashboard/dashboard_repository.dart';
 import '../../../../utils/common/buttons.dart';
 import '../../../../utils/common/quickfix_widget.dart';
-// import '../../../../utils/constant.dart';
 import '../../../../utils/responsive.dart';
 import '../../../widgets/appbar.dart';
-// import '../../../widgets/date_range_picker.dart';
 
 // ignore: must_be_immutable
 class MachinewiseDashboard extends StatelessWidget {
@@ -52,14 +47,11 @@ class MachinewiseDashboard extends StatelessWidget {
           context: context, title: "${workstationstatuslist.machinename}"),
       body: Container(
         decoration: const BoxDecoration(
-          // borderRadius: BorderRadius.circular(0),
           color: Color.fromARGB(255, 0, 0, 0),
         ),
         width: MediaQuery.of(context).size.width,
         child: MakeMeResponsiveScreen(
-          //   windows: machinewisedashbord(blocProvider, context),
           windows: machinewisedashbordTablet(context, blocprovider),
-          //  horixontaltab: machinewisedashbord(blocProvider, context),
           horixontaltab: machinewisedashbordTablet(context, blocprovider),
           mobile: machinewisedashbordMobile(context, blocprovider),
         ),
@@ -77,9 +69,8 @@ class MachinewiseDashboard extends StatelessWidget {
                 ));
                 dashboardDate.text = '';
               },
-              backgroundColor: const Color.fromARGB(
-                  255, 245, 147, 82), // Button background color
-              foregroundColor: Colors.white, // Icon color
+              backgroundColor: const Color.fromARGB(255, 245, 147, 82),
+              foregroundColor: Colors.white,
               shape: const CircleBorder(),
               child: const Icon(Icons.refresh),
             )

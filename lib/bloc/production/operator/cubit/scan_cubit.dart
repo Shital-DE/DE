@@ -6,7 +6,6 @@ import 'package:de/services/repository/operator/operator_repository.dart';
 import 'package:de/services/session/barcode.dart';
 import 'package:de/services/session/user_login.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 part 'scan_state.dart';
 
@@ -30,29 +29,12 @@ class ScanCubit extends Cubit<ScanState> {
           documentno: barcode['document_no']!);
 
       if (barcode.isNotEmpty) {
-        // List<String> stringList =
-        //     barCode.map((barcode) => barcode.toString()).toList();
         List<Barcode> barcodelist = [barCode];
         final List<String> barcodeDataList =
             barcodelist.map((item) => jsonEncode(item)).toList();
-        ProductData.saveBarcodeData(barcodelist: barcodeDataList
-            //[
-            // barCode.productid.toString(),
-            // barCode.rawmaterialissueid.toString(),
-            // barCode.poid.toString(),
-            // ]
-            );
+        ProductData.saveBarcodeData(barcodelist: barcodeDataList);
       }
       List<String> machinedata = await MachineData.geMachineData();
-      // String workstationid = '';
-      machinedata.map((jsonString) {
-        // workstationid = jsonDecode(jsonString)['workstationid'];
-      }).toList();
-      // List<MachineCenterProcess> mprocesslist =
-      //     await OperatorRepository.getMachineProcess(
-      //         //wsid: workstationid
-      //         // '213eff3361214449b188abdd79df628c'
-      //         );
 
       if (val == true) {
         emit(ScanState(
@@ -79,9 +61,7 @@ class OperatorScreenCubit extends Cubit<OperatorScreenState> {
 
   void listReasons() {
     List<String> reason = ['abc', 'def', 'ghi'];
-    // print("<<<<<<<<<<<<<reason....>>>>>>>>>>>>>");
-    // if (val == false) {
+
     emit(OperatorScreenState(reasons: reason));
-    // }
   }
 }

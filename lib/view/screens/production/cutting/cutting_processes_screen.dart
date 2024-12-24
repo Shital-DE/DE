@@ -26,8 +26,8 @@ class CuttingProcessesScreen extends StatelessWidget {
       barcode: arguments['barcode'],
     ));
     return Scaffold(
-      appBar: CustomAppbar()
-          .appbar(context: context, title: 'Quality processes screen'),
+      appBar:
+          CustomAppbar().appbar(context: context, title: 'Cutting processes'),
       body: BlocBuilder<CuttingBloc, CuttingState>(builder: (context, state) {
         if (state is CuttingProductionProcessesState) {
           return Container(

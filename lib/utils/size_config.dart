@@ -24,7 +24,5 @@ class SizeConfig {
     textMultiplier = blockSizeVertical!;
     heightMultiplier = blockSizeVertical!;
     widthMultiplier = blockSizeHorizontal!;
-
-    // textScaleFactor = MediaQuery.of(context).textScaleFactor;
   }
 }

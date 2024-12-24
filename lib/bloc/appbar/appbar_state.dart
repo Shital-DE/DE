@@ -18,21 +18,20 @@ class AppbarLoading extends AppbarState {
       employeeid,
       deviceid,
       wcid,
-      wsid,token;
-  // final Uint8List profileData;
+      wsid,
+      token;
+
   final ImageProvider employeeProfile;
-  AppbarLoading({
-    required this.workcentreName,
-    required this.workstationname,
-    required this.employeeProfile,
-    required this.employeename,
-    required this.employeeid,
-    required this.deviceid,
-    required this.wcid,
-    required this.wsid,
-    required this.token 
-    // required this.profileData
-  });
+  AppbarLoading(
+      {required this.workcentreName,
+      required this.workstationname,
+      required this.employeeProfile,
+      required this.employeename,
+      required this.employeeid,
+      required this.deviceid,
+      required this.wcid,
+      required this.wsid,
+      required this.token});
 }
 
 class AppBarErrorState extends AppbarState {

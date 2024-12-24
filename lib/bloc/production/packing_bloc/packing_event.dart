@@ -3,12 +3,20 @@
 // Description : Packing event
 
 import '../../../services/model/operator/oprator_models.dart';
+import '../../../services/model/product/product_route.dart';
 
 class PackingEvent {}
 
-class PackingWorkLogEvent extends PackingEvent {
+class PackingProductionEvent extends PackingEvent {
   final Barcode? barcode;
-  PackingWorkLogEvent({required this.barcode});
+  ProductAndProcessRouteModel? productAndProcessRouteModel;
+  PackingProductionEvent(
+      {required this.barcode, required this.productAndProcessRouteModel});
+}
+
+class PackingProcessesEvent extends PackingEvent {
+  final Barcode barcode;
+  PackingProcessesEvent({required this.barcode});
 }
 
 class StockEvent extends PackingEvent {

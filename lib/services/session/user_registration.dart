@@ -85,14 +85,13 @@ class EmployeeeRegistrationSession {
     try {
       final SharedPreferences preferences =
           await SharedPreferences.getInstance();
-      // if (docInfo['emp_profile'] != '') {
+
       List<String> doc = [];
       docInfo.forEach((key, value) {
         doc.add(value.toString());
       });
 
       preferences.setStringList('docInformation', doc);
-      // }
     } catch (e) {
       //
     }

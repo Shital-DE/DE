@@ -93,7 +93,7 @@ class OperatorManualProduction extends StatelessWidget {
                                                   state.rejqty,
                                                   state.rejresons));
                                             } catch (e) {
-                                              debugPrint("okqty not getting");
+                                              //
                                             }
                                           },
                                           onTap: () {
@@ -147,7 +147,7 @@ class OperatorManualProduction extends StatelessWidget {
                                                   rejqty,
                                                   state.rejresons));
                                             } catch (e) {
-                                              debugPrint("rejqty not getting");
+                                              //
                                             }
                                           },
                                           onTap: () {

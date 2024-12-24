@@ -6,7 +6,6 @@ class PendingProductionInitial extends PendingProductState {}
 
 class PendingProductionLoadingState extends PendingProductState {
   final List<PendingProductlistforoperator> pendingproductlist;
-  //final Barcode barcode;
   final bool cpmessagestatuscheck, statusofbarcode;
   final String token, employeeid;
   PendingProductionLoadingState(

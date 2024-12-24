@@ -149,10 +149,8 @@ class ShiftOneButton extends StatelessWidget {
       width: buttonWidth,
       height: buttonHeight,
       decoration: BoxDecoration(
-        // borderRadius: BorderRadius.circular(10),
         borderRadius: const BorderRadius.only(
             topRight: Radius.circular(5), bottomLeft: Radius.circular(5)),
-        //color: Color.fromARGB(255, 120, 169, 182),
         color: Theme.of(context).primaryColor,
       ),
       child: TextButton(onPressed: onPressed, child: child),

@@ -10,6 +10,7 @@ import '../../../../bloc/production/packing_bloc/packing_bloc.dart';
 import '../../../../bloc/production/packing_bloc/packing_event.dart';
 import '../../../../bloc/production/packing_bloc/packing_state.dart';
 import '../../../../services/model/operator/oprator_models.dart';
+import '../../../../services/model/product/product_route.dart';
 import '../../../../services/repository/packing/packing_repository.dart';
 import '../../../../services/repository/quality/quality_repository.dart';
 import '../../../../utils/app_colors.dart';
@@ -26,14 +27,17 @@ class PakingDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Barcode? barcode = arguments['barcode'];
+    ProductAndProcessRouteModel route = arguments['selected_process'][0];
     final blocProvider = BlocProvider.of<PackingBloc>(context);
-    blocProvider.add(PackingWorkLogEvent(barcode: barcode));
+
+    blocProvider.add(PackingProductionEvent(
+        barcode: barcode, productAndProcessRouteModel: route));
     return Scaffold(
       appBar: CustomAppbar()
           .appbar(context: context, title: 'Product inspection screen'),
       body: MakeMeResponsiveScreen(horixontaltab:
           BlocBuilder<PackingBloc, PackingState>(builder: (context, state) {
-        if (state is PackingWorkLogState) {
+        if (state is PackingProductionState) {
           return ListView(
             children: [
               BarcodeSession().barcodeData(
@@ -85,7 +89,7 @@ class PakingDashboard extends StatelessWidget {
 
   Column packingForm(
       {required BuildContext context,
-      required PackingWorkLogState state,
+      required PackingProductionState state,
       required PackingBloc blocProvider}) {
     TextEditingController packingQuantity = TextEditingController();
     TextEditingController stockQuantity = TextEditingController();
@@ -151,7 +155,7 @@ class PakingDashboard extends StatelessWidget {
 
   Future<dynamic> endPacking(
       {required BuildContext context,
-      required PackingWorkLogState state,
+      required PackingProductionState state,
       required TextEditingController packingQuantity,
       required TextEditingController stockQuantity}) {
     return showDialog(
@@ -181,7 +185,7 @@ class PakingDashboard extends StatelessWidget {
                             state.barcode!.revisionnumber.toString()
                       });
                     }
-                    debugPrint(newResponse);
+
                     final response = await QualityInspectionRepository()
                         .endInspection(token: state.token, payload: {
                       'id': state.packingId,
@@ -223,7 +227,7 @@ class PakingDashboard extends StatelessWidget {
 
   Future<dynamic> finalEndPacking(
       {required BuildContext context,
-      required PackingWorkLogState state,
+      required PackingProductionState state,
       required String message}) {
     return showDialog(
         context: context,

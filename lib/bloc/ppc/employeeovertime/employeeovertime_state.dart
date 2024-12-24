@@ -14,7 +14,6 @@ class OvertimeLoadingState extends EOvertimeState {
   final List<EmployeeOvertimedata> empovertimedata;
 
   final List<Outsource> outsourceList;
-  // final List<Outsource> mainList;
   final ToggleOvertimeOption option;
   List<Outsource> productselectedList;
   List<EODdetails> detailsofovertimeproduct;
@@ -38,19 +37,6 @@ class OvertimeLoadingState extends EOvertimeState {
       required this.viewdetailsid,
       required this.detailsofovertimeproduct});
 }
-
-// final class OvertimeAllListState extends EOvertimeState {
-//   final List<Outsource> outsourceList;
-//   final List<Outsource> mainList;
-//   final ToggleOvertimeOption option;
-//   OvertimeAllListState(
-//       {required this.option,
-//       required this.outsourceList,
-//       required this.mainList});
-
-//   // @override
-//   List<Object> get props => [option, outsourceList, mainList];
-// }
 
 class EOvertimeErrorState extends EOvertimeState {
   final String errorMessage;

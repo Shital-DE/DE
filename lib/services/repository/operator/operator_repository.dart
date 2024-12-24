@@ -8,7 +8,6 @@ import 'package:de/services/model/operator/oprator_models.dart' as op_model;
 import 'package:de/utils/app_url.dart';
 import 'package:de/utils/common/quickfix_widget.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:http/http.dart' as http;
 import '../../session/user_login.dart';
 import '../quality/quality_repository.dart';
@@ -21,12 +20,6 @@ class OperatorRepository {
       String barcodeyear, documentNo;
       int barcodeyearaddition = 0;
       Map<String, String> data = {};
-      // String result =  await FlutterBarcodeScanner.scanBarcode(
-      //   '#ff6666',
-      //   'Cancel',
-      //   true,
-      //   ScanMode.BARCODE,
-      // );
       String? result = await SimpleBarcodeScanner.scanBarcode(
         context,
         barcodeAppBar: const BarcodeAppBar(
@@ -63,7 +56,6 @@ class OperatorRepository {
   static Future<op_model.Barcode> getBarcodeDataRepo(
       {required String year, required String documentno}) async {
     try {
-      // String year
       op_model.Barcode b = await OperatorAPIService.getBarcodeData(
           year: year, documentno: documentno);
       return b;
@@ -74,11 +66,8 @@ class OperatorRepository {
 
   static Future<List<op_model.MachineCenterProcess>> getMachineProcess() async {
     try {
-      // String year
       List<op_model.MachineCenterProcess> c =
-          await OperatorAPIService.getProcess(
-              // wsid: wsid
-              );
+          await OperatorAPIService.getProcess();
       return c;
     } catch (e) {
       throw Exception(e);
@@ -146,7 +135,7 @@ class OperatorRepository {
         }
       }
     } catch (e) {
-      //debugPrint(e.toString());
+      //
     }
     return [];
   }
@@ -168,7 +157,6 @@ class OperatorRepository {
         'poid': poid
       };
       if (payload.isNotEmpty) {
-        // debugPrint(payload.toString());
         var response = await API().postApiResponse(
             AppUrl.productlistfromcapacityplan, token, payload);
 
@@ -187,19 +175,18 @@ class OperatorRepository {
               poid: item['ss_salesorder_id'],
               ponumber: item['ponumber'],
               rmsid: item['rmsid'],
-              description:
-                  '', // Add your logic to populate the description property
+              description: '',
               toBeProducedQty: item['tobeproducedqty'],
             );
-            // Add the object to the list
+
             pendingProductList.add(pendingProduct);
           }
-          // debugPrint('1---------------$pendingProductList');
+
           return pendingProductList;
         }
       }
     } catch (e) {
-      //debugPrint(e.toString());
+      //
     }
     return [];
   }
@@ -327,7 +314,7 @@ class OperatorRepository {
         }
       }
     } catch (e) {
-      //  debugPrint(e.toString());
+      //
     }
   }
 
@@ -349,7 +336,7 @@ class OperatorRepository {
         }
       }
     } catch (e) {
-      //debugPrint(e.toString());
+      //
     }
   }
 
@@ -373,7 +360,7 @@ class OperatorRepository {
         }
       }
     } catch (e) {
-      //debugPrint(e.toString());
+      //
     }
   }
 
@@ -407,11 +394,11 @@ class OperatorRepository {
         'idle_time': idletime,
         'energy_consumed': energyconsumed
       };
-      // debugPrint(payload.toString());
+
       if (payload.isNotEmpty) {
         var response =
             await API().postApiResponse(AppUrl.endProcess, token, payload);
-        // debugPrint(response.body.toString());
+
         if (response.body.toString() == 'Updated successfully') {
           return "End Process successfully";
         } else {
@@ -421,7 +408,7 @@ class OperatorRepository {
         return "payload is empty";
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
     return "something went gone wrong";
   }
@@ -453,7 +440,7 @@ class OperatorRepository {
         return "payload is empty";
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
     return "something went gone wrong";
   }
@@ -485,7 +472,7 @@ class OperatorRepository {
         return "final end production payload is empty";
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
     return "something went gone wrong";
   }
@@ -517,7 +504,7 @@ class OperatorRepository {
         return "payload is empty";
       }
     } catch (e) {
-      //debugPrint(e.toString());
+      //
     }
     return "something went gone wrong";
   }
@@ -554,7 +541,7 @@ class OperatorRepository {
       }
       return endProduction;
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
     return endProduction;
   }
@@ -582,7 +569,7 @@ class OperatorRepository {
         }
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
   }
 
@@ -614,7 +601,7 @@ class OperatorRepository {
         }
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
   }
 
@@ -644,7 +631,7 @@ class OperatorRepository {
         }
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
   }
 
@@ -680,7 +667,7 @@ class OperatorRepository {
         }
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
   }
 
@@ -714,7 +701,7 @@ class OperatorRepository {
         }
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
   }
 
@@ -733,13 +720,10 @@ class OperatorRepository {
       final tiemofProductionNotAvailable =
           await QualityInspectionRepository().currentDatabaseTime(token);
       productionstart = DateTime.parse(tiemofProductionNotAvailable.toString());
-      // List<ResponseId> requestno =
-      //     await OperatorRepository.getsequanceno(token);
 
       var url =
           Uri.parse("${AppUrl.indURI}/v1/industry40/loadProductionDetails");
       Map<String, dynamic> payload = {
-        // "requestid": requestno[0].newRequestId.toString().trim(),
         "slipid": slipId.toString().trim(),
         "productid": productId.toString().trim(),
         "jobActivity": {
@@ -750,11 +734,10 @@ class OperatorRepository {
         "processid": processid.toString().trim(),
       };
 
-      String payloadJson =
-          jsonEncode(payload); // Convert payload to JSON string
+      String payloadJson = jsonEncode(payload);
       var response = await http.post(
         url,
-        body: payloadJson, // Use JSON string as the body
+        body: payloadJson,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -769,7 +752,7 @@ class OperatorRepository {
         return responseofAPI;
       }
     } catch (e) {
-      //  debugPrint(e.toString());
+      //
     }
     return "";
   }
@@ -783,7 +766,6 @@ class OperatorRepository {
       required String timeStart,
       required String processid}) async {
     try {
-      //List<Tools> c =
       String check = await OperatorAPIService.jobStartAPI(
           requestid: requestid,
           slipId: slipId,
@@ -836,7 +818,7 @@ class OperatorRepository {
         }
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
   }
 
@@ -848,7 +830,7 @@ class OperatorRepository {
         'workcentre_id': workcentreid,
         'workstation_id': workstationid,
       };
-      // debugPrint(payload.toString());
+      //
       if (payload.isNotEmpty) {
         var response =
             await API().postApiResponse(AppUrl.machinelogout, token, payload);
@@ -857,7 +839,7 @@ class OperatorRepository {
         }
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
   }
 
@@ -874,7 +856,7 @@ class OperatorRepository {
         'Process_seqno': seqNo,
       };
 
-      // debugPrint(payload.toString());
+      //
 
       if (payload.isNotEmpty) {
         var response = await API()
@@ -892,7 +874,7 @@ class OperatorRepository {
         }
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
     return [];
   }
@@ -919,7 +901,7 @@ class OperatorRepository {
         }
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
     return [];
   }
@@ -945,7 +927,7 @@ class OperatorRepository {
         }
       }
     } catch (e) {
-      //  debugPrint(e.toString());
+      //
     }
     return [];
   }
@@ -965,7 +947,7 @@ class OperatorRepository {
         rejectedReasonsList = jsonDecode(response.body);
       }
     } catch (e) {
-      //  debugPrint(e.toString());
+      //
     }
     return rejectedReasonsList
         .map((e) => op_model.OperatorRejectedReasons.fromJson(e))
@@ -987,9 +969,7 @@ class OperatorRepository {
       barCode = op_model.Barcode.fromJson(jsonData[0]);
       return barCode;
     } catch (e) {
-      //debugPrint(e.toString());
-      throw Exception(
-          'Failed to retrieve barcode data'); // Throw an exception if an error occurs
+      throw Exception('Failed to retrieve barcode data');
     }
   }
 
@@ -1079,7 +1059,7 @@ class OperatorRepository {
         return requestID;
       }
     } catch (e) {
-      //  debugPrint(e.toString());
+      //
     }
     return requestID;
   }
@@ -1106,13 +1086,11 @@ class OperatorRepository {
         'processrouteid': processrouteid,
         'seqno': seqno
       };
-      // debugPrint("getproductworkstationJobStatusId---::::>>>");
-      // debugPrint(payload.toString());
+
       if (payload.isNotEmpty) {
         http.Response response = await API()
             .postApiResponse(AppUrl.workstationstatusid, token, payload);
 
-        // debugPrint(response.body.toString());
         if (response.body.toString() == '[]') {
           worstationStatusId = '';
         } else {
@@ -1121,7 +1099,7 @@ class OperatorRepository {
         }
       }
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
     return worstationStatusId;
   }
@@ -1202,8 +1180,6 @@ class OperatorRepository {
         return '';
       }
     } catch (e) {
-      debugPrint(e.toString());
-
       return '';
     }
   }
@@ -1235,7 +1211,7 @@ class OperatorRepository {
       }
       return cpmessage;
     } catch (e) {
-      //   debugPrint(e.toString());
+      //
     }
     return cpmessage;
   }
@@ -1275,7 +1251,7 @@ class OperatorRepository {
       }
       return prmessage;
     } catch (e) {
-      // debugPrint(e.toString());
+      //
     }
     return prmessage;
   }

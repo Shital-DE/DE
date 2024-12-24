@@ -11,7 +11,7 @@ class PackingState {}
 
 class PackingInitialState extends PackingState {}
 
-class PackingWorkLogState extends PackingState {
+class PackingProductionState extends PackingState {
   final Barcode? barcode;
   final String token,
       pdfMdocId,
@@ -24,7 +24,7 @@ class PackingWorkLogState extends PackingState {
       workcentre;
   final List<DocumentDetails> modelsDetails;
   final List<DocumentDetails> pdfDetails;
-  PackingWorkLogState(
+  PackingProductionState(
       {required this.barcode,
       required this.token,
       required this.pdfMdocId,
@@ -37,6 +37,17 @@ class PackingWorkLogState extends PackingState {
       required this.pdfDetails,
       required this.packingId,
       required this.workcentre});
+}
+
+class PackingProcessesState extends PackingState {
+  final List<ProductAndProcessRouteModel> productProcessRouteList;
+  String token, userid, workcentreId, workstationId;
+  PackingProcessesState(
+      {required this.productProcessRouteList,
+      required this.token,
+      required this.userid,
+      required this.workcentreId,
+      required this.workstationId});
 }
 
 class StockState extends PackingState {

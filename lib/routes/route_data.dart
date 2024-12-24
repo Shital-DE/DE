@@ -6,6 +6,7 @@ import 'package:de/view/screens/product_assets_management/pam_dashboard.dart';
 import 'package:de/view/screens/product_assets_management/product_registration.dart';
 import 'package:de/view/screens/product_assets_management/product_structure.dart';
 import 'package:de/view/screens/production/cutting/cutting_processes_screen.dart';
+import 'package:de/view/screens/production/packing/packing_processes_screen.dart';
 import 'package:de/view/screens/production/quality/quality_processes_screen.dart';
 import 'package:de/view/screens/user/update_employee_details.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ import '../bloc/production/operator/bloc/pending_production/machine_pending_prod
 import '../bloc/production/operator/cubit/scan_cubit.dart';
 import '../bloc/production/packing_bloc/packing_bloc.dart';
 import '../bloc/production/production_bloc.dart';
-import '../bloc/production/quality/quality_dashboard_bloc.dart';
+import '../bloc/production/quality/quality_bloc.dart';
 import '../bloc/user/employee_registration/employee_registration_bloc.dart';
 import '../bloc/registration/machine_registration/machine_register_bloc.dart';
 import '../bloc/registration/program_access_management/pam_bloc.dart';
@@ -92,7 +93,7 @@ import '../view/screens/production/operator/machineprogramsequance.dart';
 import '../view/screens/production/operator/operator_auto_production.dart';
 import '../view/screens/production/operator/operator_manual_production.dart';
 import '../view/screens/production/operator/pending_product_production.dart';
-import '../view/screens/production/packing/packing_dashboard.dart';
+import '../view/screens/production/packing/packing_production_screen.dart';
 import '../view/screens/production/packing/stock.dart';
 import '../view/screens/production/production.dart';
 import '../view/screens/production/quality/quality_production_screen.dart';
@@ -374,7 +375,7 @@ class RouteData {
           ),
         ], child: const RejectedInstrumentsPage());
 
-      case RouteName.packingScreen: // Paking screen
+      case RouteName.packingProductionScreen: // Paking production screen
         return MultiBlocProvider(providers: [
           BlocProvider<AppBarBloc>(
             create: (BuildContext context) => AppBarBloc(),
@@ -383,6 +384,16 @@ class RouteData {
             create: (BuildContext context) => PackingBloc(),
           ),
         ], child: PakingDashboard(arguments: args));
+
+      case RouteName.packingProcessesScreen: // Paking process screen
+        return MultiBlocProvider(providers: [
+          BlocProvider<AppBarBloc>(
+            create: (BuildContext context) => AppBarBloc(),
+          ),
+          BlocProvider<PackingBloc>(
+            create: (BuildContext context) => PackingBloc(),
+          ),
+        ], child: PackingProcessesScreen(arguments: args));
 
       case RouteName.stock: // Stock
         return MultiBlocProvider(providers: [

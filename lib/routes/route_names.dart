@@ -61,11 +61,22 @@ class RouteName {
   static const String pendingProduction = 'productionList';
   static const String machineProgramSequance = 'machineProgramSequance';
 
+  //Production
+  // Cutting
   static const String cuttingScreen = 'cuttingScreen'; //Cutting screen
   static const String cuttingProductionProcessScreen =
       'cuttingProductionProcessScreen'; // Cutting production process screen
-  static const String packingScreen = 'packingScreen'; // Packing screen
+
+  // Packing
+  static const String packingProductionScreen =
+      'packingProductionScreen'; // Packing production screen
+  static const String packingProcessesScreen =
+      'packingProcessesScreen'; // Packing processes screen
+
+  // Stock
   static const String stock = 'stock'; // Stock
+
+  // Quality
   static const String qualityScreen = 'qualityScreen'; //Quality screen
   static const String qualityProductionProcessScreen =
       'qualityProductionProcessScreen'; // Quality production process screen
