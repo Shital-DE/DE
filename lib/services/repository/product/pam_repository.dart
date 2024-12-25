@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../utils/app_url.dart';
 import '../../common/api.dart';
+import '../../model/product/product_inventory_model.dart';
 import '../../model/product/product_structure_model.dart';
 
 class PamRepository {
@@ -145,14 +146,19 @@ class PamRepository {
           .postApiResponse(AppUrl.registerProductStock, token, payload);
 
       List<dynamic> data = jsonDecode(response.body);
-      return data[0]['manage_inventory'];
+      // debugPrint(data.toString());
+      if (data[0]['message'] == 'success') {
+        return data[0]['id'].toString();
+      } else {
+        return data[0]['message'].toString();
+      }
     } catch (e) {
       return e.toString();
     }
   }
 
   // Current stock
-  Future<double> getCurrentStock(
+  Future<ProductCurrentStock> getCurrentStock(
       {required String token, required String productId}) async {
     try {
       http.Response response = await API().getApiResponse(
@@ -162,10 +168,11 @@ class PamRepository {
         'Authorization': 'Bearer $token',
       });
       List<dynamic> data = jsonDecode(response.body);
-      double quantity = double.parse(data[0]['currentstock'].toString());
-      return quantity;
+      List<ProductCurrentStock> dataList =
+          data.map((e) => ProductCurrentStock.fromJson(e)).toList();
+      return dataList[0];
     } catch (e) {
-      return 0;
+      return ProductCurrentStock();
     }
   }
 

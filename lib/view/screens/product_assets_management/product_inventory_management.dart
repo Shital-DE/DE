@@ -5,7 +5,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
-
 import 'package:de/utils/common/quickfix_widget.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
@@ -55,8 +54,16 @@ class _ProductInventoryManagementState
         if (state is ProductInventoryManagementState) {
           List<String> stockEventList = [
             'Inward',
-            state.currentStock > 0 ? 'Issue' : '',
-            state.currentStock > 0 ? 'Scrap' : ''
+            state.currentStockModel.currentStock != null
+                ? state.currentStockModel.currentStock! > 0
+                    ? 'Issue'
+                    : ''
+                : '',
+            state.currentStockModel.currentStock != null
+                ? state.currentStockModel.currentStock! > 0
+                    ? 'Scrap'
+                    : ''
+                : ''
           ];
           return StreamBuilder<ProductInventoryManagementDetailsModel>(
               stream: productInventoryManagementDetails.stream,
@@ -346,8 +353,14 @@ class _ProductInventoryManagementState
                                                         border: Border.all()),
                                                     child: Center(
                                                       child: Text(
-                                                        state.currentStock
-                                                            .toString(),
+                                                        state.currentStockModel
+                                                                    .currentStock ==
+                                                                null
+                                                            ? '0'
+                                                            : state
+                                                                .currentStockModel
+                                                                .currentStock
+                                                                .toString(),
                                                       ),
                                                     ),
                                                   ),
@@ -685,7 +698,8 @@ class _ProductInventoryManagementState
                                                 stockEventList[1] &&
                                             productInventoryManagementDetailsSnapshot
                                                     .data!.quantity >
-                                                state.currentStock) {
+                                                state.currentStockModel
+                                                    .currentStock!) {
                                           QuickFixUi.errorMessage(
                                               '${productInventoryManagementDetailsSnapshot.data!.quantity} is greater than current stock.',
                                               context);
@@ -759,7 +773,7 @@ class _ProductInventoryManagementState
                                                     productInventoryManagementDetailsSnapshot
                                                         .data!.soDetailsId
                                               });
-                                          if (response == 'Success') {
+                                          if (response.length == 32) {
                                             blocProvider.add(
                                                 ProductInventoryManagementEvent(
                                                     productsWithRevisionDataModel:

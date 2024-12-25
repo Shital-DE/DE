@@ -501,7 +501,7 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
             'parentproduct_id': node.buildProductStructure![0].parentpartId,
             'sodetails_id': state.selectedProduct.sodetailsId
           });
-          if (response == 'Success') {
+          if (response.length == 32) {
             Navigator.of(context).pop();
             blocProvider.add(IssueStockForAsssemblyEvent(
                 selectedProduct: state.selectedProduct));
@@ -532,7 +532,7 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
           tablewidth: dialogWidth,
           tableheight: (issuedStock.length + 2) * rowHeight,
           columnWidth: 200,
-          showIndex: true,
+          // showIndex: true,
           rowHeight: rowHeight,
           headerHeight: rowHeight,
           headerStyle: TextStyle(
@@ -549,7 +549,7 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
           column: [
             ColumnData(label: 'Issued date'),
             ColumnData(label: 'Issued by'),
-            ColumnData(width: 200 - rowHeight, label: 'Issued quantity'),
+            ColumnData(label: 'Issued quantity'),
           ],
           rows: [
             ...issuedStock.map((element) {
@@ -568,11 +568,10 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
                   style: textStyle(),
                 )),
                 TableDataCell(
-                    width: 200 - rowHeight,
                     label: Text(
-                      element.issuedQuantity.toString(),
-                      style: textStyle(),
-                    )),
+                  element.issuedQuantity.toString(),
+                  style: textStyle(),
+                )),
               ]);
             }).toList(),
             RowData(cell: [
@@ -584,11 +583,10 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
                   )),
               TableDataCell(width: 200, label: const Text('')),
               TableDataCell(
-                  width: 200 - rowHeight,
                   label: Text(
-                    node.buildProductStructure![0].issuedquantity.toString(),
-                    style: textStyle(),
-                  )),
+                node.buildProductStructure![0].issuedquantity.toString(),
+                style: textStyle(),
+              )),
             ])
           ]),
     );

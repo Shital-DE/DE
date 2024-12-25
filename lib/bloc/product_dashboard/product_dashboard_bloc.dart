@@ -5,6 +5,7 @@
 import 'package:de/bloc/product_dashboard/product_dashboard_event.dart';
 import 'package:de/bloc/product_dashboard/product_dashboard_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../services/model/product/product_inventory_model.dart';
 import '../../services/model/product/product_structure_model.dart';
 import '../../services/repository/product/pam_repository.dart';
 import '../../services/session/user_login.dart';
@@ -39,7 +40,7 @@ class ProductDashboardBloc
 
     // Product inventory management
     on<ProductInventoryManagementEvent>((event, emit) async {
-      double currentStock = 0;
+      ProductCurrentStock? currentStockModel;
       // User data
       final saveddata = await UserData.getUserData();
 
@@ -53,7 +54,7 @@ class ProductDashboardBloc
 
       // Current stock
       if (event.productsWithRevisionDataModel.productId != null) {
-        currentStock = await PamRepository().getCurrentStock(
+        currentStockModel = await PamRepository().getCurrentStock(
             token: saveddata['token'].toString(),
             productId:
                 event.productsWithRevisionDataModel.productId.toString());
@@ -69,7 +70,7 @@ class ProductDashboardBloc
           userId: saveddata['data'][0]['id'],
           unitOfMeasurementList: unitOfMeasurementList,
           productsWithRevisionDataModel: event.productsWithRevisionDataModel,
-          currentStock: currentStock,
+          currentStockModel: currentStockModel ?? ProductCurrentStock(),
           salesOrderDataList: salesOrderDataList));
     });
   }

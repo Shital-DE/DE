@@ -2,6 +2,7 @@
 // Created Date : 23 October 2024
 // Description : Product structure state
 
+import '../../services/model/product/product_inventory_model.dart';
 import '../../services/model/product/product_structure_model.dart';
 import '../../view/widgets/product_structure_widget.dart';
 
@@ -38,13 +39,13 @@ class ProductInventoryManagementState extends ProductDashboardState {
   List<UOMDataModel> unitOfMeasurementList;
   List<CurrentSalesOrdersDataModel> salesOrderDataList;
   String token, userId;
-  double currentStock;
+  ProductCurrentStock currentStockModel;
   ProductInventoryManagementState(
       {required this.productsWithRevisionDataModel,
       required this.productsList,
       required this.token,
       required this.userId,
       required this.unitOfMeasurementList,
-      required this.currentStock,
+      required this.currentStockModel,
       required this.salesOrderDataList});
 }
