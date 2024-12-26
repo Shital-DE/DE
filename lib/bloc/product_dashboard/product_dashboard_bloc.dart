@@ -56,8 +56,8 @@ class ProductDashboardBloc
       if (event.productsWithRevisionDataModel.productId != null) {
         currentStockModel = await PamRepository().getCurrentStock(
             token: saveddata['token'].toString(),
-            productId:
-                event.productsWithRevisionDataModel.productId.toString());
+            productId: event.productsWithRevisionDataModel.productId.toString(),
+            revision: event.revision.toString());
       }
 
       List<CurrentSalesOrdersDataModel> salesOrderDataList =

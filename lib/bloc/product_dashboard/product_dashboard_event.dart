@@ -12,9 +12,11 @@ class ProductStructureEvent extends ProductDashboardEvent {}
 
 class ProductInventoryManagementEvent extends ProductDashboardEvent {
   final ProductsWithRevisionDataModel productsWithRevisionDataModel;
+  String revision;
 
   ProductInventoryManagementEvent(
-      {ProductsWithRevisionDataModel? productsWithRevisionDataModel})
+      {ProductsWithRevisionDataModel? productsWithRevisionDataModel,
+      this.revision = ''})
       : productsWithRevisionDataModel =
             productsWithRevisionDataModel ?? ProductsWithRevisionDataModel();
 }

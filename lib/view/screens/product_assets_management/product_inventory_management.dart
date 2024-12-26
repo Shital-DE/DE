@@ -236,10 +236,17 @@ class _ProductInventoryManagementState
                                             onChanged: (value) {
                                               productInventoryManagementDetails.add(
                                                   ProductInventoryManagementDetailsModel(
-                                                      selectedRevisionNumber:
-                                                          value
-                                                              .toString()
-                                                              .trim()));
+                                                selectedRevisionNumber:
+                                                    value.toString().trim(),
+                                              ));
+                                              blocProvider.add(
+                                                  ProductInventoryManagementEvent(
+                                                      productsWithRevisionDataModel:
+                                                          state
+                                                              .productsWithRevisionDataModel,
+                                                      revision: value
+                                                          .toString()
+                                                          .trim()));
                                             },
                                           ),
                                         ),

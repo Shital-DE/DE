@@ -492,9 +492,12 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
             'product_id': node.buildProductStructure![0].partId,
             'revision_number': node.buildProductStructure![0].revision,
             'createdby': state.userId,
-            'new_quantity':
-                node.buildProductStructure![0].quantity!.toDouble() -
-                    node.buildProductStructure![0].issuedquantity!,
+            'new_quantity': node.buildProductStructure![0].currentstock! >=
+                    (node.buildProductStructure![0].quantity!.toDouble() -
+                        node.buildProductStructure![0].issuedquantity!)
+                ? (node.buildProductStructure![0].quantity!.toDouble() -
+                    node.buildProductStructure![0].issuedquantity!)
+                : node.buildProductStructure![0].currentstock!,
             'preUOM': node.buildProductStructure![0].unitOfMeasurementId,
             'postUOM': node.buildProductStructure![0].unitOfMeasurementId,
             'drcr': 'C',

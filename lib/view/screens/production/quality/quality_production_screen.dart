@@ -14,6 +14,7 @@ import '../../../../services/model/machine/workcentre.dart';
 import '../../../../services/model/operator/oprator_models.dart';
 import '../../../../services/model/product/product_route.dart';
 import '../../../../services/model/quality/quality_models.dart';
+import '../../../../services/repository/product/pam_repository.dart';
 import '../../../../services/repository/product/product_machine_route_repository.dart';
 import '../../../../services/repository/quality/quality_repository.dart';
 import '../../../../utils/app_colors.dart';
@@ -510,17 +511,30 @@ class QualityProductionScreen extends StatelessWidget {
                     });
                   }
                   if (response == 'Product inspected successfully') {
-                    okQty.dispose();
-                    shortQty.dispose();
-                    rejectedResons.dispose();
-                    remarkController.dispose();
-                    if (state.productAndProcessRouteModel.combinedSequence ==
-                        900) {
-                      finalEndInspectionConfirmation(
-                          context: context, state: state);
-                    } else {
-                      for (int i = 0; i <= 1; i++) {
-                        Navigator.of(context).pop();
+                    String response = await PamRepository()
+                        .productStockRegister(token: state.token, payload: {
+                      'product_id': state.barcode.productid.toString(),
+                      'revision_number':
+                          state.barcode.revisionnumber.toString(),
+                      'createdby': state.userid,
+                      'new_quantity': okQty.text,
+                      'drcr': 'D',
+                      'remark':
+                          'The stock was inwarded after the product inspection was completed.'
+                    });
+                    if (response.length == 32) {
+                      okQty.dispose();
+                      shortQty.dispose();
+                      rejectedResons.dispose();
+                      remarkController.dispose();
+                      if (state.productAndProcessRouteModel.combinedSequence ==
+                          900) {
+                        finalEndInspectionConfirmation(
+                            context: context, state: state);
+                      } else {
+                        for (int i = 0; i <= 1; i++) {
+                          Navigator.of(context).pop();
+                        }
                       }
                     }
                   } else {

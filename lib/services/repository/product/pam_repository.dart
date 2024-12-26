@@ -159,14 +159,17 @@ class PamRepository {
 
   // Current stock
   Future<ProductCurrentStock> getCurrentStock(
-      {required String token, required String productId}) async {
+      {required String token,
+      required String productId,
+      required String revision}) async {
     try {
       http.Response response = await API().getApiResponse(
-          '${AppUrl.currentProductStock}?product_id=$productId', {
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
+          '${AppUrl.currentProductStock}?product_id=$productId&revision_number=$revision',
+          {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          });
       List<dynamic> data = jsonDecode(response.body);
       List<ProductCurrentStock> dataList =
           data.map((e) => ProductCurrentStock.fromJson(e)).toList();
