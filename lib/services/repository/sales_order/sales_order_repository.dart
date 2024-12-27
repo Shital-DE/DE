@@ -64,14 +64,18 @@ class SalesOrderRepository {
 
   // Generated products requirements
   Future<List<SelectedAssembliesComponentRequirements>>
-      generatedAssemblyComponentsRequirements({required String token}) async {
+      generatedAssemblyComponentsRequirements(
+          {required String token,
+          required String fromdate,
+          required String todate}) async {
     try {
-      http.Response response =
-          await API().getApiResponse(AppUrl.generatedComponentRequirementUrl, {
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
+      http.Response response = await API().getApiResponse(
+          '${AppUrl.generatedComponentRequirementUrl}?fromdate=$fromdate&todate=$todate',
+          {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          });
 
       List<dynamic> data = jsonDecode(response.body);
       return data

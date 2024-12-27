@@ -61,12 +61,16 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
     Size size = MediaQuery.of(context).size;
     double staticRowHeight = 35,
         tableHeight = (size.height - 20) >
-                (((widget.selectedAssembliesDataList.length + 2) *
-                        staticRowHeight) -
-                    20)
-            ? (((widget.selectedAssembliesDataList.length + 2) *
-                    staticRowHeight) -
-                20)
+                (((widget.selectedAssembliesDataList.length + 1) *
+                    staticRowHeight)
+                //     -
+                // 20
+                )
+            ? (((widget.selectedAssembliesDataList.length + 1) *
+                    staticRowHeight)
+                //     -
+                // 20
+                )
             : (size.height - 20);
     NavigatorState navigator = Navigator.of(context);
     return StreamBuilder<bool>(
@@ -108,20 +112,23 @@ class _IssueStockForAssemblyState extends State<IssueStockForAssembly> {
                           )),
                       SizedBox(
                         width: size.width,
-                        height: tableHeight,
+                        height: size.height,
                         child: Row(
                           children: [
-                            table(
-                                size: size,
-                                staticRowHeight: staticRowHeight,
-                                context: context,
-                                blocProvider: blocProvider,
-                                state: state,
-                                tableHeight: tableHeight),
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: table(
+                                  size: size,
+                                  staticRowHeight: staticRowHeight,
+                                  context: context,
+                                  blocProvider: blocProvider,
+                                  state: state,
+                                  tableHeight: tableHeight),
+                            ),
                             state.node.buildProductStructure != null
                                 ? SizedBox(
                                     width: (size.width - 20) / 2,
-                                    height: tableHeight,
+                                    height: size.height,
                                     child: Align(
                                         alignment: Alignment.topLeft,
                                         child: SingleChildScrollView(

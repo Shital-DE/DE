@@ -781,17 +781,20 @@ class _ProductInventoryManagementState
                                                         .data!.soDetailsId
                                               });
                                           if (response.length == 32) {
-                                            blocProvider.add(
-                                                ProductInventoryManagementEvent(
-                                                    productsWithRevisionDataModel:
-                                                        state
-                                                            .productsWithRevisionDataModel));
+                                            blocProvider.add(ProductInventoryManagementEvent(
+                                                productsWithRevisionDataModel: state
+                                                    .productsWithRevisionDataModel,
+                                                revision:
+                                                    productInventoryManagementDetailsSnapshot
+                                                        .data!
+                                                        .selectedRevisionNumber));
                                             productInventoryManagementDetails.add(
                                                 ProductInventoryManagementDetailsModel(
-                                                    selectedRevisionNumber:
-                                                        productInventoryManagementDetailsSnapshot
-                                                            .data!
-                                                            .selectedRevisionNumber));
+                                              selectedRevisionNumber:
+                                                  productInventoryManagementDetailsSnapshot
+                                                      .data!
+                                                      .selectedRevisionNumber,
+                                            ));
                                             if (productInventoryManagementDetailsSnapshot
                                                     .data!.stockEvent
                                                     .toString() ==

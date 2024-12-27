@@ -32,7 +32,9 @@ class SalesOrderBloc extends Bloc<SalesOrderEvent, SalesOrderState> {
 
         selectedAssembliesDataList = await SalesOrderRepository()
             .generatedAssemblyComponentsRequirements(
-                token: saveddata['token'].toString());
+                token: saveddata['token'].toString(),
+                fromdate: event.fromdate,
+                todate: event.todate);
       }
       if (event.fromdate != '' &&
           event.todate != '' &&
