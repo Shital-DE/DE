@@ -42,6 +42,8 @@ class _ProductStructureState extends State<ProductStructure> {
       StreamController<List<SelectedProductModel>>.broadcast();
   StreamController<Map<String, String>> textfieldRevision =
       StreamController<Map<String, String>>.broadcast();
+  StreamController<ProductBOMDetails> productBomDetails =
+      StreamController<ProductBOMDetails>.broadcast();
 
   // TextEditing controller
   TextEditingController quantityController = TextEditingController();
@@ -63,6 +65,7 @@ class _ProductStructureState extends State<ProductStructure> {
   void dispose() {
     // Scroll controller
     horizontalScrollController.dispose();
+
     // Stream controllers
     productDetailsData.close();
     revisionListData.close();
@@ -71,6 +74,7 @@ class _ProductStructureState extends State<ProductStructure> {
     searchedProducts.close();
     selectedProducts.close();
     textfieldRevision.close();
+    productBomDetails.close();
 
     // TextEditing controller
     quantityController.dispose();
@@ -273,6 +277,7 @@ class _ProductStructureState extends State<ProductStructure> {
                     ),
                     onPressed: () async {
                       productDetailsData.add(ProductStructureDetailsModel());
+                      productBomDetails.add(ProductBOMDetails());
                       if (node.buildProductStructure![0].revision == 'null' ||
                           node.buildProductStructure![0].revision == '') {
                         QuickFixUi().showCustomDialog(
@@ -317,6 +322,14 @@ class _ProductStructureState extends State<ProductStructure> {
                                 .buildProductStructure![0].oldStructureTableId)
                       ]);
                       productDetailsData.add(data);
+                      if (node.buildProductStructure![0].children!.isEmpty) {
+                        ProductBOMDetails bomDetails = await PamRepository()
+                            .getBOMDetails(
+                                token: state.token,
+                                productId: node.buildProductStructure![0].partId
+                                    .toString());
+                        productBomDetails.add(bomDetails);
+                      }
                     },
                     child: Text(
                       node.buildProductStructure![0].part!,
@@ -536,22 +549,15 @@ class _ProductStructureState extends State<ProductStructure> {
                                                     .toString()
                                                     .trim() ==
                                                 '4028b88151c96d3f0151c96fd3120001'
-                                            ? (isDataAddedSnapshot
-                                                            .data !=
+                                            ? (isDataAddedSnapshot.data !=
                                                         null &&
-                                                    isDataAddedSnapshot
-                                                            .data ==
+                                                    isDataAddedSnapshot.data ==
                                                         true)
                                                 ? const Text('')
                                                 : (productTreeDataSnapshot
                                                                 .data !=
                                                             null &&
-                                                        productTreeDataSnapshot
-                                                                .data!
-                                                                .buildProductStructure !=
-                                                            null &&
-                                                        productTreeDataSnapshot
-                                                                .data!
+                                                        productTreeDataSnapshot.data!
                                                                 .buildProductStructure !=
                                                             null &&
                                                         productTreeDataSnapshot
@@ -570,6 +576,182 @@ class _ProductStructureState extends State<ProductStructure> {
                                                         state: state)
                                                     : const Text('')
                                             : const Text(''),
+                                        (productDetailsDataSnapshot
+                                                        .data!
+                                                        .buildProductStructure![
+                                                            0]
+                                                        .producttypeId
+                                                        .toString()
+                                                        .trim() ==
+                                                    '4028b88151c96d3f0151c96fecf00002' &&
+                                                productDetailsDataSnapshot
+                                                    .data!
+                                                    .buildProductStructure![0]
+                                                    .children!
+                                                    .isEmpty)
+                                            ? StreamBuilder<ProductBOMDetails>(
+                                                stream:
+                                                    productBomDetails.stream,
+                                                builder: (context,
+                                                    productBomDetailsSnapshot) {
+                                                  if (productBomDetailsSnapshot
+                                                              .data !=
+                                                          null &&
+                                                      productBomDetailsSnapshot
+                                                              .data!.bomId !=
+                                                          null) {
+                                                    return ElevatedButton(
+                                                        onPressed: () async {
+                                                          NavigatorState?
+                                                              navigator;
+                                                          QuickFixUi()
+                                                              .showProcessing(
+                                                                  context:
+                                                                      context);
+                                                          String response =
+                                                              await PamRepository()
+                                                                  .registerProductStructure(
+                                                                      token: state
+                                                                          .token,
+                                                                      payload: {
+                                                                'createdby': state
+                                                                    .userId
+                                                                    .toString()
+                                                                    .trim(),
+                                                                'childproduct_id':
+                                                                    productBomDetailsSnapshot
+                                                                        .data!
+                                                                        .productId
+                                                                        .toString()
+                                                                        .trim(),
+                                                                'parentproduct_id':
+                                                                    productDetailsDataSnapshot
+                                                                        .data!
+                                                                        .buildProductStructure![
+                                                                            0]
+                                                                        .partId
+                                                                        .toString()
+                                                                        .trim(),
+                                                                'level': 1,
+                                                                'quantity': 1,
+                                                                'reorderlevel':
+                                                                    0,
+                                                                'minimumorderqty':
+                                                                    0,
+                                                                'leadtime': 0,
+                                                                'revision_number':
+                                                                    productBomDetailsSnapshot
+                                                                        .data!
+                                                                        .revisionNumber
+                                                                        .toString()
+                                                                        .trim()
+                                                              });
+                                                          if (response ==
+                                                              'Success') {
+                                                            // Get tree data to represent product tree
+                                                            ProductStructureDetailsModel
+                                                                node =
+                                                                await PamRepository()
+                                                                    .productStructureTreeRepresentation(
+                                                                        token: state
+                                                                            .token,
+                                                                        payload: {
+                                                                  'id':
+                                                                      parentProduct
+                                                                          .text,
+                                                                  'revision_number':
+                                                                      parentRevision
+                                                                          .text
+                                                                });
+
+                                                            if (node
+                                                                    .buildProductStructure![
+                                                                        0]
+                                                                    .part !=
+                                                                '') {
+                                                              // Add tree data in controller to represent
+                                                              productTreeData
+                                                                  .add(node);
+                                                              // Get updated data
+                                                              ProductStructureDetailsModel
+                                                                  updatedData =
+                                                                  await PamRepository().productStructureTreeRepresentation(
+                                                                      token: state
+                                                                          .token,
+                                                                      payload: {
+                                                                    'id': productDetailsDataSnapshot
+                                                                        .data!
+                                                                        .buildProductStructure![
+                                                                            0]
+                                                                        .partId,
+                                                                    'revision_number': productDetailsDataSnapshot
+                                                                        .data!
+                                                                        .buildProductStructure![
+                                                                            0]
+                                                                        .revision
+                                                                  });
+                                                              if (updatedData
+                                                                      .buildProductStructure![
+                                                                          0]
+                                                                      .part !=
+                                                                  '') {
+                                                                // Add data in controller to represent selected product data
+                                                                productDetailsData
+                                                                    .add(
+                                                                        updatedData);
+                                                                // Close processing window
+                                                                navigator!
+                                                                    .pop();
+                                                              }
+                                                            }
+                                                          }
+                                                          // debugPrint(
+                                                          // productDetailsDataSnapshot
+                                                          //     .data!
+                                                          //         .buildProductStructure![
+                                                          //             0]
+                                                          //         .toString());
+                                                        },
+                                                        child: Text(
+                                                            'Copy raw material',
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: AppColors().getColorsDependUponProductType(
+                                                                        productType: productDetailsDataSnapshot
+                                                                            .data!
+                                                                            .buildProductStructure![
+                                                                                0]
+                                                                            .producttypeId
+                                                                            .toString(),
+                                                                        value:
+                                                                            800) ??
+                                                                    Colors
+                                                                        .black)));
+                                                  } else {
+                                                    return ElevatedButton(
+                                                        onPressed: () {},
+                                                        child: Text(
+                                                            'Assign raw material',
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: AppColors().getColorsDependUponProductType(
+                                                                        productType: productDetailsDataSnapshot
+                                                                            .data!
+                                                                            .buildProductStructure![
+                                                                                0]
+                                                                            .producttypeId
+                                                                            .toString(),
+                                                                        value:
+                                                                            800) ??
+                                                                    Colors
+                                                                        .black)));
+                                                  }
+                                                })
+                                            : const Text('')
                                       ],
                                     ),
                                     // Children's view table

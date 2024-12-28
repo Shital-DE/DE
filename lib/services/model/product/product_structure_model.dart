@@ -382,3 +382,30 @@ class IssuedStockModel {
     return data;
   }
 }
+
+// Product BOM Details
+class ProductBOMDetails {
+  String? bomId;
+  String? productId;
+  String? revisionNumber;
+  String? producttypeId;
+
+  ProductBOMDetails(
+      {this.bomId, this.productId, this.revisionNumber, this.producttypeId});
+
+  ProductBOMDetails.fromJson(Map<String, dynamic> json) {
+    bomId = json['bom_id'];
+    productId = json['product_id'];
+    revisionNumber = json['revision_number'];
+    producttypeId = json['producttype_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['bom_id'] = bomId;
+    data['product_id'] = productId;
+    data['revision_number'] = revisionNumber;
+    data['producttype_id'] = producttypeId;
+    return data;
+  }
+}

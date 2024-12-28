@@ -217,4 +217,21 @@ class PamRepository {
       return [];
     }
   }
+
+  // Get BOM details
+  Future<ProductBOMDetails> getBOMDetails(
+      {required String token, required String productId}) async {
+    try {
+      http.Response response = await API()
+          .getApiResponse('${AppUrl.getBOMDataUrl}?product_id=$productId', {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      List<dynamic> data = jsonDecode(response.body);
+      return data.map((e) => ProductBOMDetails.fromJson(e)).toList().first;
+    } catch (e) {
+      return ProductBOMDetails();
+    }
+  }
 }

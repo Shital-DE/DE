@@ -24,6 +24,7 @@ class ProductDashboardBloc
           unitOfMeasurementList: unitOfMeasurementList,
           productTypeList: productTypeList));
     });
+
     // Product structure
     on<ProductStructureEvent>((event, emit) async {
       // User data
