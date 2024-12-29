@@ -234,4 +234,22 @@ class PamRepository {
       return ProductBOMDetails();
     }
   }
+
+  // Get raw material list
+  Future<List<RawMaterialDataModel>> getRawMaterialList(
+      {required String token}) async {
+    try {
+      http.Response response =
+          await API().getApiResponse(AppUrl.getRawMaterialList, {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+
+      List<dynamic> data = jsonDecode(response.body);
+      return data.map((e) => RawMaterialDataModel.fromJson(e)).toList();
+    } catch (e) {
+      return [];
+    }
+  }
 }

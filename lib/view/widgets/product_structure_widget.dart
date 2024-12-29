@@ -67,7 +67,8 @@ class HorizontalLinePainter extends CustomPainter {
 
 class ProductTypeStaticDataModel {
   static const String hardwareId = '402881e559cf1bb70159cf31148f000c';
-  static const String consumablesId = 'Consumables';
+  static const String consumablesId = 'f6f4872e569149f085124f74d33e26a1';
   static const String partId = '4028b88151c96d3f0151c96fecf00002';
   static const String assemblyId = '4028b88151c96d3f0151c96fd3120001';
+  static const String rawMaterialId = '4028b88151c96d3f0151c97030600004';
 }

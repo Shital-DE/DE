@@ -409,3 +409,30 @@ class ProductBOMDetails {
     return data;
   }
 }
+
+// Raw material data model
+class RawMaterialDataModel {
+  String? id;
+  String? producttypeId;
+  String? product;
+  String? productdescription;
+
+  RawMaterialDataModel(
+      {this.id, this.producttypeId, this.product, this.productdescription});
+
+  RawMaterialDataModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    producttypeId = json['producttype_id'];
+    product = json['product'];
+    productdescription = json['productdescription'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['producttype_id'] = producttypeId;
+    data['product'] = product;
+    data['productdescription'] = productdescription;
+    return data;
+  }
+}

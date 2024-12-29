@@ -55,8 +55,10 @@ class AppColors {
         return Colors.green[value];
       case ProductTypeStaticDataModel.consumablesId:
         return Colors.pink[value];
+      case ProductTypeStaticDataModel.rawMaterialId:
+        return Colors.indigo[value];
       default:
-        return Colors.purple[value];
+        return Colors.white;
     }
   }
 

@@ -33,10 +33,15 @@ class ProductDashboardBloc
       // Product data
       List<ProductsWithRevisionDataModel> productsList = await PamRepository()
           .getProductsData(token: saveddata['token'].toString());
+
+      List<RawMaterialDataModel> rawMaterialList = await PamRepository()
+          .getRawMaterialList(token: saveddata['token'].toString());
+
       emit(ProductStructureState(
           productsList: productsList,
           token: saveddata['token'].toString(),
-          userId: saveddata['data'][0]['id']));
+          userId: saveddata['data'][0]['id'],
+          rawMaterialList: rawMaterialList));
     });
 
     // Product inventory management

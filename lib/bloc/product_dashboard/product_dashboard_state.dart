@@ -20,6 +20,7 @@ class ProductRegistrationState extends ProductDashboardState {
 class ProductStructureState extends ProductDashboardState {
   List<ProductsWithRevisionDataModel> productsList;
   List<List<String>> productTypeList;
+  List<RawMaterialDataModel> rawMaterialList;
   String token, userId;
   ProductStructureState(
       {required this.productsList,
@@ -30,7 +31,8 @@ class ProductStructureState extends ProductDashboardState {
         ['Part', ProductTypeStaticDataModel.partId],
         ['Hardware', ProductTypeStaticDataModel.hardwareId],
         ['Consumables', ProductTypeStaticDataModel.consumablesId]
-      ]});
+      ],
+      required this.rawMaterialList});
 }
 
 class ProductInventoryManagementState extends ProductDashboardState {

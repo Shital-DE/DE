@@ -16,6 +16,7 @@ import '../../../bloc/product_dashboard/product_dashboard_state.dart';
 import '../../../services/model/product/product_structure_model.dart';
 import '../../../services/repository/product/pam_repository.dart';
 import '../../../utils/app_colors.dart';
+import '../../../utils/app_theme.dart';
 import '../../widgets/product_structure_widget.dart';
 
 class ProductStructure extends StatefulWidget {
@@ -585,6 +586,12 @@ class _ProductStructureState extends State<ProductStructure> {
                                                         .trim() ==
                                                     '4028b88151c96d3f0151c96fecf00002' &&
                                                 productDetailsDataSnapshot
+                                                        .data!
+                                                        .buildProductStructure![
+                                                            0]
+                                                        .children !=
+                                                    null &&
+                                                productDetailsDataSnapshot
                                                     .data!
                                                     .buildProductStructure![0]
                                                     .children!
@@ -600,138 +607,87 @@ class _ProductStructureState extends State<ProductStructure> {
                                                       productBomDetailsSnapshot
                                                               .data!.bomId !=
                                                           null) {
-                                                    return ElevatedButton(
-                                                        onPressed: () async {
-                                                          NavigatorState?
-                                                              navigator;
-                                                          QuickFixUi()
-                                                              .showProcessing(
-                                                                  context:
-                                                                      context);
-                                                          String response =
-                                                              await PamRepository()
-                                                                  .registerProductStructure(
-                                                                      token: state
-                                                                          .token,
-                                                                      payload: {
-                                                                'createdby': state
-                                                                    .userId
-                                                                    .toString()
-                                                                    .trim(),
-                                                                'childproduct_id':
-                                                                    productBomDetailsSnapshot
-                                                                        .data!
-                                                                        .productId
-                                                                        .toString()
-                                                                        .trim(),
-                                                                'parentproduct_id':
-                                                                    productDetailsDataSnapshot
-                                                                        .data!
-                                                                        .buildProductStructure![
-                                                                            0]
-                                                                        .partId
-                                                                        .toString()
-                                                                        .trim(),
-                                                                'level': 1,
-                                                                'quantity': 1,
-                                                                'reorderlevel':
-                                                                    0,
-                                                                'minimumorderqty':
-                                                                    0,
-                                                                'leadtime': 0,
-                                                                'revision_number':
-                                                                    productBomDetailsSnapshot
-                                                                        .data!
-                                                                        .revisionNumber
-                                                                        .toString()
-                                                                        .trim()
-                                                              });
-                                                          if (response ==
-                                                              'Success') {
-                                                            // Get tree data to represent product tree
-                                                            ProductStructureDetailsModel
-                                                                node =
-                                                                await PamRepository()
-                                                                    .productStructureTreeRepresentation(
-                                                                        token: state
-                                                                            .token,
-                                                                        payload: {
-                                                                  'id':
-                                                                      parentProduct
-                                                                          .text,
-                                                                  'revision_number':
-                                                                      parentRevision
-                                                                          .text
-                                                                });
-
-                                                            if (node
-                                                                    .buildProductStructure![
-                                                                        0]
-                                                                    .part !=
-                                                                '') {
-                                                              // Add tree data in controller to represent
-                                                              productTreeData
-                                                                  .add(node);
-                                                              // Get updated data
-                                                              ProductStructureDetailsModel
-                                                                  updatedData =
-                                                                  await PamRepository().productStructureTreeRepresentation(
-                                                                      token: state
-                                                                          .token,
-                                                                      payload: {
-                                                                    'id': productDetailsDataSnapshot
-                                                                        .data!
-                                                                        .buildProductStructure![
-                                                                            0]
-                                                                        .partId,
-                                                                    'revision_number': productDetailsDataSnapshot
-                                                                        .data!
-                                                                        .buildProductStructure![
-                                                                            0]
-                                                                        .revision
-                                                                  });
-                                                              if (updatedData
-                                                                      .buildProductStructure![
-                                                                          0]
-                                                                      .part !=
-                                                                  '') {
-                                                                // Add data in controller to represent selected product data
-                                                                productDetailsData
-                                                                    .add(
-                                                                        updatedData);
-                                                                // Close processing window
-                                                                navigator!
-                                                                    .pop();
-                                                              }
-                                                            }
-                                                          }
-                                                          // debugPrint(
-                                                          // productDetailsDataSnapshot
-                                                          //     .data!
-                                                          //         .buildProductStructure![
-                                                          //             0]
-                                                          //         .toString());
-                                                        },
-                                                        child: Text(
-                                                            'Copy raw material',
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: AppColors().getColorsDependUponProductType(
-                                                                        productType: productDetailsDataSnapshot
-                                                                            .data!
-                                                                            .buildProductStructure![
-                                                                                0]
-                                                                            .producttypeId
-                                                                            .toString(),
-                                                                        value:
-                                                                            800) ??
-                                                                    Colors
-                                                                        .black)));
+                                                    return copyRawMaterialButton(
+                                                        context: context,
+                                                        productBomDetailsSnapshot:
+                                                            productBomDetailsSnapshot,
+                                                        state: state,
+                                                        productDetailsDataSnapshot:
+                                                            productDetailsDataSnapshot);
                                                   } else {
                                                     return ElevatedButton(
-                                                        onPressed: () {},
+                                                        onPressed: () async {
+                                                          showDialog(
+                                                              context: context,
+                                                              barrierDismissible:
+                                                                  false,
+                                                              builder:
+                                                                  (context) {
+                                                                return AlertDialog(
+                                                                  title: Text(
+                                                                    'Assign raw material',
+                                                                    style: TextStyle(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        fontSize: Platform.isAndroid
+                                                                            ? 15
+                                                                            : 14,
+                                                                        color: AppColors().getColorsDependUponProductType(
+                                                                                productType: productDetailsDataSnapshot.data!.buildProductStructure![0].producttypeId.toString(),
+                                                                                value: 800) ??
+                                                                            Colors.black),
+                                                                  ),
+                                                                  content:
+                                                                      SizedBox(
+                                                                    width: 200,
+                                                                    height: 45,
+                                                                    child: DropdownSearch<
+                                                                        RawMaterialDataModel>(
+                                                                      items: state
+                                                                          .rawMaterialList,
+                                                                      itemAsString: (item) => item
+                                                                          .productdescription
+                                                                          .toString(),
+                                                                      popupProps:
+                                                                          PopupProps
+                                                                              .menu(
+                                                                        itemBuilder: (context,
+                                                                            item,
+                                                                            isSelected) {
+                                                                          return ListTile(
+                                                                            title:
+                                                                                Text(
+                                                                              'Raw material : ${item.product}\nDescription : ${item.productdescription}',
+                                                                              style: AppTheme.labelTextStyle(),
+                                                                            ),
+                                                                          );
+                                                                        },
+                                                                      ),
+                                                                      dropdownDecoratorProps: DropDownDecoratorProps(
+                                                                          dropdownSearchDecoration: InputDecoration(
+                                                                              hintText: 'Select raw material',
+                                                                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(2)))),
+                                                                    ),
+                                                                  ),
+                                                                  actions: [
+                                                                    cancelButton(
+                                                                        navigator:
+                                                                            Navigator.of(
+                                                                                context),
+                                                                        productDetailsDataSnapshot:
+                                                                            productDetailsDataSnapshot),
+                                                                    ElevatedButton(
+                                                                        onPressed:
+                                                                            () {},
+                                                                        child: Text(
+                                                                            'Submit',
+                                                                            style:
+                                                                                TextStyle(fontWeight: FontWeight.bold, color: AppColors().getColorsDependUponProductType(productType: productDetailsDataSnapshot.data!.buildProductStructure![0].producttypeId.toString(), value: 800) ?? Colors.black)))
+                                                                  ],
+                                                                );
+                                                              });
+                                                        },
                                                         child: Text(
                                                             'Assign raw material',
                                                             style: TextStyle(
@@ -792,6 +748,83 @@ class _ProductStructureState extends State<ProductStructure> {
         return const Stack();
       }
     });
+  }
+
+  ElevatedButton copyRawMaterialButton(
+      {required BuildContext context,
+      required AsyncSnapshot<ProductBOMDetails> productBomDetailsSnapshot,
+      required ProductStructureState state,
+      required AsyncSnapshot<ProductStructureDetailsModel>
+          productDetailsDataSnapshot}) {
+    return ElevatedButton(
+        onPressed: () async {
+          // Navigator
+          final navigator = Navigator.of(context);
+          QuickFixUi().showProcessing(context: context);
+
+          // Add data to list to send list
+          List<SelectedProductModel> dataList = [];
+          dataList.add(SelectedProductModel(
+              productid:
+                  productBomDetailsSnapshot.data!.productId.toString().trim(),
+              revision: '00',
+              productTypeId: productBomDetailsSnapshot.data!.producttypeId
+                  .toString()
+                  .trim()));
+          List<Map<String, dynamic>> jsonDataList =
+              dataList.map((item) => item.toJson()).toList();
+
+          // Copy raw material
+          String response = await PamRepository()
+              .registerProductStructure(token: state.token, payload: {
+            'createdby': state.userId,
+            'selectedProducts': jsonDataList,
+            'parentproduct_id': productDetailsDataSnapshot
+                .data!.buildProductStructure![0].structureTableId,
+            'level': 1,
+          });
+          if (response == 'Success') {
+            // Get tree data to represent product tree
+            ProductStructureDetailsModel node = await PamRepository()
+                .productStructureTreeRepresentation(
+                    token: state.token,
+                    payload: {
+                  'id': parentProduct.text,
+                  'revision_number': parentRevision.text
+                });
+
+            if (node.buildProductStructure![0].part != '') {
+              // Add tree data in controller to represent
+              productTreeData.add(node);
+              // Get updated data
+              ProductStructureDetailsModel updatedData = await PamRepository()
+                  .productStructureTreeRepresentation(
+                      token: state.token,
+                      payload: {
+                    'id': productDetailsDataSnapshot
+                        .data!.buildProductStructure![0].partId,
+                    'revision_number': productDetailsDataSnapshot
+                        .data!.buildProductStructure![0].revision
+                  });
+              if (updatedData.buildProductStructure![0].part != '') {
+                // Add data in controller to represent selected product data
+                productDetailsData.add(updatedData);
+
+                // Close processing window
+                navigator.pop();
+              }
+            }
+          }
+        },
+        child: Text('Copy raw material',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors().getColorsDependUponProductType(
+                        productType: productDetailsDataSnapshot
+                            .data!.buildProductStructure![0].producttypeId
+                            .toString(),
+                        value: 800) ??
+                    Colors.black)));
   }
 
   Container childrensViewTable(
@@ -871,24 +904,44 @@ class _ProductStructureState extends State<ProductStructure> {
           productDetailsDataSnapshot}) {
     return RowData(cell: [
       TableDataCell(
-          label: Text(
-        childElement.buildProductStructure![0].part.toString(),
-        textAlign: TextAlign.center,
+          label: Padding(
+        padding: const EdgeInsets.all(2),
+        child: Text(
+          childElement.buildProductStructure![0].part.toString(),
+          textAlign: TextAlign.center,
+        ),
       )),
       TableDataCell(
-          label: Text(
-        childElement.buildProductStructure![0].revision.toString(),
-        textAlign: TextAlign.center,
+          label: Padding(
+        padding: const EdgeInsets.all(2),
+        child: Text(
+          childElement.buildProductStructure![0].revision.toString(),
+          textAlign: TextAlign.center,
+        ),
       )),
       TableDataCell(
-          label: Text(
-        childElement.buildProductStructure![0].producttype.toString(),
-        textAlign: TextAlign.center,
+          label: Padding(
+        padding: const EdgeInsets.all(2),
+        child: Text(
+          childElement.buildProductStructure![0].producttype.toString(),
+          textAlign: TextAlign.center,
+        ),
       )),
       TableDataCell(
-          label: Text(
-        childElement.buildProductStructure![0].description.toString(),
-        textAlign: TextAlign.center,
+          label: InkWell(
+        onTap: () {
+          QuickFixUi().showCustomDialog(
+              context: context,
+              errorMessage: childElement.buildProductStructure![0].description
+                  .toString());
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(2),
+          child: Text(
+            childElement.buildProductStructure![0].description.toString(),
+            textAlign: TextAlign.center,
+          ),
+        ),
       )),
       TableDataCell(
           label: IconButton(
@@ -1871,11 +1924,26 @@ class _ProductStructureState extends State<ProductStructure> {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 5),
-          child: Text(
-            productDetailsDataSnapshot
-                .data!.buildProductStructure![0].unitOfMeasurement
-                .toString(),
-            style: const TextStyle(fontSize: 14),
+          child: InkWell(
+            onTap: () {
+              QuickFixUi().showCustomDialog(
+                  context: context,
+                  errorMessage: productDetailsDataSnapshot
+                      .data!.buildProductStructure![0].unitOfMeasurement
+                      .toString());
+            },
+            child: SizedBox(
+              width: 60,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  productDetailsDataSnapshot
+                      .data!.buildProductStructure![0].unitOfMeasurement
+                      .toString(),
+                  style: const TextStyle(fontSize: 14),
+                ),
+              ),
+            ),
           ),
         )
       ],
