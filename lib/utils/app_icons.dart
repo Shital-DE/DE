@@ -513,6 +513,31 @@ class MyIconGenerator {
           color: iconColor,
           size: size,
         );
+
+      case 'Tools':
+        return Icon(
+          Icons.build_circle_outlined,
+          color: iconColor,
+          size: 30,
+        );
+      case 'Tool Issue':
+        return Icon(
+          Icons.handyman_rounded,
+          color: iconColor,
+          size: 30,
+        );
+      case 'Tool Receipt':
+        return Icon(
+          Icons.receipt,
+          color: iconColor,
+          size: 30,
+        );
+      case 'Tool Stock':
+        return Icon(
+          Icons.storage,
+          color: iconColor,
+          size: 30,
+        );
       default:
         return const Icon(Icons.error_outline);
     }

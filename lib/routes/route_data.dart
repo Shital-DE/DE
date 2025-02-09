@@ -16,6 +16,7 @@ import '../bloc/appbar/appbar_bloc.dart';
 import '../bloc/common_mail/mails/common_mails_bloc.dart';
 import '../bloc/dashboard/dashboard_bloc.dart';
 import '../bloc/documents/documents_bloc.dart';
+import '../bloc/ppc/tool_dispencer/bloc/tools_bloc.dart';
 import '../bloc/product_dashboard/product_dashboard_bloc.dart';
 import '../bloc/user/login/login_bloc.dart';
 import '../bloc/machinewisedashboard/machinewisedashboard_bloc.dart';
@@ -86,6 +87,9 @@ import '../view/screens/ppc/product/machine_program_converter.dart';
 import '../view/screens/ppc/product/product_and_process_route.dart';
 import '../view/screens/ppc/product/product_resource_management.dart';
 import '../view/screens/ppc/product/verify_machine_programs.dart';
+import '../view/screens/ppc/tool_dispencer/tool_issue.dart';
+import '../view/screens/ppc/tool_dispencer/tool_receipt.dart';
+import '../view/screens/ppc/tool_dispencer/tool_stock_view.dart';
 import '../view/screens/product_assets_management/product_inventory_management.dart';
 import '../view/screens/production/cutting/cutting_screen.dart';
 import '../view/screens/production/operator/barcode_scan.dart';
@@ -879,6 +883,39 @@ class RouteData {
             child: IssueStockForAssembly(
               selectedAssembliesDataList: args['selectedAssembliesDataList'],
             ));
+
+      case RouteName.toolIssue: //Tool Issue
+        return MultiBlocProvider(providers: [
+          BlocProvider<AppBarBloc>(
+            create: (BuildContext context) => AppBarBloc(),
+          ),
+          BlocProvider<ToolsBloc>(
+            create: (BuildContext context) =>
+                ToolsBloc()..add(const ToolsInitEvent()),
+          ),
+        ], child: const ToolIssue());
+
+      case RouteName.toolReceipt: //Tool Receipt
+        return MultiBlocProvider(providers: [
+          BlocProvider<AppBarBloc>(
+            create: (BuildContext context) => AppBarBloc(),
+          ),
+          BlocProvider<ToolsBloc>(
+            create: (BuildContext context) =>
+                ToolsBloc()..add(const ToolsInitEvent()),
+          ),
+        ], child: const ToolsReceipt());
+
+      case RouteName.toolStock: //Tool Receipt
+        return MultiBlocProvider(providers: [
+          BlocProvider<AppBarBloc>(
+            create: (BuildContext context) => AppBarBloc(),
+          ),
+          BlocProvider<ToolsBloc>(
+            create: (BuildContext context) =>
+                ToolsBloc()..add(const ToolsInitEvent()),
+          ),
+        ], child: const ToolStockView());
 
       default:
         return const Text('No route found');

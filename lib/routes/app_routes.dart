@@ -359,6 +359,19 @@ class Routes {
             builder: (BuildContext context) => RouteData.getRouteData(
                 context, RouteName.assemblyComponentRequirementsScreen, args!));
 
+      case RouteName.toolIssue:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                RouteData.getRouteData(context, RouteName.toolIssue, {}));
+      case RouteName.toolReceipt:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                RouteData.getRouteData(context, RouteName.toolReceipt, {}));
+      case RouteName.toolStock:
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                RouteData.getRouteData(context, RouteName.toolStock, {}));
+
       default:
         return MaterialPageRoute(builder: (_) {
           return const Scaffold(

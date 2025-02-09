@@ -192,7 +192,8 @@ class _DashboardState extends State<Dashboard> {
                           ? state.programsList[0].programname.toString()
                           : '');
                 }
-              } else if (state.folder['name'] == 'PPC') {
+              } else if (state.folder['name'] == 'PPC' ||
+                  state.folder['name'] == 'Tools') {
                 return ppc(context, state);
               } else if (state.folder['name'] == 'Quality') {
                 return quality(context, state);
@@ -298,6 +299,15 @@ class _DashboardState extends State<Dashboard> {
               } else if (state.programsList[index].programname.toString() ==
                   'Sales orders') {
                 Navigator.pushNamed(context, RouteName.assemblySalesOrders);
+              } else if (state.programsList[index].programname.toString() ==
+                  'Tool Issue') {
+                Navigator.pushNamed(context, RouteName.toolIssue);
+              } else if (state.programsList[index].programname.toString() ==
+                  'Tool Receipt') {
+                Navigator.pushNamed(context, RouteName.toolReceipt);
+              } else if (state.programsList[index].programname.toString() ==
+                  'Tool Stock') {
+                Navigator.pushNamed(context, RouteName.toolStock);
               }
             },
           );

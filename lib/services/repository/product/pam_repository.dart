@@ -5,6 +5,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../../utils/app_url.dart';
 import '../../common/api.dart';
@@ -33,8 +34,10 @@ class PamRepository {
   }
 
   // Register product Structure
-  Future<String> registerProductStructure(
-      {required String token, required Map<String, dynamic> payload}) async {
+  Future<dynamic> registerProductStructure(
+      {required String token,
+      required Map<String, dynamic> payload,
+      bool wantId = false}) async {
     try {
       http.Response response = await API()
           .postApiResponse(AppUrl.registerProductStructure, token, payload);
@@ -43,7 +46,12 @@ class PamRepository {
       } else {
         Map<String, dynamic> data = jsonDecode(response.body);
         if (data['Status code'] == 200) {
-          return data['Message'];
+          if (wantId == true) {
+            debugPrint(data.toString());
+            return data;
+          } else {
+            return data['Message'];
+          }
         } else {
           return response.body.toString();
         }

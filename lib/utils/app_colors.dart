@@ -10,6 +10,7 @@ class AppColors {
   static const Color greyColor = Colors.grey;
   static const Color blackColor = Colors.black;
   static const Color listColor = Color.fromARGB(255, 144, 197, 241);
+  static const Color appbarColor = Color.fromARGB(255, 161, 184, 248);
 
 //Login
   static const Color secondarybackgroundColor =

@@ -140,4 +140,10 @@ class RouteName {
       'assemblySalesOrders'; // Assembly sales orders
   static const String assemblyComponentRequirementsScreen =
       'assemblyComponentRequirementsScreen'; // Assembly component requirement
+
+  //tools
+  static const String toolDashboard = 'toolDashboard';
+  static const String toolIssue = 'toolIssue';
+  static const String toolReceipt = 'toolReceipt';
+  static const String toolStock = 'toolStock';
 }

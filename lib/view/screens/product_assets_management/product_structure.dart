@@ -45,6 +45,8 @@ class _ProductStructureState extends State<ProductStructure> {
       StreamController<Map<String, String>>.broadcast();
   StreamController<ProductBOMDetails> productBomDetails =
       StreamController<ProductBOMDetails>.broadcast();
+  // StreamController<RawMaterialDataModel> selectedRawMaterial =
+  //     StreamController<RawMaterialDataModel>.broadcast();
 
   // TextEditing controller
   TextEditingController quantityController = TextEditingController();
@@ -617,6 +619,8 @@ class _ProductStructureState extends State<ProductStructure> {
                                                   } else {
                                                     return ElevatedButton(
                                                         onPressed: () async {
+                                                          List<SelectedProductModel>
+                                                              dataList = [];
                                                           showDialog(
                                                               context: context,
                                                               barrierDismissible:
@@ -668,6 +672,19 @@ class _ProductStructureState extends State<ProductStructure> {
                                                                           dropdownSearchDecoration: InputDecoration(
                                                                               hintText: 'Select raw material',
                                                                               border: OutlineInputBorder(borderRadius: BorderRadius.circular(2)))),
+                                                                      onChanged:
+                                                                          (value) {
+                                                                        dataList =
+                                                                            [];
+                                                                        dataList.add(SelectedProductModel(
+                                                                            productid: value!.id
+                                                                                .toString()
+                                                                                .trim(),
+                                                                            revision:
+                                                                                '00',
+                                                                            productTypeId:
+                                                                                value.producttypeId.toString().trim()));
+                                                                      },
                                                                     ),
                                                                   ),
                                                                   actions: [
@@ -679,7 +696,62 @@ class _ProductStructureState extends State<ProductStructure> {
                                                                             productDetailsDataSnapshot),
                                                                     ElevatedButton(
                                                                         onPressed:
-                                                                            () {},
+                                                                            () async {
+                                                                          // Navigator
+                                                                          final navigator =
+                                                                              Navigator.of(context);
+                                                                          QuickFixUi()
+                                                                              .showProcessing(context: context);
+
+                                                                          List<Map<String, dynamic>>
+                                                                              jsonDataList =
+                                                                              dataList.map((item) => item.toJson()).toList();
+
+                                                                          // Copy raw material
+                                                                          Map<String, dynamic> response = await PamRepository().registerProductStructure(
+                                                                              token: state.token,
+                                                                              payload: {
+                                                                                'createdby': state.userId,
+                                                                                'selectedProducts': jsonDataList,
+                                                                                'parentproduct_id': productDetailsDataSnapshot.data!.buildProductStructure![0].structureTableId,
+                                                                                'level': 1
+                                                                              },
+                                                                              wantId: true);
+                                                                          if (response['Message'] ==
+                                                                              'Success') {
+                                                                            // QuickFixUi().showCustomDialog(
+                                                                            //     context: context,
+                                                                            //     errorMessage: response['data'][0][0]['id']);
+                                                                            // debugPrint('${response[2]['data'][0][0]['id']}--------------------------------------------------------');
+                                                                            // Get tree data to represent product tree
+                                                                            ProductStructureDetailsModel
+                                                                                node =
+                                                                                await PamRepository().productStructureTreeRepresentation(token: state.token, payload: {
+                                                                              'id': parentProduct.text,
+                                                                              'revision_number': parentRevision.text
+                                                                            });
+
+                                                                            if (node.buildProductStructure![0].part !=
+                                                                                '') {
+                                                                              // Add tree data in controller to represent
+                                                                              productTreeData.add(node);
+                                                                              // Get updated data
+                                                                              ProductStructureDetailsModel updatedData = await PamRepository().productStructureTreeRepresentation(token: state.token, payload: {
+                                                                                'id': productDetailsDataSnapshot.data!.buildProductStructure![0].partId,
+                                                                                'revision_number': productDetailsDataSnapshot.data!.buildProductStructure![0].revision
+                                                                              });
+                                                                              if (updatedData.buildProductStructure![0].part != '') {
+                                                                                // Add data in controller to represent selected product data
+                                                                                productDetailsData.add(updatedData);
+
+                                                                                // Empty dataList
+                                                                                dataList = [];
+                                                                                // Close processing window
+                                                                                navigator.pop();
+                                                                              }
+                                                                            }
+                                                                          }
+                                                                        },
                                                                         child: Text(
                                                                             'Submit',
                                                                             style:
@@ -810,6 +882,8 @@ class _ProductStructureState extends State<ProductStructure> {
                 // Add data in controller to represent selected product data
                 productDetailsData.add(updatedData);
 
+                // Empty datalist
+                dataList = [];
                 // Close processing window
                 navigator.pop();
               }

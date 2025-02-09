@@ -45,3 +45,9 @@ app.*.map.json
 # My project files
 lib/utils/app_url.dart
 lib/utils/constant.dart
+android
+ios
+linux
+macos
+web
+windows
