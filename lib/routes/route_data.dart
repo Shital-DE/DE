@@ -886,20 +886,20 @@ class RouteData {
 
       case RouteName.toolIssue: //Tool Issue
         return MultiBlocProvider(providers: [
-          BlocProvider<AppBarBloc>(
-            create: (BuildContext context) => AppBarBloc(),
-          ),
+          // BlocProvider<AppBarBloc>(
+          //   create: (BuildContext context) => AppBarBloc(),
+          // ),
           BlocProvider<ToolsBloc>(
             create: (BuildContext context) =>
-                ToolsBloc()..add(const ToolsInitEvent()),
+                ToolsBloc()..add(const ToolsOperatorInitEvent()),
           ),
         ], child: const ToolIssue());
 
       case RouteName.toolReceipt: //Tool Receipt
         return MultiBlocProvider(providers: [
-          BlocProvider<AppBarBloc>(
-            create: (BuildContext context) => AppBarBloc(),
-          ),
+          // BlocProvider<AppBarBloc>(
+          //   create: (BuildContext context) => AppBarBloc(),
+          // ),
           BlocProvider<ToolsBloc>(
             create: (BuildContext context) =>
                 ToolsBloc()..add(const ToolsInitEvent()),
@@ -908,12 +908,13 @@ class RouteData {
 
       case RouteName.toolStock: //Tool Receipt
         return MultiBlocProvider(providers: [
-          BlocProvider<AppBarBloc>(
-            create: (BuildContext context) => AppBarBloc(),
-          ),
+          // BlocProvider<AppBarBloc>(
+          //   create: (BuildContext context) => AppBarBloc(),
+          // ),
           BlocProvider<ToolsBloc>(
-            create: (BuildContext context) =>
-                ToolsBloc()..add(const ToolsInitEvent()),
+            create: (BuildContext context) => ToolsBloc()
+              ..add(const ToolsInitEvent())
+              ..add(const ToolStockListEvent(tab: "addstock")),
           ),
         ], child: const ToolStockView());
 
