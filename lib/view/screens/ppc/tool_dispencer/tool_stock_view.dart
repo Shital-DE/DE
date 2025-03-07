@@ -30,6 +30,7 @@ class _ToolStockViewState extends State<ToolStockView> {
   String toolId = '';
   Tool? tool;
   String employeeId = "";
+  int month = -1;
 
   ToggleBtn view = ToggleBtn.addstock;
 
@@ -194,18 +195,35 @@ class _ToolStockViewState extends State<ToolStockView> {
                               itemAsString: (i) => i.employeename ?? "",
                               onChanged: (value) {
                                 employeeId = value!.id!;
-
-                                BlocProvider.of<ToolsBloc>(context).add(
-                                    OperatorMonthReportEvent(
-                                        employeeId: employeeId,
-                                        fromdate: DateFormat("yyyy-MM-dd")
-                                            .format(DateTime(
-                                                DateTime.now().year,
-                                                DateTime.now().month,
-                                                1)),
-                                        todate: DateFormat("yyyy-MM-dd").format(
-                                            DateTime(DateTime.now().year,
-                                                DateTime.now().month + 1, 0))));
+                                if (month == -1) {
+                                  BlocProvider.of<ToolsBloc>(context).add(
+                                      OperatorMonthReportEvent(
+                                          employeeId: employeeId,
+                                          fromdate: DateFormat("yyyy-MM-dd")
+                                              .format(DateTime(
+                                                  DateTime.now().year,
+                                                  DateTime.now().month,
+                                                  1)),
+                                          todate: DateFormat("yyyy-MM-dd")
+                                              .format(DateTime(
+                                                  DateTime.now().year,
+                                                  DateTime.now().month + 1,
+                                                  0))));
+                                } else {
+                                  BlocProvider.of<ToolsBloc>(context).add(
+                                      OperatorMonthReportEvent(
+                                          employeeId: employeeId,
+                                          fromdate: DateFormat("yyyy-MM-dd")
+                                              .format(DateTime(
+                                                  DateTime.now().year,
+                                                  month,
+                                                  1)),
+                                          todate: DateFormat("yyyy-MM-dd")
+                                              .format(DateTime(
+                                                  DateTime.now().year,
+                                                  month + 1,
+                                                  0))));
+                                }
                               },
                               hintText: "Operator");
                         },
@@ -219,6 +237,7 @@ class _ToolStockViewState extends State<ToolStockView> {
                             monthNames.keys.elementAt(DateTime.now().month - 1),
                         itemAsString: (item) => item,
                         onChanged: (item) {
+                          month = monthNames[item]!;
                           BlocProvider.of<ToolsBloc>(context).add(
                               OperatorMonthReportEvent(
                                   employeeId: employeeId,
