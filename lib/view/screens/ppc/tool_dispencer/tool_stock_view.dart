@@ -259,73 +259,92 @@ class _ToolStockViewState extends State<ToolStockView> {
               ),
             if (view == ToggleBtn.addstock)
               Container(
+                height: SizeConfig.screenHeight! * 0.65,
                 margin: const EdgeInsets.only(top: 30, left: 20, right: 20),
-                decoration: BoxDecoration(border: Border.all(width: 0.5)),
+                decoration: BoxDecoration(
+                    border: Border.all(width: 0, color: Colors.white)),
                 child: BlocBuilder<ToolsBloc, ToolsState>(
                   builder: (context, state) {
-                    return CustomDataTable(
-                      columnNames: const ["Date", "Tool", "Total Qty"],
-                      rows: state.toolStock.map((i) {
-                        return DataRow(cells: [
-                          DataCell(Text(i.date.toString())),
-                          DataCell(Text(i.toolcode.toString())),
-                          DataCell(Text(i.qty.toString())),
-                        ]);
-                      }).toList(),
+                    return SingleChildScrollView(
+                      child: CustomDataTable(
+                        tableBorder: const TableBorder.symmetric(
+                            outside: BorderSide(width: 0.5)),
+                        columnNames: const ["Date", "Tool", "Total Qty"],
+                        rows: state.toolStock.map((i) {
+                          return DataRow(cells: [
+                            DataCell(Text(i.date.toString())),
+                            DataCell(Text(i.toolcode.toString())),
+                            DataCell(Text(i.qty.toString())),
+                          ]);
+                        }).toList(),
+                      ),
                     );
                   },
                 ),
               ),
             if (view == ToggleBtn.datereport)
               Container(
+                height: SizeConfig.screenHeight! * 0.65,
                 margin: const EdgeInsets.only(top: 30, left: 20, right: 20),
-                decoration: BoxDecoration(border: Border.all(width: 0.5)),
+                decoration: BoxDecoration(
+                    border: Border.all(width: 0, color: Colors.white)),
                 child: BlocBuilder<ToolsBloc, ToolsState>(
                   builder: (context, state) {
-                    return CustomDataTable(
-                      columnNames: const [
-                        "Employee",
-                        "Tool",
-                        "Issued Qty",
-                        "Damaged Qty",
-                        "Wornout Qty"
-                      ],
-                      rows: state.toolReport.map((i) {
-                        return DataRow(cells: [
-                          DataCell(Text(i.employeeName.toString())),
-                          DataCell(Text(i.tool.toString())),
-                          DataCell(Text(i.qty.toString())),
-                          DataCell(Text(i.damageQty.toString())),
-                          DataCell(Text(i.wornoutQty.toString())),
-                        ]);
-                      }).toList(),
+                    return SingleChildScrollView(
+                      child: CustomDataTable(
+                        tableBorder: const TableBorder.symmetric(
+                            outside: BorderSide(width: 0.5)),
+                        columnNames: const [
+                          "Employee",
+                          "Tool",
+                          "Issued Qty",
+                          "Damaged Qty",
+                          "Wornout Qty"
+                        ],
+                        rows: state.toolReport.map((i) {
+                          return DataRow(cells: [
+                            DataCell(Text(i.employeeName.toString())),
+                            DataCell(Text(i.tool.toString())),
+                            DataCell(Text(i.qty.toString())),
+                            DataCell(Text(i.damageQty.toString())),
+                            DataCell(Text(i.wornoutQty.toString())),
+                          ]);
+                        }).toList(),
+                      ),
                     );
                   },
                 ),
               ),
             if (view == ToggleBtn.operatorreport)
               Container(
+                  height: SizeConfig.screenHeight! * 0.6,
+                  // decoration: BoxDecoration(border: Border.all()),
                   margin: const EdgeInsets.only(top: 30, left: 20, right: 20),
-                  decoration: BoxDecoration(border: Border.all(width: 0.5)),
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 0, color: Colors.white)),
                   child: BlocBuilder<ToolsBloc, ToolsState>(
                       builder: (context, state) {
-                    return CustomDataTable(
-                      columnNames: const [
-                        "Date",
-                        "Tool",
-                        "Qty",
-                        "Status",
-                        "Reason"
-                      ],
-                      rows: state.toolStock.map((i) {
-                        return DataRow(cells: [
-                          DataCell(Text(i.date.toString())),
-                          DataCell(Text(i.toolcode.toString())),
-                          DataCell(Text(i.qty.toString())),
-                          DataCell(Text(i.status.toString())),
-                          DataCell(Text(i.reason ?? ""))
-                        ]);
-                      }).toList(),
+                    return SingleChildScrollView(
+                      child: CustomDataTable(
+                        tableBorder: const TableBorder.symmetric(
+                            outside: BorderSide(width: 0.5)),
+                        columnNames: const [
+                          "Date",
+                          "Tool",
+                          "Qty",
+                          "Status",
+                          "Reason"
+                        ],
+                        rows: state.toolStock.map((i) {
+                          return DataRow(cells: [
+                            DataCell(Text(i.date.toString())),
+                            DataCell(Text(i.toolcode.toString())),
+                            DataCell(Text(i.qty.toString())),
+                            DataCell(Text(i.status.toString())),
+                            DataCell(Text(i.reason ?? ""))
+                          ]);
+                        }).toList(),
+                      ),
                     );
                   }))
           ],
