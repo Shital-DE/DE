@@ -4,9 +4,9 @@ import 'package:de/services/model/tool_dispencer/toolreport.dart';
 import 'package:de/services/repository/tool_dispencer/tool_repository.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../../services/model/tool_dispencer/tool.dart';
-import '../../../../services/model/tool_dispencer/toolstock.dart';
-import '../../../../services/session/user_login.dart';
+import '../../../../../services/model/tool_dispencer/tool.dart';
+import '../../../../../services/model/tool_dispencer/toolstock.dart';
+import '../../../../../services/session/user_login.dart';
 
 part 'tools_event.dart';
 part 'tools_state.dart';
