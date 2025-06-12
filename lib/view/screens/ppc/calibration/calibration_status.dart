@@ -1,6 +1,8 @@
 // Author : Shital Gayakwad
 // Created Date : 5 Dec 2023
 // Description : Calibration screen
+// Modification : 11 June 2025 by Shital Gayakwad.
+
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
@@ -399,27 +401,31 @@ class CalibrationStatus extends StatelessWidget {
                                                 }
                                               });
                                         }),
-                                e.startdate.toString() == '0000-00-00'
-                                    ? const Text('')
-                                    : IconButton(
-                                        onPressed: () async {
-                                          TextEditingController rejectedReason =
-                                              TextEditingController();
-                                          rejectInstrument(
-                                              context: context,
-                                              rejectionReasons:
-                                                  state.rejectionReasons,
-                                              rejectedReason: rejectedReason,
-                                              e: e,
-                                              token: state.token,
-                                              userid: state.userId,
-                                              blocProvider: blocProvider);
-                                        },
-                                        icon: Icon(
-                                          Icons.cancel,
-                                          color: Colors.black,
-                                          size: Platform.isAndroid ? 25 : 20,
-                                        )),
+                                // e.startdate.toString() == '0000-00-00'
+                                //     ? const Text('')
+                                //     :
+                                IconButton(
+                                    onPressed: () async {
+                                      TextEditingController rejectedReason =
+                                          TextEditingController();
+                                      TextEditingController remark =
+                                          TextEditingController();
+                                      rejectInstrument(
+                                          context: context,
+                                          rejectionReasons:
+                                              state.rejectionReasons,
+                                          rejectedReason: rejectedReason,
+                                          e: e,
+                                          token: state.token,
+                                          userid: state.userId,
+                                          blocProvider: blocProvider,
+                                          remark: remark);
+                                    },
+                                    icon: Icon(
+                                      Icons.cancel,
+                                      color: Colors.black,
+                                      size: Platform.isAndroid ? 25 : 20,
+                                    )),
                                 e.certificateMdocid != null
                                     ? viewCertificate(
                                         context: context,
@@ -554,17 +560,19 @@ class CalibrationStatus extends StatelessWidget {
                               textAlign: TextAlign.center,
                               style: AppTheme.tablerowTextStyle())),
                       TableDataCell(
-                          label: Text(
-                              e.startdate.toString() == '0000-00-00'
-                                  ? 'Outsourced'
-                                  : e.remainingTimeUntilDue == null
-                                      ? ''
-                                      : e.remainingTimeUntilDue.toString() ==
-                                              '-'
-                                          ? 'Last day'
-                                          : e.remainingTimeUntilDue.toString(),
-                              textAlign: TextAlign.center,
-                              style: AppTheme.tablerowTextStyle())),
+                          label: Padding(
+                        padding: const EdgeInsets.only(top: 5, bottom: 5),
+                        child: Text(
+                            e.startdate.toString() == '0000-00-00'
+                                ? 'Outsourced'
+                                : e.remainingTimeUntilDue == null
+                                    ? ''
+                                    : e.remainingTimeUntilDue.toString() == '-'
+                                        ? 'Last day'
+                                        : e.remainingTimeUntilDue.toString(),
+                            textAlign: TextAlign.center,
+                            style: AppTheme.tablerowTextStyle()),
+                      )),
                     ]);
               }).toList(),
               footer: StreamBuilder<int>(
@@ -783,29 +791,62 @@ class CalibrationStatus extends StatelessWidget {
       required CalibrationStatusModel e,
       required String token,
       required String userid,
-      required CalibrationBloc blocProvider}) {
+      required CalibrationBloc blocProvider,
+      required TextEditingController remark}) {
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: Text('Reject instrument',
                 style: AppTheme.labelTextStyle(isFontBold: true)),
-            content: DropdownSearch<InstrumentRejectionReasons>(
-              items: rejectionReasons,
-              itemAsString: (item) => item.reason.toString(),
-              popupProps: PopupProps.menu(
-                itemBuilder: (context, item, isSelected) {
-                  return ListTile(
-                    title: Text(
-                      item.reason.toString(),
-                      style: AppTheme.labelTextStyle(),
+            content: SizedBox(
+              height: 181,
+              width: 400,
+              child: Column(
+                children: [
+                  DropdownSearch<InstrumentRejectionReasons>(
+                    items: rejectionReasons,
+                    itemAsString: (item) => item.reason.toString(),
+                    popupProps: PopupProps.menu(
+                      itemBuilder: (context, item, isSelected) {
+                        return ListTile(
+                          title: Text(
+                            item.reason.toString(),
+                            style: AppTheme.labelTextStyle(),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
+                    dropdownDecoratorProps: DropDownDecoratorProps(
+                        textAlign: TextAlign.start,
+                        dropdownSearchDecoration: InputDecoration(
+                          hintText: 'Rejection reason',
+                          hintStyle: AppTheme.labelTextStyle(),
+                          contentPadding: const EdgeInsets.only(
+                              bottom: 11, top: 11, left: 10),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(2)),
+                        )),
+                    onChanged: (value) {
+                      rejectedReason.text = value!.id.toString();
+                    },
+                  ),
+                  const SizedBox(height: 5),
+                  TextField(
+                    controller: remark,
+                    textAlign: TextAlign.start,
+                    decoration: const InputDecoration(
+                      hintText: "Remark",
+                      border: OutlineInputBorder(),
+                    ),
+                    maxLines: 4,
+                    minLines: 4,
+                    onChanged: (value) {
+                      remark.text = value.toString();
+                    },
+                  ),
+                ],
               ),
-              onChanged: (value) {
-                rejectedReason.text = value!.id.toString();
-              },
             ),
             actions: [
               FilledButton(
@@ -839,7 +880,8 @@ class CalibrationStatus extends StatelessWidget {
                               'isdeleted': rejectedReason.text ==
                                       '81180939c054478587d54fab54f585fd'
                                   ? false
-                                  : true
+                                  : true,
+                              'remark': remark.text
                             });
                         if (response == 'Inserted successfully') {
                           Navigator.of(context).pop();

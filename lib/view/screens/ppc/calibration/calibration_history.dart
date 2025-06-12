@@ -1,6 +1,7 @@
 // Author : Shital Gayakwad
 // Created Date : 5 Dec 2023
 // Description : Calibration screen
+// Modification : 11 June 2025 by Shital Gayakwad.
 
 // ignore_for_file: use_build_context_synchronously
 
@@ -84,6 +85,7 @@ class CalibrationHistory extends StatelessWidget {
                 items: state.allInstrumentsList,
                 itemAsString: (item) => item.instrumentname.toString(),
                 popupProps: PopupProps.menu(
+                  showSearchBox: true,
                   itemBuilder: (context, item, isSelected) {
                     return ListTile(
                       title: Text(

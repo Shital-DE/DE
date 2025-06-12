@@ -55,5 +55,6 @@ class InstrumentStoreEvent extends CalibrationEvent {}
 
 // Rejected instruments data event
 class RejectedInstrumentsEvent extends CalibrationEvent {
-  RejectedInstrumentsEvent();
+  final List<RejectedInstrumentsModel>? selectedInstrumentList;
+  RejectedInstrumentsEvent({this.selectedInstrumentList = const []});
 }

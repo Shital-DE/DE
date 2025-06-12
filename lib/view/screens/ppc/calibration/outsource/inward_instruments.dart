@@ -1,4 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
+// Author : Shital Gayakwad
+// Created Date : 5 Dec 2023
+// Description : Calibration screen
+// Modification : 11 June 2025 by Shital Gayakwad.
 
 import 'dart:async';
 import 'dart:convert';
@@ -129,32 +133,11 @@ class InwardInstruments extends StatelessWidget {
                         TableDataCell(
                             label: Padding(
                           padding: const EdgeInsets.only(top: 7, bottom: 7),
-                          child: Row(
-                            children: [
-                              submitButton(
-                                  inwardingInstrument: inwardingInstrument,
-                                  state: state,
-                                  e: e,
-                                  blocProvider: blocProvider),
-                              IconButton(
-                                  padding: const EdgeInsets.only(bottom: 1),
-                                  onPressed: () async {
-                                    TextEditingController rejectedReason =
-                                        TextEditingController();
-                                    rejectInstrument(
-                                        context: context,
-                                        state: state,
-                                        rejectedReason: rejectedReason,
-                                        e: e,
-                                        blocProvider: blocProvider);
-                                  },
-                                  icon: Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                    size: Platform.isAndroid ? 25 : 20,
-                                  )),
-                            ],
-                          ),
+                          child: submitButton(
+                              inwardingInstrument: inwardingInstrument,
+                              state: state,
+                              e: e,
+                              blocProvider: blocProvider),
                         ))
                       ]))
                   .toList()),
@@ -170,84 +153,84 @@ class InwardInstruments extends StatelessWidget {
     });
   }
 
-  Future<dynamic> rejectInstrument(
-      {required BuildContext context,
-      required InwardInstrumentsState state,
-      required TextEditingController rejectedReason,
-      required OutsourcedInstrumentsModel e,
-      required CalibrationBloc blocProvider}) {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-              title: const Text(
-                'Reject instrument',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-              ),
-              content: DropdownSearch<InstrumentRejectionReasons>(
-                items: state.rejectionReasons,
-                itemAsString: (item) => item.reason.toString(),
-                onChanged: (value) {
-                  rejectedReason.text = value!.id.toString();
-                },
-              ),
-              actions: [
-                FilledButton(
-                    onPressed: () async {
-                      if (rejectedReason.text == '') {
-                        QuickFixUi().showCustomDialog(
-                            errorMessage: 'Select rejection reason first.',
-                            context: context);
-                      } else {
-                        String id = e.instrumentcalibrationscheduleId
-                                .toString()
-                                .trim(),
-                            startdate = e.startdate.toString().trim(),
-                            duedate = e.duedate.toString().trim(),
-                            certificateMdocid =
-                                e.certificateId.toString().trim();
-                        String deleteResponse = await CalibrationRepository()
-                            .rejectInstrument(token: state.token, payload: {
-                          'id': id.toString(),
-                          'isdeleted': true
-                        });
+  // Future<dynamic> rejectInstrument(
+  //     {required BuildContext context,
+  //     required InwardInstrumentsState state,
+  //     required TextEditingController rejectedReason,
+  //     required OutsourcedInstrumentsModel e,
+  //     required CalibrationBloc blocProvider}) {
+  //   return showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //             title: const Text(
+  //               'Reject instrument',
+  //               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+  //             ),
+  //             content: DropdownSearch<InstrumentRejectionReasons>(
+  //               items: state.rejectionReasons,
+  //               itemAsString: (item) => item.reason.toString(),
+  //               onChanged: (value) {
+  //                 rejectedReason.text = value!.id.toString();
+  //               },
+  //             ),
+  //             actions: [
+  //               FilledButton(
+  //                   onPressed: () async {
+  //                     if (rejectedReason.text == '') {
+  //                       QuickFixUi().showCustomDialog(
+  //                           errorMessage: 'Select rejection reason first.',
+  //                           context: context);
+  //                     } else {
+  //                       String id = e.instrumentcalibrationscheduleId
+  //                               .toString()
+  //                               .trim(),
+  //                           startdate = e.startdate.toString().trim(),
+  //                           duedate = e.duedate.toString().trim(),
+  //                           certificateMdocid =
+  //                               e.certificateId.toString().trim();
+  //                       String deleteResponse = await CalibrationRepository()
+  //                           .rejectInstrument(token: state.token, payload: {
+  //                         'id': id.toString(),
+  //                         'isdeleted': true
+  //                       });
 
-                        if (deleteResponse == 'Updated successfully') {
-                          String response = await CalibrationRepository()
-                              .addrejectedInstrumentToHistory(
-                                  token: state.token,
-                                  payload: {
-                                'createdby': state.userId,
-                                'instrumentcalibrationschedule_id': id,
-                                'startdate': startdate,
-                                'duedate': duedate,
-                                'certificate_id': certificateMdocid,
-                                'rejectionreason': rejectedReason.text,
-                                'isdeleted': rejectedReason.text ==
-                                        '81180939c054478587d54fab54f585fd'
-                                    ? false
-                                    : true
-                              });
+  //                       if (deleteResponse == 'Updated successfully') {
+  //                         String response = await CalibrationRepository()
+  //                             .addrejectedInstrumentToHistory(
+  //                                 token: state.token,
+  //                                 payload: {
+  //                               'createdby': state.userId,
+  //                               'instrumentcalibrationschedule_id': id,
+  //                               'startdate': startdate,
+  //                               'duedate': duedate,
+  //                               'certificate_id': certificateMdocid,
+  //                               'rejectionreason': rejectedReason.text,
+  //                               'isdeleted': rejectedReason.text ==
+  //                                       '81180939c054478587d54fab54f585fd'
+  //                                   ? false
+  //                                   : true
+  //                             });
 
-                          if (response == 'Inserted successfully') {
-                            Navigator.of(context).pop();
-                            QuickFixUi.successMessage(response, context);
-                            Future.delayed(const Duration(seconds: 1), () {
-                              blocProvider.add(InwardInstrumentsEvent());
-                            });
-                          }
-                        }
-                      }
-                    },
-                    child: const Text('Confirm')),
-                FilledButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Cancel'))
-              ]);
-        });
-  }
+  //                         if (response == 'Inserted successfully') {
+  //                           Navigator.of(context).pop();
+  //                           QuickFixUi.successMessage(response, context);
+  //                           Future.delayed(const Duration(seconds: 1), () {
+  //                             blocProvider.add(InwardInstrumentsEvent());
+  //                           });
+  //                         }
+  //                       }
+  //                     }
+  //                   },
+  //                   child: const Text('Confirm')),
+  //               FilledButton(
+  //                   onPressed: () {
+  //                     Navigator.of(context).pop();
+  //                   },
+  //                   child: const Text('Cancel'))
+  //             ]);
+  //       });
+  // }
 
   StreamBuilder<InwardInstrumentsModel> submitButton(
       {required StreamController<InwardInstrumentsModel> inwardingInstrument,

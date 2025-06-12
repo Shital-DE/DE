@@ -1,6 +1,7 @@
 // Author : Shital Gayakwad
 // Created Date : 5 Dec 2023
 // Description : Calibration bloc
+// Modification : 11 June 2025 by Shital Gayakwad.
 
 import 'package:bloc/bloc.dart';
 import '../../../services/model/quality/calibration_model.dart';
@@ -259,7 +260,8 @@ class CalibrationBloc extends Bloc<CalibrationEvent, CalibrationState> {
         'Measuring range',
         'Rejected date',
         'Rejected by',
-        'Rejection reason'
+        'Rejection reason',
+        'Remark'
       ];
 
       List<RejectedInstrumentsModel> rejectedInstrumentsDataList =
@@ -268,7 +270,8 @@ class CalibrationBloc extends Bloc<CalibrationEvent, CalibrationState> {
 
       emit(RejectedInstrumentState(
           rejectedInstrumentsDataList: rejectedInstrumentsDataList,
-          tableColumnsList: tableColumnsList));
+          tableColumnsList: tableColumnsList,
+          selectedInstrumentList: event.selectedInstrumentList));
     });
   }
 }

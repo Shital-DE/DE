@@ -1,6 +1,7 @@
 // Author : Shital Gayakwad
 // Created Date : 16 Nov 2023
 // Description : Calibration model
+// Modification : 11 June 2025 by Shital Gayakwad.
 
 // Measuring instruments
 class MeasuringInstruments {
@@ -892,6 +893,7 @@ class RejectedInstrumentsModel {
   String? instrumentcalibrationscheduleId;
   String? instrumentId;
   String? certificateId;
+  String? remark;
 
   RejectedInstrumentsModel(
       {this.instrumentname,
@@ -903,7 +905,8 @@ class RejectedInstrumentsModel {
       this.historyId,
       this.instrumentcalibrationscheduleId,
       this.instrumentId,
-      this.certificateId});
+      this.certificateId,
+      this.remark});
 
   RejectedInstrumentsModel.fromJson(Map<String, dynamic> json) {
     instrumentname = json['instrumentname'];
@@ -916,6 +919,7 @@ class RejectedInstrumentsModel {
     instrumentcalibrationscheduleId = json['instrumentcalibrationschedule_id'];
     instrumentId = json['instrument_id'];
     certificateId = json['certificate_id'];
+    remark = json['remark'];
   }
 
   Map<String, dynamic> toJson() {
@@ -930,6 +934,7 @@ class RejectedInstrumentsModel {
     data['instrumentcalibrationschedule_id'] = instrumentcalibrationscheduleId;
     data['instrument_id'] = instrumentId;
     data['certificate_id'] = certificateId;
+    data['remark'] = remark;
     return data;
   }
 }

@@ -48,7 +48,7 @@ class VerifyMachinePrograms extends StatelessWidget {
             margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
             child: CustomTable(
               tablewidth: tableWidth,
-              tableheight: tableHeight,
+              tableheight: tableHeight - 5,
               columnWidth: MediaQuery.of(context).size.width /
                   (MediaQuery.of(context).size.width > 1300 ? 11.3 : 11.3),
               rowHeight: rowHeight,
@@ -333,7 +333,7 @@ class VerifiedMachinePrograms extends StatelessWidget {
               margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
               child: CustomTable(
                 tablewidth: tableWidth,
-                tableheight: tableHeight,
+                tableheight: tableHeight - 5,
                 columnWidth: tableWidth /
                     (Platform.isAndroid
                         ? 10.8

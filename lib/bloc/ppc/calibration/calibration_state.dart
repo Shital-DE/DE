@@ -1,6 +1,7 @@
 // Author : Shital Gayakwad
 // Created Date : 5 Dec 2023
 // Description : Calibration state
+// Modification : 11 June 2025 by Shital Gayakwad.
 
 import '../../../services/model/quality/calibration_model.dart';
 import '../../../services/model/registration/subcontractor_models.dart';
@@ -151,7 +152,9 @@ class InstrumentStoreState extends CalibrationState {
 class RejectedInstrumentState extends CalibrationState {
   List<RejectedInstrumentsModel> rejectedInstrumentsDataList;
   List<String> tableColumnsList;
+  final List<RejectedInstrumentsModel>? selectedInstrumentList;
   RejectedInstrumentState(
       {required this.rejectedInstrumentsDataList,
-      required this.tableColumnsList});
+      required this.tableColumnsList,
+      required this.selectedInstrumentList});
 }

@@ -254,7 +254,7 @@ class ProductResourceManagement extends StatelessWidget {
               margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
               child: CustomTable(
                 tablewidth: screenWidth,
-                tableheight: tableHeight,
+                tableheight: tableHeight - 8,
                 showIndex: true,
                 rowHeight: rowHeight,
                 tableheaderColor: Theme.of(context).colorScheme.errorContainer,
@@ -974,16 +974,15 @@ class ProductResourceManagement extends StatelessWidget {
       builder: (context, state) {
         if (state is UploadMachineProgramState &&
             state.productData.isNotEmpty) {
-          double rowHeight = 60,
-              masterTableHeight =
-                  (state.productData.length + 1) * (rowHeight + .5);
+          double rowHeight = 50,
+              masterTableHeight = (state.productData.length + 1) * (rowHeight);
           return Container(
             width: screenWidth,
             height: masterTableHeight,
             margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
             child: CustomTable(
                 tablewidth: screenWidth,
-                tableheight: masterTableHeight,
+                tableheight: masterTableHeight - 4,
                 showIndex: true,
                 rowHeight: rowHeight,
                 enableRowBottomBorder: true,

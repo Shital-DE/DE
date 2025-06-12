@@ -1,7 +1,6 @@
 // Author : Shital Gayakwad
 // Created Date : 5 Dec 2023
 // Description : Instrument type registration
-
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
