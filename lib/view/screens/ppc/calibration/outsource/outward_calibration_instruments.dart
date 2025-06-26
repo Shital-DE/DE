@@ -36,9 +36,9 @@ class OutwardInstruments extends StatelessWidget {
     final blocProvider = BlocProvider.of<CalibrationBloc>(context);
     if (args['outward'] == true) {
       args = {'outward': false};
-      blocProvider.add(OutwardInstrumentsEvent());
+      blocProvider.add(OutwardInstrumentsForCalibrationEvent());
     } else {
-      blocProvider.add(InwardInstrumentsEvent());
+      blocProvider.add(InwardInstrumentsForCalibrationEvent());
     }
     Size size = MediaQuery.of(context).size;
     return MakeMeResponsiveScreen(
@@ -117,6 +117,7 @@ class OutwardInstruments extends StatelessWidget {
               items: state.calibrationContractorList,
               itemAsString: (item) => item.name.toString(),
               popupProps: PopupProps.menu(
+                showSearchBox: true,
                 itemBuilder: (context, item, isSelected) {
                   return ListTile(
                     title: Text(
@@ -130,7 +131,8 @@ class OutwardInstruments extends StatelessWidget {
                   dropdownSearchDecoration: InputDecoration(
                       border: InputBorder.none, hintText: 'Select contractor')),
               onChanged: (value) {
-                blocProvider.add(OutwardInstrumentsEvent(subcontactor: value));
+                blocProvider.add(
+                    OutwardInstrumentsForCalibrationEvent(subcontactor: value));
               },
             )),
         Container(
@@ -282,7 +284,7 @@ class OutwardInstruments extends StatelessWidget {
                             });
                       }
                       Navigator.of(context).pop();
-                      blocProvider.add(OutwardInstrumentsEvent());
+                      blocProvider.add(OutwardInstrumentsForCalibrationEvent());
 
                       generatePDF(
                         context: context,
@@ -356,7 +358,7 @@ class OutwardInstruments extends StatelessWidget {
                       'certificate_mdocid': e.certificateId
                     });
                     if (response == 'Deleted successfully') {
-                      blocProvider.add(OutwardInstrumentsEvent());
+                      blocProvider.add(OutwardInstrumentsForCalibrationEvent());
                     }
                   },
                   icon: Icon(
@@ -431,11 +433,11 @@ class OutwardInstruments extends StatelessWidget {
           selectedIndex: selectedIndex(state),
           onDestinationSelected: (destination) {
             if (destination == 0) {
-              blocProvider.add(OutwardInstrumentsEvent());
+              blocProvider.add(OutwardInstrumentsForCalibrationEvent());
             } else if (destination == 1) {
-              blocProvider.add(InwardInstrumentsEvent());
+              blocProvider.add(InwardInstrumentsForCalibrationEvent());
             } else if (destination == 2) {
-              blocProvider.add(OutsourceWorkorderEvent());
+              blocProvider.add(CalibrationOutsourceWorkorderEvent());
             }
           },
           destinations: items

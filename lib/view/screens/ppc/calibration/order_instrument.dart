@@ -656,6 +656,7 @@ class OrderInstrument extends StatelessWidget {
                   items: state.allInstrumentsList,
                   itemAsString: (item) => item.instrumentname.toString(),
                   popupProps: PopupProps.menu(
+                    showSearchBox: true,
                     itemBuilder: (context, item, isSelected) {
                       return ListTile(
                         title: Text(
@@ -733,6 +734,7 @@ class OrderInstrument extends StatelessWidget {
                   itemAsString: (item) =>
                       '${item.instrumentname}       ${item.cardnumber}',
                   popupProps: PopupProps.menu(
+                    showSearchBox: true,
                     itemBuilder: (context, item, isSelected) {
                       return ListTile(
                         title: Text(
@@ -845,6 +847,7 @@ class OrderInstrument extends StatelessWidget {
                             itemAsString: (item) =>
                                 item.measuringrange.toString(),
                             popupProps: PopupProps.menu(
+                              showSearchBox: true,
                               itemBuilder: (context, item, isSelected) {
                                 return ListTile(
                                   title: Text(
@@ -956,6 +959,7 @@ class OrderInstrument extends StatelessWidget {
                   items: state.fromList,
                   itemAsString: (item) => item.emailaddress.toString(),
                   popupProps: PopupProps.menu(
+                    showSearchBox: true,
                     itemBuilder: (context, item, isSelected) {
                       return ListTile(
                         title: Text(

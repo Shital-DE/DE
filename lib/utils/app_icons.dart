@@ -538,6 +538,31 @@ class MyIconGenerator {
           color: iconColor,
           size: 30,
         );
+      case 'Issue instruments':
+        return Icon(
+          Icons.outbox_outlined,
+          color: iconColor,
+          size: 30,
+        );
+      case 'Reclaim instruments':
+        return Icon(
+          Icons.inbox_outlined,
+          color: iconColor,
+          size: 30,
+        );
+      case 'Instrument issuance receipt':
+        return Icon(
+          Icons.receipt_long_sharp,
+          color: iconColor,
+          size: 30,
+        );
+      case 'Instrument outsource history':
+        return Icon(
+          Icons.history_toggle_off_outlined,
+          color: iconColor,
+          size: 30,
+        );
+
       default:
         return const Icon(Icons.error_outline);
     }

@@ -2,12 +2,16 @@
 // Description : ERPX_PPC -> App routes data
 
 import 'package:de/bloc/sales_order/sales_order_bloc.dart';
+import 'package:de/view/screens/ppc/calibration/instrument_outdource/instrument_issuance_dashboard.dart';
+import 'package:de/view/screens/ppc/calibration/instrument_outdource/instrument_issuance_reciept.dart';
+import 'package:de/view/screens/ppc/calibration/instrument_outdource/instrument_issuance_screen.dart';
+import 'package:de/view/screens/ppc/calibration/instrument_outdource/instrument_reclaim_screen.dart';
 import 'package:de/view/screens/product_assets_management/pam_dashboard.dart';
 import 'package:de/view/screens/product_assets_management/product_registration.dart';
 import 'package:de/view/screens/product_assets_management/product_structure.dart';
 import 'package:de/view/screens/production/cutting/cutting_processes_screen.dart';
 import 'package:de/view/screens/production/packing/packing_processes_screen.dart';
-import 'package:de/view/screens/production/quality/quality_processes_screen.dart';
+import 'package:de/view/screens/production/quality/quality_dashboard.dart';
 import 'package:de/view/screens/user/update_employee_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +22,7 @@ import '../bloc/dashboard/dashboard_bloc.dart';
 import '../bloc/documents/documents_bloc.dart';
 import '../bloc/ppc/tool_dispencer/bloc/tools_bloc.dart';
 import '../bloc/product_dashboard/product_dashboard_bloc.dart';
+import '../bloc/production/quality/quality_dashboard_bloc.dart';
 import '../bloc/user/login/login_bloc.dart';
 import '../bloc/machinewisedashboard/machinewisedashboard_bloc.dart';
 import '../bloc/ppc/Product_And_Process_Route/product_and_process_route_bloc.dart';
@@ -43,7 +48,6 @@ import '../bloc/production/operator/bloc/pending_production/machine_pending_prod
 import '../bloc/production/operator/cubit/scan_cubit.dart';
 import '../bloc/production/packing_bloc/packing_bloc.dart';
 import '../bloc/production/production_bloc.dart';
-import '../bloc/production/quality/quality_bloc.dart';
 import '../bloc/user/employee_registration/employee_registration_bloc.dart';
 import '../bloc/registration/machine_registration/machine_register_bloc.dart';
 import '../bloc/registration/program_access_management/pam_bloc.dart';
@@ -64,13 +68,14 @@ import '../view/screens/ppc/calibration/calibration_dashboard.dart';
 import '../view/screens/ppc/calibration/calibration_history.dart';
 import '../view/screens/ppc/calibration/calibration_scedule_registration.dart';
 import '../view/screens/ppc/calibration/calibration_status.dart';
+import '../view/screens/ppc/calibration/instrument_outdource/instrument_outsource_history.dart';
 import '../view/screens/ppc/calibration/instrument_registration.dart';
 import '../view/screens/ppc/calibration/instrument_store.dart';
 import '../view/screens/ppc/calibration/instrumenttype_registration.dart';
 import '../view/screens/ppc/calibration/order_instrument.dart';
-import '../view/screens/ppc/calibration/outsource/instrument_outsource_workorders.dart';
-import '../view/screens/ppc/calibration/outsource/inward_instruments.dart';
-import '../view/screens/ppc/calibration/outsource/outward_instruments.dart';
+import '../view/screens/ppc/calibration/outsource/instrument_calibration_outsource_workorders.dart';
+import '../view/screens/ppc/calibration/outsource/inward_calibration_instruments.dart';
+import '../view/screens/ppc/calibration/outsource/outward_calibration_instruments.dart';
 import '../view/screens/ppc/calibration/rejected_instruments.dart';
 import '../view/screens/ppc/capacity_plan/bar_chart.dart';
 import '../view/screens/ppc/capacity_plan/capacity_dashboard.dart';
@@ -100,7 +105,6 @@ import '../view/screens/production/operator/pending_product_production.dart';
 import '../view/screens/production/packing/packing_production_screen.dart';
 import '../view/screens/production/packing/stock.dart';
 import '../view/screens/production/production.dart';
-import '../view/screens/production/quality/quality_production_screen.dart';
 import '../view/screens/sales_orders/issue_stock.dart';
 import '../view/screens/sales_orders/salesorders.dart';
 import '../view/screens/user/employee_registration.dart';
@@ -231,18 +235,7 @@ class RouteData {
           BlocProvider<QualityBloc>(
             create: (BuildContext context) => QualityBloc(),
           ),
-        ], child: QualityProductionScreen(arguments: args));
-
-      case RouteName
-            .qualityProductionProcessScreen: // Production process screen
-        return MultiBlocProvider(providers: [
-          BlocProvider<AppBarBloc>(
-            create: (BuildContext context) => AppBarBloc(),
-          ),
-          BlocProvider<QualityBloc>(
-            create: (BuildContext context) => QualityBloc(),
-          ),
-        ], child: QualityProductionProcessScreen(arguments: args));
+        ], child: QualityDashboard(arguments: args));
 
       // Calibration
       case RouteName.calibration:
@@ -379,6 +372,46 @@ class RouteData {
           ),
         ], child: const RejectedInstrumentsPage());
 
+      case RouteName
+            .instrumentOutsourceDashboard: // Instrument outsource dashboard
+        return MultiBlocListener(listeners: [
+          BlocProvider<AppBarBloc>(
+            create: (BuildContext context) => AppBarBloc(),
+          ),
+          BlocProvider<CalibrationBloc>(
+            create: (BuildContext context) => CalibrationBloc(),
+          ),
+        ], child: const InstrumentIssuanceDashboard());
+
+      case RouteName.instrumentIssuanceScreen: // Instrument issuance screen
+        return MultiBlocListener(listeners: [
+          BlocProvider<CalibrationBloc>(
+            create: (BuildContext context) => CalibrationBloc(),
+          ),
+        ], child: const InstrumentIssuanceScreen());
+
+      case RouteName.instrumentReclaimScreen: // Instrument reclaim screen
+        return MultiBlocListener(listeners: [
+          BlocProvider<CalibrationBloc>(
+            create: (BuildContext context) => CalibrationBloc(),
+          ),
+        ], child: const InstrumentReclaimScreen());
+
+      case RouteName.instrumentIssuanceReceipt: // Instrument issuance receipt
+        return MultiBlocListener(listeners: [
+          BlocProvider<CalibrationBloc>(
+            create: (BuildContext context) => CalibrationBloc(),
+          ),
+        ], child: const InstrumentIssuanceReciept());
+
+      case RouteName.instrumentOutsourceHistory: // Instrument outsource history
+        return MultiBlocListener(listeners: [
+          BlocProvider<CalibrationBloc>(
+            create: (BuildContext context) => CalibrationBloc(),
+          ),
+        ], child: const InstrumentOutsourceHistory());
+
+      // Packing
       case RouteName.packingProductionScreen: // Paking production screen
         return MultiBlocProvider(providers: [
           BlocProvider<AppBarBloc>(
@@ -886,9 +919,6 @@ class RouteData {
 
       case RouteName.toolIssue: //Tool Issue
         return MultiBlocProvider(providers: [
-          // BlocProvider<AppBarBloc>(
-          //   create: (BuildContext context) => AppBarBloc(),
-          // ),
           BlocProvider<ToolsBloc>(
             create: (BuildContext context) =>
                 ToolsBloc()..add(const ToolsOperatorInitEvent()),
@@ -897,9 +927,6 @@ class RouteData {
 
       case RouteName.toolReceipt: //Tool Receipt
         return MultiBlocProvider(providers: [
-          // BlocProvider<AppBarBloc>(
-          //   create: (BuildContext context) => AppBarBloc(),
-          // ),
           BlocProvider<ToolsBloc>(
             create: (BuildContext context) =>
                 ToolsBloc()..add(const ToolsInitEvent()),
@@ -908,9 +935,6 @@ class RouteData {
 
       case RouteName.toolStock: //Tool Receipt
         return MultiBlocProvider(providers: [
-          // BlocProvider<AppBarBloc>(
-          //   create: (BuildContext context) => AppBarBloc(),
-          // ),
           BlocProvider<ToolsBloc>(
             create: (BuildContext context) => ToolsBloc()
               ..add(const ToolsInitEvent())

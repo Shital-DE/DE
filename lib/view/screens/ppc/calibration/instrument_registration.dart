@@ -1,8 +1,8 @@
 // Author : Shital Gayakwad
 // Created Date : 5 Dec 2023
 // Description : Instruments registration
-
 // ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:io';
 import 'package:de/utils/app_colors.dart';
@@ -266,6 +266,7 @@ class InstrumentsRegistration extends StatelessWidget {
                           items: state.measuringInstrumentsList,
                           itemAsString: (item) => item.description.toString(),
                           popupProps: PopupProps.menu(
+                            showSearchBox: true,
                             itemBuilder: (context, item, isSelected) {
                               return ListTile(
                                 title: Text(
@@ -320,6 +321,7 @@ class InstrumentsRegistration extends StatelessWidget {
                 items: state.instrumentsTypeList,
                 itemAsString: (item) => item.description.toString(),
                 popupProps: PopupProps.menu(
+                  showSearchBox: true,
                   itemBuilder: (context, item, isSelected) {
                     return ListTile(
                       title: Text(
@@ -482,7 +484,6 @@ class InstrumentsRegistration extends StatelessWidget {
                       onPressed: () async {
                         String resultedinstrumentName =
                             capitalizeFirstPart(instrumentName.text.toString());
-
                         String productid = '';
                         if (snapshot.data == null && productId.text == '') {
                           QuickFixUi.errorMessage(
@@ -610,7 +611,6 @@ class InstrumentsRegistration extends StatelessWidget {
                           blocProvider.add(InstrumentsRegistrationEvent());
                           instrumentTypeId.text = '';
                           productId.text = '';
-
                           description.text = '';
                           subcategory.text = '';
                           storageLocation.text = '';

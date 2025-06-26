@@ -5,15 +5,13 @@
 import '../../../services/model/common/document_model.dart';
 import '../../../services/model/machine/workcentre.dart';
 import '../../../services/model/operator/oprator_models.dart';
-import '../../../services/model/product/product_route.dart';
 import '../../../services/model/quality/quality_models.dart';
 
 abstract class QualityState {}
 
 class QualityInitialState extends QualityState {}
 
-// Quality production state
-class QualityProductionState extends QualityState {
+class QualityDashboardState extends QualityState {
   final bool isInspectionStarted;
   final Barcode barcode;
   final String pdfMdocId,
@@ -33,8 +31,7 @@ class QualityProductionState extends QualityState {
   final List<DocumentDetails> modelsDetails;
   final List<Workcentre> workcentrelist;
   final List<QualityRejectedReasons> rejectedReasonsList;
-  ProductAndProcessRouteModel productAndProcessRouteModel;
-  QualityProductionState(
+  QualityDashboardState(
       {required this.isInspectionStarted,
       required this.barcode,
       required this.pdfMdocId,
@@ -53,21 +50,10 @@ class QualityProductionState extends QualityState {
       required this.workcentrelist,
       required this.rejectedReasonsList,
       required this.inspectionId,
-      required this.productAndProcessRouteModel});
+      required});
 }
 
 class QualityErrorState extends QualityState {
   final String errorMessage;
   QualityErrorState({required this.errorMessage});
-}
-
-class QualityProductionProcessesState extends QualityState {
-  List<ProductAndProcessRouteModel> productProcessRouteList;
-  String token, userId, workcentreId, workstationId;
-  QualityProductionProcessesState(
-      {required this.productProcessRouteList,
-      required this.token,
-      required this.userId,
-      required this.workcentreId,
-      required this.workstationId});
 }

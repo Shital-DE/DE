@@ -24,7 +24,7 @@ class InstrumentOutsourceWorkorders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final blocProvider = BlocProvider.of<CalibrationBloc>(context);
-    blocProvider.add(OutsourceWorkorderEvent());
+    blocProvider.add(CalibrationOutsourceWorkorderEvent());
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: MakeMeResponsiveScreen(

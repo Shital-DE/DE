@@ -4,6 +4,7 @@
 // Modification : 11 June 2025 by Shital Gayakwad.
 
 import 'package:bloc/bloc.dart';
+import '../../../services/api_services/outsource/outsource_service.dart';
 import '../../../services/model/quality/calibration_model.dart';
 import '../../../services/model/registration/subcontractor_models.dart';
 import '../../../services/repository/outsource/outsource_repository.dart';
@@ -138,7 +139,7 @@ class CalibrationBloc extends Bloc<CalibrationEvent, CalibrationState> {
     });
 
     //----------------------Sent instrument for calibration---------------------------------------
-    on<OutwardInstrumentsEvent>((event, emit) async {
+    on<OutwardInstrumentsForCalibrationEvent>((event, emit) async {
       // User data and token
       final saveddata = await UserData.getUserData();
 
@@ -169,7 +170,7 @@ class CalibrationBloc extends Bloc<CalibrationEvent, CalibrationState> {
     });
 
     //----------------------Collect calibrated instruments---------------------------------------
-    on<InwardInstrumentsEvent>((event, emit) async {
+    on<InwardInstrumentsForCalibrationEvent>((event, emit) async {
       // User data and token
       final saveddata = await UserData.getUserData();
 
@@ -195,12 +196,12 @@ class CalibrationBloc extends Bloc<CalibrationEvent, CalibrationState> {
     });
 
     //----------------------Instrument calibration outsource workorder---------------------------------------
-    on<OutsourceWorkorderEvent>((event, emit) async {
+    on<CalibrationOutsourceWorkorderEvent>((event, emit) async {
       // User data and token
       final saveddata = await UserData.getUserData();
       List<OutsorceWorkordersModel> allWorkorders =
-          await CalibrationRepository()
-              .allWorkorders(token: saveddata['token'].toString());
+          await CalibrationRepository().allWorkordersOfInstrumentCalibration(
+              token: saveddata['token'].toString());
       emit(OutsourceWorkorderState(
           allWorkorders: allWorkorders, token: saveddata['token'].toString()));
     });
@@ -254,7 +255,6 @@ class CalibrationBloc extends Bloc<CalibrationEvent, CalibrationState> {
       final saveddata = await UserData.getUserData();
 
       List<String> tableColumnsList = [
-        // 'Index',
         'Instrument name',
         'Card number',
         'Measuring range',
@@ -272,6 +272,138 @@ class CalibrationBloc extends Bloc<CalibrationEvent, CalibrationState> {
           rejectedInstrumentsDataList: rejectedInstrumentsDataList,
           tableColumnsList: tableColumnsList,
           selectedInstrumentList: event.selectedInstrumentList));
+    });
+
+    //--------------------------Instrument Issuance ---------------------------------------
+    on<InstrumentIssuanceEvent>((event, emit) async {
+      // User data and token
+      final saveddata = await UserData.getUserData();
+
+      // Calibration vendor list
+      List<AllSubContractor> calibrationVendorList =
+          await OutsourceService.subcotractorList();
+
+      // All instruments list
+      List<AvailableInstrumentsModel> instrumentsList =
+          await CalibrationRepository()
+              .availableInstrumentsData(token: saveddata['token'].toString());
+
+      List<String> tableColumnsList = [
+        'Instrument name',
+        'Card number',
+        'Action'
+      ];
+
+      // Oursource challan
+      String challanno = await OutsourceRepository.getChallanNo();
+
+      // Current date
+      DateFormat formatter = DateFormat('dd/MM/yyyy');
+      String date = formatter.format(DateTime.now());
+
+      emit(InstrumentIssuanceState(
+          calibrationVendorList: calibrationVendorList,
+          instrumentsList: instrumentsList,
+          selectedVendor: event.selectedVendor ?? AllSubContractor(),
+          selectedInstrument:
+              event.selectedInstrument ?? AvailableInstrumentsModel(),
+          token: saveddata['token'].toString(),
+          selectedInstumentsDataList: event.selectedInstumentsDataList,
+          tableColumnsList: tableColumnsList,
+          userId: saveddata['data'][0]['id'].toString(),
+          challanno: challanno,
+          userFullName:
+              "${saveddata['data'][0]["firstname"].toString().trim()} ${saveddata['data'][0]["lastname"].toString().trim()}",
+          currentDate: date));
+    });
+
+    //--------------------------Instrument reclaim ---------------------------------------
+    on<InstrumentReclaimEvent>((event, emit) async {
+      // User data and token
+      final saveddata = await UserData.getUserData();
+
+      List<String> tableColumnsList = [
+        'Instrument name',
+        'Instrument type',
+        'Card number',
+        'Measuring range',
+        'Start date',
+        'Due date',
+        'Frequency',
+        'Action'
+      ];
+
+      List<ReclaimOutsourcedInstrumentsModel>
+          reclaimOutsourceInstrumentsDatalist = await CalibrationRepository()
+              .reclaimInstrumentsDataList(token: saveddata['token'].toString());
+
+      emit(InstrumentReclaimState(
+          reclaimOutsourceInstrumentsDatalist:
+              reclaimOutsourceInstrumentsDatalist,
+          tableColumnsList: tableColumnsList,
+          token: saveddata['token'].toString(),
+          userId: saveddata['data'][0]['id'].toString()));
+    });
+
+    //--------------------------Instrument issuance receipt ---------------------------------------
+    on<InstrumentIssuanceReceiptEvent>((event, emit) async {
+      // User data and token
+      final saveddata = await UserData.getUserData();
+
+      List<String> tableColumnsList = [
+        'Workorder No.',
+        'Outsource date',
+        'Contractor',
+        'Outsourced by',
+        'Certificate'
+      ];
+
+      List<OutsorceWorkordersModel> workOrdersList =
+          await CalibrationRepository()
+              .allWorkordersOfInstrumentOutsourceForUse(
+                  token: saveddata['token'].toString());
+
+      emit(InstrumentIssuanceReceiptState(
+          workOrdersList: workOrdersList,
+          tableColumnsList: tableColumnsList,
+          token: saveddata['token'].toString()));
+    });
+
+    //-------------------------- Instrument outsource history by contractor ---------------------------------------
+    on<InstrumentOutsourceHistoryByContractorEvent>((event, emit) async {
+      List<InstrumentOutsourceHistoryBySubcontractorModel>
+          instrumentsListByContractor = [];
+      // User data and token
+      final saveddata = await UserData.getUserData();
+      if (event.selectedVendor?.id != null) {
+        instrumentsListByContractor = await CalibrationRepository()
+            .instrumentOutsourceHistoryByContractor(
+                token: saveddata['token'].toString(),
+                vendorId: event.selectedVendor?.id.toString() ?? '');
+      }
+
+      // Calibration vendor list
+      List<AllSubContractor> calibrationVendorList =
+          await OutsourceService.subcotractorList();
+
+      List<String> tableColumnsList = [
+        'Vendor name',
+        'Challan No.',
+        'Instrument name',
+        'Instrument type',
+        'Card number',
+        'Measuring range',
+        'Start date',
+        'Due date',
+        'Outsourced by',
+        'Outsource date',
+      ];
+
+      emit(InstrumentOutsourceHistoryByContractorState(
+          calibrationVendorList: calibrationVendorList,
+          instrumentsListByContractor: instrumentsListByContractor,
+          tableColumnsList: tableColumnsList,
+          selectedVendor: event.selectedVendor));
     });
   }
 }

@@ -19,10 +19,9 @@ class ProductionRoute {
   }
 
   void gotoQuality(BuildContext context, ScanState state) {
-    Navigator.pushNamed(context, RouteName.qualityProductionProcessScreen,
-        arguments: {
-          'barcode': state.barcode,
-        });
+    Navigator.pushNamed(context, RouteName.qualityScreen, arguments: {
+      'barcode': state.barcode,
+    });
   }
 
   void gotoPacking(BuildContext context, ScanState state) {

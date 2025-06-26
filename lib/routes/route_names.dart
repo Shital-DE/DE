@@ -33,9 +33,7 @@ class RouteName {
   // Capacity Plan
   static const String capacityPlan = 'capacityPlan';
   static const String newCpPlan = 'newCpPlan'; //New capacity plan
-  // static const String updateCpPlan = 'updateCpPlan'; //update capacity plan
   static const String cpBarChart = 'cpBarChart'; //New capacity plan
-  // static const String poPlanDate = 'poPlanDate'; //change po plan date
   static const String cpDragAndDrop = 'cpDragAndDrop'; //drag and drop
   static const String workcentreShift = 'workcentreShift'; //drag and drop
 
@@ -108,6 +106,17 @@ class RouteName {
   static const String instrumentStore = 'instrumentStore'; // Instrument store
   static const String rejectedInstruments =
       'rejectedInstruments'; // Rejected instruments
+
+  static const String instrumentOutsourceDashboard =
+      'instrumentOutsourceDashboard'; // Instrument outsource dashbaord
+  static const String instrumentIssuanceScreen =
+      'instrumentIssuanceScreen'; // Instrument issuance screen
+  static const String instrumentReclaimScreen =
+      'instrumentReclaimScreen'; // Instrument reclaim screen
+  static const String instrumentIssuanceReceipt =
+      'instrumentIssuanceReceipt'; // Instrument issuance receipt
+  static const String instrumentOutsourceHistory =
+      'instrumentOutsourceHistory'; // Instrument outsource history
 
   //Registration
   static const String registration = 'registration';

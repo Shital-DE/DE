@@ -1,20 +1,18 @@
 // Author : Shital Gayakwad
 // Created Date :  March 2023
-// Description : ERPX_PPC -> Quality production screen
+// Description : ERPX_PPC -> Quality dashboard
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../bloc/production/quality/quality_bloc.dart';
-import '../../../../bloc/production/quality/quality_event.dart';
-import '../../../../bloc/production/quality/quality_state.dart';
+import '../../../../bloc/production/quality/quality_dashboard_bloc.dart';
+import '../../../../bloc/production/quality/quality_dashboard_event.dart';
+import '../../../../bloc/production/quality/quality_dashboard_state.dart';
 import '../../../../services/model/machine/workcentre.dart';
 import '../../../../services/model/operator/oprator_models.dart';
-import '../../../../services/model/product/product_route.dart';
 import '../../../../services/model/quality/quality_models.dart';
-import '../../../../services/repository/product/pam_repository.dart';
 import '../../../../services/repository/product/product_machine_route_repository.dart';
 import '../../../../services/repository/quality/quality_repository.dart';
 import '../../../../utils/app_colors.dart';
@@ -22,29 +20,25 @@ import '../../../../utils/common/quickfix_widget.dart';
 import '../../../../utils/responsive.dart';
 import '../../../widgets/appbar.dart';
 import '../../../widgets/barcode_session.dart';
-import '../../../widgets/production_process_widget.dart';
 import '../../../widgets/table/custom_table.dart';
 import '../../common/documents.dart';
 
-class QualityProductionScreen extends StatelessWidget {
+class QualityDashboard extends StatelessWidget {
   final Map<String, dynamic> arguments;
-  const QualityProductionScreen({super.key, required this.arguments});
+  const QualityDashboard({super.key, required this.arguments});
 
   @override
   Widget build(BuildContext context) {
     Barcode? barcode = arguments['barcode'];
-    ProductAndProcessRouteModel route = arguments['selected_process'][0];
     final blocProvider = BlocProvider.of<QualityBloc>(context);
-    blocProvider.add(QualityProductionEvents(
-        barcode: barcode!, productAndProcessRouteModel: route));
+    blocProvider.add(QualityDashboardEvents(barcode: barcode!));
     TextEditingController remarkController = TextEditingController();
     return MakeMeResponsiveScreen(
         horixontaltab: productInspect(
             context: context,
             barcode: barcode,
             blocProvider: blocProvider,
-            remarkController: remarkController,
-            route: route),
+            remarkController: remarkController),
         verticaltab: QuickFixUi.notVisible(),
         windows: QuickFixUi.notVisible(),
         linux: QuickFixUi.notVisible(),
@@ -55,8 +49,7 @@ class QualityProductionScreen extends StatelessWidget {
       {required BuildContext context,
       required Barcode barcode,
       required QualityBloc blocProvider,
-      required TextEditingController remarkController,
-      required ProductAndProcessRouteModel route}) {
+      required TextEditingController remarkController}) {
     return Scaffold(
       appBar: CustomAppbar()
           .appbar(context: context, title: 'Product inspection screen'),
@@ -67,30 +60,19 @@ class QualityProductionScreen extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          if (state is QualityProductionState) {
+          if (state is QualityDashboardState) {
             return ListView(children: [
               BarcodeSession().barcodeData(
                   context: context, parentWidth: 1280, barcode: barcode),
-              Padding(
-                padding: const EdgeInsets.only(left: 5, right: 5, bottom: 10),
-                child: ProductionProcessWidget().processTable(
-                    context: context,
-                    productProcessRouteList: arguments['selected_process'],
-                    barcode: barcode,
-                    screenName: 'Inspection'),
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   productInspectionStatus(
-                      barcode: barcode,
-                      context: context,
-                      state: state,
-                      route: route),
+                      barcode: barcode, context: context, state: state),
                   QuickFixUi.horizontalSpace(width: 10),
                 ],
               ),
-              startInspection(blocProvider: blocProvider, route: route),
+              startInspection(blocProvider: blocProvider),
               QuickFixUi.verticalSpace(height: 20),
               documents(),
               documentsVersions(),
@@ -111,8 +93,7 @@ class QualityProductionScreen extends StatelessWidget {
   SizedBox productInspectionStatus(
       {required Barcode barcode,
       required BuildContext context,
-      required QualityProductionState state,
-      required ProductAndProcessRouteModel route}) {
+      required QualityDashboardState state}) {
     return SizedBox(
       width: 200,
       height: 40,
@@ -124,8 +105,7 @@ class QualityProductionScreen extends StatelessWidget {
             'product_id': barcode.productid,
             'rms_issue_id': barcode.rawmaterialissueid,
             'workcentre_id': state.workcentre,
-            'revision_number': barcode.revisionnumber,
-            'process_sequence': route.combinedSequence
+            'revision_number': barcode.revisionnumber
           });
           if (inspectionStatus.isNotEmpty) {
             Future.delayed(const Duration(milliseconds: 500), () {
@@ -273,7 +253,7 @@ class QualityProductionScreen extends StatelessWidget {
           } else {
             QuickFixUi().showCustomDialog(
                 context: context,
-                errorMessage: 'This product is not inspected yet.');
+                errorMessage: 'This product is not inspected yet');
           }
         },
         label: const Text('Status'),
@@ -396,7 +376,7 @@ class QualityProductionScreen extends StatelessWidget {
       required TextEditingController rejectedReasonsController}) {
     return BlocBuilder<QualityBloc, QualityState>(
       builder: (context, state) {
-        if (state is QualityProductionState) {
+        if (state is QualityDashboardState) {
           return SizedBox(
               width: 300,
               height: 45,
@@ -459,7 +439,7 @@ class QualityProductionScreen extends StatelessWidget {
 
   Future<dynamic> endInspectionConfirmation(
       {required BuildContext context,
-      required QualityProductionState state,
+      required QualityDashboardState state,
       required TextEditingController remarkController,
       required TextEditingController okQty,
       required TextEditingController shortQty,
@@ -511,32 +491,12 @@ class QualityProductionScreen extends StatelessWidget {
                     });
                   }
                   if (response == 'Product inspected successfully') {
-                    String response = await PamRepository()
-                        .productStockRegister(token: state.token, payload: {
-                      'product_id': state.barcode.productid.toString(),
-                      'revision_number':
-                          state.barcode.revisionnumber.toString(),
-                      'createdby': state.userid,
-                      'new_quantity': okQty.text,
-                      'drcr': 'D',
-                      'remark':
-                          'The stock was inwarded after the product inspection was completed.'
-                    });
-                    if (response.length == 32) {
-                      okQty.dispose();
-                      shortQty.dispose();
-                      rejectedResons.dispose();
-                      remarkController.dispose();
-                      if (state.productAndProcessRouteModel.combinedSequence ==
-                          900) {
-                        finalEndInspectionConfirmation(
-                            context: context, state: state);
-                      } else {
-                        for (int i = 0; i <= 1; i++) {
-                          Navigator.of(context).pop();
-                        }
-                      }
-                    }
+                    okQty.dispose();
+                    shortQty.dispose();
+                    rejectedResons.dispose();
+                    remarkController.dispose();
+                    finalEndInspectionConfirmation(
+                        context: context, state: state);
                   } else {
                     QuickFixUi().showCustomDialog(
                         context: context, errorMessage: response.toString());
@@ -555,7 +515,7 @@ class QualityProductionScreen extends StatelessWidget {
   }
 
   Future<dynamic> finalEndInspectionConfirmation(
-      {required BuildContext context, required QualityProductionState state}) {
+      {required BuildContext context, required QualityDashboardState state}) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -587,7 +547,7 @@ class QualityProductionScreen extends StatelessWidget {
                         'productid': state.barcode.productid,
                         'rmsissueid': state.barcode.rawmaterialissueid,
                         'workcentreid': state.workcentre,
-                        'revision_number': state.barcode.revisionnumber,
+                        'revision_number': state.barcode.revisionnumber
                       });
                 },
                 child: const Text('Yes')),
@@ -614,7 +574,7 @@ class QualityProductionScreen extends StatelessWidget {
       required TextEditingController rejectedReasonsController}) {
     return BlocBuilder<QualityBloc, QualityState>(
       builder: (context, state) {
-        if (state is QualityProductionState) {
+        if (state is QualityDashboardState) {
           return StreamBuilder<String>(
               stream: rejectedQty.stream,
               builder: (context, snapshot) {
@@ -674,7 +634,7 @@ class QualityProductionScreen extends StatelessWidget {
       required TextEditingController selectedWorkcentre}) {
     return BlocBuilder<QualityBloc, QualityState>(
       builder: (context, state) {
-        if (state is QualityProductionState) {
+        if (state is QualityDashboardState) {
           return StreamBuilder<String>(
               stream: reworkQty.stream,
               builder: (context, snapshot) {
@@ -826,7 +786,7 @@ class QualityProductionScreen extends StatelessWidget {
   BlocBuilder<QualityBloc, QualityState> documentsVersions() {
     return BlocBuilder<QualityBloc, QualityState>(
       builder: (context, state) {
-        if (state is QualityProductionState) {
+        if (state is QualityDashboardState) {
           return Documents().horizontalVersions(
               context: context,
               topMargin: 0,
@@ -850,7 +810,7 @@ class QualityProductionScreen extends StatelessWidget {
   BlocBuilder<QualityBloc, QualityState> documents() {
     return BlocBuilder<QualityBloc, QualityState>(
       builder: (context, state) {
-        if (state is QualityProductionState) {
+        if (state is QualityDashboardState) {
           return Documents().documentsButtons(
               context: context,
               alignment: Alignment.center,
@@ -870,11 +830,10 @@ class QualityProductionScreen extends StatelessWidget {
   }
 
   BlocBuilder<QualityBloc, QualityState> startInspection(
-      {required QualityBloc blocProvider,
-      required ProductAndProcessRouteModel route}) {
+      {required QualityBloc blocProvider}) {
     return BlocBuilder<QualityBloc, QualityState>(
       builder: (context, state) {
-        if (state is QualityProductionState) {
+        if (state is QualityDashboardState) {
           return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             SizedBox(
                 width: 400,
@@ -893,10 +852,7 @@ class QualityProductionScreen extends StatelessWidget {
                             'workstation_id': state.workstation,
                             'employee_id': state.userid,
                             'revision_number':
-                                state.barcode.revisionnumber.toString(),
-                            'process_sequence': route.combinedSequence,
-                            'processroute_id':
-                                route.processRouteId.toString().trim()
+                                state.barcode.revisionnumber.toString()
                           },
                           token: state.token,
                         );
@@ -908,11 +864,11 @@ class QualityProductionScreen extends StatelessWidget {
                               'workcentre_id': state.workcentre,
                               'workstation_id': state.workstation
                             });
-                        blocProvider.add(QualityProductionEvents(
-                            isInspectionStarted: true,
-                            barcode: state.barcode,
-                            startInspection: time,
-                            productAndProcessRouteModel: route));
+                        blocProvider.add(QualityDashboardEvents(
+                          isInspectionStarted: true,
+                          barcode: state.barcode,
+                          startInspection: time,
+                        ));
                       } else {
                         QuickFixUi.errorMessage(
                             'The inspection is currently underway.', context);
@@ -932,7 +888,7 @@ class QualityProductionScreen extends StatelessWidget {
             QuickFixUi.horizontalSpace(width: 30),
             BlocBuilder<QualityBloc, QualityState>(
               builder: (context, state) {
-                if (state is QualityProductionState) {
+                if (state is QualityDashboardState) {
                   return Container(
                     width: 400,
                     height: 45,

@@ -178,6 +178,32 @@ class Routes {
             builder: (BuildContext context) => RouteData.getRouteData(
                 context, RouteName.rejectedInstruments, {}));
 
+      case RouteName
+            .instrumentOutsourceDashboard: // Instrument outsource dashboard
+        return MaterialPageRoute(
+            builder: (BuildContext context) => RouteData.getRouteData(
+                context, RouteName.instrumentOutsourceDashboard, {}));
+
+      case RouteName.instrumentIssuanceScreen: // Instrument issuance screen
+        return MaterialPageRoute(
+            builder: (BuildContext context) => RouteData.getRouteData(
+                context, RouteName.instrumentIssuanceScreen, {}));
+
+      case RouteName.instrumentReclaimScreen: // Instrument reclaim screen
+        return MaterialPageRoute(
+            builder: (BuildContext context) => RouteData.getRouteData(
+                context, RouteName.instrumentReclaimScreen, {}));
+
+      case RouteName.instrumentIssuanceReceipt: // Instrument issuance receipt
+        return MaterialPageRoute(
+            builder: (BuildContext context) => RouteData.getRouteData(
+                context, RouteName.instrumentIssuanceReceipt, {}));
+
+      case RouteName.instrumentOutsourceHistory: // Instrument outsource history
+        return MaterialPageRoute(
+            builder: (BuildContext context) => RouteData.getRouteData(
+                context, RouteName.instrumentOutsourceHistory, {}));
+
       // Packing
       case RouteName.packingProductionScreen: // Packing production screen
         return MaterialPageRoute(

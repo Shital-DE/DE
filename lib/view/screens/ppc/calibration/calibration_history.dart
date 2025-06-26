@@ -127,6 +127,7 @@ class CalibrationHistory extends StatelessWidget {
                         items: snapshot.data!,
                         itemAsString: (item) => item.cardnumber.toString(),
                         popupProps: PopupProps.menu(
+                          showSearchBox: true,
                           itemBuilder: (context, item, isSelected) {
                             return ListTile(
                               title: Text(
@@ -166,9 +167,10 @@ class CalibrationHistory extends StatelessWidget {
                 child: CustomTable(
                     tablewidth: size.width,
                     tableheight:
-                        (state.calibrationHistory.length + 1) * conHeight,
+                        ((state.calibrationHistory.length + 1) * conHeight) +
+                            20,
                     rowHeight: conHeight,
-                    headerHeight: conHeight,
+                    headerHeight: conHeight + 20,
                     columnWidth: 200,
                     tableheaderColor: Colors.white,
                     headerStyle: TextStyle(
@@ -191,9 +193,14 @@ class CalibrationHistory extends StatelessWidget {
                       ColumnData(label: 'Due date'),
                       ColumnData(label: 'Manufacturer'),
                       ColumnData(label: 'Location'),
+                      ColumnData(label: 'Challan No.'),
+                      ColumnData(label: 'Outsourced by / \nReclaimed by'),
+                      ColumnData(label: 'Outsourced on / \nReclaimed on'),
+                      ColumnData(label: 'Contractor name'),
                       ColumnData(label: 'Rejection reason'),
                       ColumnData(label: 'Rejected By'),
-                      ColumnData(label: 'Rejection date')
+                      ColumnData(label: 'Rejection date'),
+                      ColumnData(label: 'Remark'),
                     ],
                     rows: state.calibrationHistory.map((e) {
                       return RowData(
@@ -206,25 +213,33 @@ class CalibrationHistory extends StatelessWidget {
                                   : const Text('')),
                           TableDataCell(
                               label: Text(
-                            e.instrumentname.toString(),
+                            e.instrumentname.toString().trim() != 'null'
+                                ? e.instrumentname.toString().trim()
+                                : '',
                             textAlign: TextAlign.center,
                             style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
-                            e.instrumenttype.toString(),
+                            e.instrumenttype.toString().trim() != 'null'
+                                ? e.instrumenttype.toString().trim()
+                                : '',
                             textAlign: TextAlign.center,
                             style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
-                            e.cardnumber.toString(),
+                            e.cardnumber.toString().trim() != 'null'
+                                ? e.cardnumber.toString().trim()
+                                : '',
                             textAlign: TextAlign.center,
                             style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
-                            e.measuringrange.toString(),
+                            e.measuringrange.toString().trim() != 'null'
+                                ? e.measuringrange.toString().trim()
+                                : '',
                             textAlign: TextAlign.center,
                             style: AppTheme.labelTextStyle(),
                           )),
@@ -232,9 +247,10 @@ class CalibrationHistory extends StatelessWidget {
                               label: Text(
                             e.startdate == null
                                 ? ''
-                                : e.startdate.toString() == '0000-00-00'
+                                : e.startdate.toString().trim() == '0000-00-00'
                                     ? ''
-                                    : DateTime.parse(e.startdate.toString())
+                                    : DateTime.parse(
+                                            e.startdate.toString().trim())
                                         .toLocal()
                                         .toString()
                                         .substring(0, 10),
@@ -245,9 +261,10 @@ class CalibrationHistory extends StatelessWidget {
                               label: Text(
                             e.duedate == null
                                 ? ''
-                                : e.duedate.toString() == '0000-00-00'
+                                : e.duedate.toString().trim() == '0000-00-00'
                                     ? ''
-                                    : DateTime.parse(e.duedate.toString())
+                                    : DateTime.parse(
+                                            e.duedate.toString().trim())
                                         .toLocal()
                                         .toString()
                                         .substring(0, 10),
@@ -256,13 +273,54 @@ class CalibrationHistory extends StatelessWidget {
                           )),
                           TableDataCell(
                               label: Text(
-                            e.manufacturer.toString(),
+                            e.manufacturer.toString().trim() != 'null'
+                                ? e.manufacturer.toString().trim()
+                                : '',
                             textAlign: TextAlign.center,
                             style: AppTheme.labelTextStyle(),
                           )),
                           TableDataCell(
                               label: Text(
-                            e.storagelocation.toString(),
+                            e.storagelocation.toString().trim() != 'null'
+                                ? e.storagelocation.toString().trim()
+                                : '',
+                            textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
+                          )),
+                          TableDataCell(
+                              label: Text(
+                            e.outwardchallanNo.toString().trim() != 'null'
+                                ? e.outwardchallanNo.toString().trim()
+                                : '',
+                            textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
+                          )),
+                          TableDataCell(
+                              label: Text(
+                            e.outsourcedBy.toString().trim() != 'null'
+                                ? e.outsourcedBy.toString().trim()
+                                : '',
+                            textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
+                          )),
+                          TableDataCell(
+                              label: Text(
+                            e.updatedon == null
+                                ? ''
+                                : e.rejectionreason == null
+                                    ? DateTime.parse(e.updatedon.toString())
+                                        .toLocal()
+                                        .toString()
+                                        .substring(0, 10)
+                                    : '',
+                            textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
+                          )),
+                          TableDataCell(
+                              label: Text(
+                            e.contractor.toString().trim() != 'null'
+                                ? e.contractor.toString().trim()
+                                : '',
                             textAlign: TextAlign.center,
                             style: AppTheme.labelTextStyle(),
                           )),
@@ -270,7 +328,7 @@ class CalibrationHistory extends StatelessWidget {
                               label: Text(
                             e.rejectionreason == null
                                 ? ''
-                                : e.rejectionreason.toString(),
+                                : e.rejectionreason.toString().trim(),
                             textAlign: TextAlign.center,
                             style: AppTheme.labelTextStyle(),
                           )),
@@ -278,7 +336,7 @@ class CalibrationHistory extends StatelessWidget {
                               label: Text(
                             e.rejectionreason == null
                                 ? ''
-                                : e.rejectedby.toString(),
+                                : e.rejectedby.toString().trim(),
                             textAlign: TextAlign.center,
                             style: AppTheme.labelTextStyle(),
                           )),
@@ -286,10 +344,18 @@ class CalibrationHistory extends StatelessWidget {
                               label: Text(
                             e.rejectionreason == null
                                 ? ''
-                                : DateTime.parse(e.rejectiondate.toString())
+                                : DateTime.parse(e.updatedon.toString().trim())
                                     .toLocal()
                                     .toString()
                                     .substring(0, 10),
+                            textAlign: TextAlign.center,
+                            style: AppTheme.labelTextStyle(),
+                          )),
+                          TableDataCell(
+                              label: Text(
+                            e.remark.toString().trim() != 'null'
+                                ? e.remark.toString().trim()
+                                : '',
                             textAlign: TextAlign.center,
                             style: AppTheme.labelTextStyle(),
                           )),

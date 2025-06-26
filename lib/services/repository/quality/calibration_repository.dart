@@ -378,6 +378,7 @@ class CalibrationRepository {
       if (payload.isNotEmpty) {
         http.Response response = await API().postApiResponse(
             AppUrl.calibrationHistoryRegistration, token, payload);
+
         return response.body.toString();
       } else {
         return 'Payload not found';
@@ -487,12 +488,12 @@ class CalibrationRepository {
     }
   }
 
-  // Outsource all workorders
-  Future<List<OutsorceWorkordersModel>> allWorkorders(
+  // All work orders of instrument calibration
+  Future<List<OutsorceWorkordersModel>> allWorkordersOfInstrumentCalibration(
       {required String token}) async {
     try {
-      http.Response response =
-          await API().getApiResponse(AppUrl.allOutsourcedWorkorders, {
+      http.Response response = await API().getApiResponse(
+          AppUrl.allOutsourcedInstrumentsForCalibrationWorkorders, {
         'Content-type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
@@ -769,6 +770,98 @@ class CalibrationRepository {
       });
       List<dynamic> data = jsonDecode(response.body);
       return data.map((e) => RejectedInstrumentsModel.fromJson(e)).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // Outsource instruments
+  Future<String> issueAndReclaimInstruments(
+      {required String token, required Map<String, dynamic> payload}) async {
+    try {
+      if (payload.isNotEmpty) {
+        http.Response response = await API()
+            .putApiResponse(AppUrl.issueAndReclaimInstruments, token, payload);
+        return response.body.toString();
+      } else {
+        return 'Payload not found.';
+      }
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  // Available instruments
+  Future<List<AvailableInstrumentsModel>> availableInstrumentsData(
+      {required String token}) async {
+    try {
+      http.Response response =
+          await API().getApiResponse(AppUrl.availableInstrumentsDataUrl, {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      List<dynamic> data = jsonDecode(response.body);
+      return data.map((e) => AvailableInstrumentsModel.fromJson(e)).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // All work orders of instrument calibration for use
+  Future<List<OutsorceWorkordersModel>>
+      allWorkordersOfInstrumentOutsourceForUse({required String token}) async {
+    try {
+      http.Response response = await API()
+          .getApiResponse(AppUrl.allWorkordersOfInstrumentOutsourceForUse, {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      List<dynamic> data = jsonDecode(response.body);
+      return data.map((e) => OutsorceWorkordersModel.fromJson(e)).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // Reclaim instruments list data
+  Future<List<ReclaimOutsourcedInstrumentsModel>> reclaimInstrumentsDataList(
+      {required String token}) async {
+    try {
+      http.Response response = await API()
+          .getApiResponse(AppUrl.reclaimOutsourcedInstrumentsDataListUrl, {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+
+      List<dynamic> data = jsonDecode(response.body);
+      return data
+          .map((e) => ReclaimOutsourcedInstrumentsModel.fromJson(e))
+          .toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // Instrument outsource history by contractor
+  Future<List<InstrumentOutsourceHistoryBySubcontractorModel>>
+      instrumentOutsourceHistoryByContractor(
+          {required String token, required String vendorId}) async {
+    try {
+      http.Response response = await API().getApiResponse(
+          '${AppUrl.instrumentOutsourceHistoryByContactorStateUrl}?vendorId=$vendorId',
+          {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          });
+      List<dynamic> data = jsonDecode(response.body);
+      return data
+          .map(
+              (e) => InstrumentOutsourceHistoryBySubcontractorModel.fromJson(e))
+          .toList();
     } catch (e) {
       return [];
     }

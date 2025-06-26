@@ -158,3 +158,63 @@ class RejectedInstrumentState extends CalibrationState {
       required this.tableColumnsList,
       required this.selectedInstrumentList});
 }
+
+// Instrument issuance state
+class InstrumentIssuanceState extends CalibrationState {
+  List<AllSubContractor> calibrationVendorList;
+  AllSubContractor selectedVendor;
+  AvailableInstrumentsModel selectedInstrument;
+  String token, userId, challanno, userFullName, currentDate;
+  List<AvailableInstrumentsModel> selectedInstumentsDataList;
+  List<String> tableColumnsList;
+  List<AvailableInstrumentsModel> instrumentsList;
+  InstrumentIssuanceState(
+      {required this.calibrationVendorList,
+      required this.instrumentsList,
+      required this.selectedVendor,
+      required this.selectedInstrument,
+      required this.token,
+      required this.selectedInstumentsDataList,
+      required this.tableColumnsList,
+      required this.userId,
+      required this.challanno,
+      required this.userFullName,
+      required this.currentDate});
+}
+
+// Instrument reclaim state
+class InstrumentReclaimState extends CalibrationState {
+  List<ReclaimOutsourcedInstrumentsModel> reclaimOutsourceInstrumentsDatalist;
+  List<String> tableColumnsList;
+  String token, userId;
+  InstrumentReclaimState(
+      {required this.reclaimOutsourceInstrumentsDatalist,
+      required this.tableColumnsList,
+      required this.token,
+      required this.userId});
+}
+
+// Instrument issuance receipt state
+class InstrumentIssuanceReceiptState extends CalibrationState {
+  List<OutsorceWorkordersModel> workOrdersList;
+  List<String> tableColumnsList;
+  String token;
+  InstrumentIssuanceReceiptState(
+      {required this.workOrdersList,
+      required this.tableColumnsList,
+      required this.token});
+}
+
+//  Instrument outsource history by contractor state
+class InstrumentOutsourceHistoryByContractorState extends CalibrationState {
+  List<AllSubContractor> calibrationVendorList;
+  List<InstrumentOutsourceHistoryBySubcontractorModel>
+      instrumentsListByContractor;
+  List<String> tableColumnsList;
+  final AllSubContractor? selectedVendor;
+  InstrumentOutsourceHistoryByContractorState(
+      {required this.calibrationVendorList,
+      required this.instrumentsListByContractor,
+      required this.tableColumnsList,
+      required this.selectedVendor});
+}

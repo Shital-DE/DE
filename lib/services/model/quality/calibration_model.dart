@@ -213,6 +213,7 @@ class CalibrationStatusModel {
   String? remainingTimeUntilDue;
   int? remainingTimeCategory;
   String? frequencyid;
+  String? instrumentId;
 
   CalibrationStatusModel(
       {this.instrumentname,
@@ -228,7 +229,8 @@ class CalibrationStatusModel {
       this.certificateMdocid,
       this.remainingTimeUntilDue,
       this.remainingTimeCategory,
-      this.frequencyid});
+      this.frequencyid,
+      this.instrumentId});
 
   CalibrationStatusModel.fromJson(Map<String, dynamic> json) {
     instrumentname = json['instrumentname'];
@@ -245,6 +247,7 @@ class CalibrationStatusModel {
     remainingTimeUntilDue = json['remaining_time_until_due'];
     remainingTimeCategory = json['remaining_time_category'];
     frequencyid = json['frequencyid'];
+    instrumentId = json['instrument_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -263,6 +266,7 @@ class CalibrationStatusModel {
     data['remaining_time_until_due'] = remainingTimeUntilDue;
     data['remaining_time_category'] = remainingTimeCategory;
     data['frequencyid'] = frequencyid;
+    data['instrument_id'] = instrumentId;
     return data;
   }
 }
@@ -664,15 +668,19 @@ class CalibrationHistoryModel {
   String? startdate;
   String? duedate;
   String? frequency;
+  int? outwardchallanNo;
+  String? outsourcedBy;
+  String? contractor;
+  String? remark;
+  String? rejectedby;
+  String? manufacturer;
+  String? storagelocation;
   String? purchaseorder;
   String? barcodeinformation;
   String? scheduletableId;
   String? certificateMdocid;
   String? rejectionreason;
-  String? rejectiondate;
-  String? rejectedby;
-  String? manufacturer;
-  String? storagelocation;
+  String? updatedon;
   String? historytableId;
 
   CalibrationHistoryModel(
@@ -683,15 +691,19 @@ class CalibrationHistoryModel {
       this.startdate,
       this.duedate,
       this.frequency,
+      this.outwardchallanNo,
+      this.outsourcedBy,
+      this.contractor,
+      this.remark,
+      this.rejectedby,
+      this.manufacturer,
+      this.storagelocation,
       this.purchaseorder,
       this.barcodeinformation,
       this.scheduletableId,
       this.certificateMdocid,
       this.rejectionreason,
-      this.rejectiondate,
-      this.rejectedby,
-      this.manufacturer,
-      this.storagelocation,
+      this.updatedon,
       this.historytableId});
 
   CalibrationHistoryModel.fromJson(Map<String, dynamic> json) {
@@ -702,15 +714,19 @@ class CalibrationHistoryModel {
     startdate = json['startdate'];
     duedate = json['duedate'];
     frequency = json['frequency'];
+    outwardchallanNo = json['outwardchallan_no'];
+    outsourcedBy = json['outsourced_by'];
+    contractor = json['contractor'];
+    remark = json['remark'];
+    rejectedby = json['rejectedby'];
+    manufacturer = json['manufacturer'];
+    storagelocation = json['storagelocation'];
     purchaseorder = json['purchaseorder'];
     barcodeinformation = json['barcodeinformation'];
     scheduletableId = json['scheduletable_id'];
     certificateMdocid = json['certificate_mdocid'];
     rejectionreason = json['rejectionreason'];
-    rejectiondate = json['rejectiondate'];
-    rejectedby = json['rejectedby'];
-    manufacturer = json['manufacturer'];
-    storagelocation = json['storagelocation'];
+    updatedon = json['updatedon'];
     historytableId = json['historytable_id'];
   }
 
@@ -723,15 +739,19 @@ class CalibrationHistoryModel {
     data['startdate'] = startdate;
     data['duedate'] = duedate;
     data['frequency'] = frequency;
+    data['outwardchallan_no'] = outwardchallanNo;
+    data['outsourced_by'] = outsourcedBy;
+    data['contractor'] = contractor;
+    data['remark'] = remark;
+    data['rejectedby'] = rejectedby;
+    data['manufacturer'] = manufacturer;
+    data['storagelocation'] = storagelocation;
     data['purchaseorder'] = purchaseorder;
     data['barcodeinformation'] = barcodeinformation;
     data['scheduletable_id'] = scheduletableId;
     data['certificate_mdocid'] = certificateMdocid;
     data['rejectionreason'] = rejectionreason;
-    data['rejectiondate'] = rejectiondate;
-    data['rejectedby'] = rejectedby;
-    data['manufacturer'] = manufacturer;
-    data['storagelocation'] = storagelocation;
+    data['updatedon'] = updatedon;
     data['historytable_id'] = historytableId;
     return data;
   }
@@ -934,6 +954,204 @@ class RejectedInstrumentsModel {
     data['instrumentcalibrationschedule_id'] = instrumentcalibrationscheduleId;
     data['instrument_id'] = instrumentId;
     data['certificate_id'] = certificateId;
+    data['remark'] = remark;
+    return data;
+  }
+}
+
+class AvailableInstrumentsModel {
+  String? instrumentname;
+  String? cardnumber;
+  String? measuringrange;
+  String? instrumenttype;
+  String? startdate;
+  String? duedate;
+  String? frequency;
+  String? certificateMdocid;
+  String? instrumentscheduleId;
+  String? instrumentId;
+
+  AvailableInstrumentsModel(
+      {this.instrumentname,
+      this.cardnumber,
+      this.measuringrange,
+      this.instrumenttype,
+      this.startdate,
+      this.duedate,
+      this.frequency,
+      this.certificateMdocid,
+      this.instrumentscheduleId,
+      this.instrumentId});
+
+  AvailableInstrumentsModel.fromJson(Map<String, dynamic> json) {
+    instrumentname = json['instrumentname'];
+    cardnumber = json['cardnumber'];
+    measuringrange = json['measuringrange'];
+    instrumenttype = json['instrumenttype'];
+    startdate = json['startdate'];
+    duedate = json['duedate'];
+    frequency = json['frequency'];
+    certificateMdocid = json['certificate_mdocid'];
+    instrumentscheduleId = json['instrumentschedule_id'];
+    instrumentId = json['instrument_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['instrumentname'] = instrumentname;
+    data['cardnumber'] = cardnumber;
+    data['measuringrange'] = measuringrange;
+    data['instrumenttype'] = instrumenttype;
+    data['startdate'] = startdate;
+    data['duedate'] = duedate;
+    data['frequency'] = frequency;
+    data['certificate_mdocid'] = certificateMdocid;
+    data['instrumentschedule_id'] = instrumentscheduleId;
+    data['instrument_id'] = instrumentId;
+    return data;
+  }
+}
+
+class ReclaimOutsourcedInstrumentsModel {
+  String? instrumentname;
+  String? instrumenttype;
+  String? cardnumber;
+  String? measuringrange;
+  String? startdate;
+  String? duedate;
+  String? frequency;
+  String? instrumentcalibrationscheduleId;
+  String? instrumentId;
+  String? frequencyId;
+  String? certificateMdocid;
+
+  ReclaimOutsourcedInstrumentsModel(
+      {this.instrumentname,
+      this.instrumenttype,
+      this.cardnumber,
+      this.measuringrange,
+      this.startdate,
+      this.duedate,
+      this.frequency,
+      this.instrumentcalibrationscheduleId,
+      this.instrumentId,
+      this.frequencyId,
+      this.certificateMdocid});
+
+  ReclaimOutsourcedInstrumentsModel.fromJson(Map<String, dynamic> json) {
+    instrumentname = json['instrumentname'];
+    instrumenttype = json['instrumenttype'];
+    cardnumber = json['cardnumber'];
+    measuringrange = json['measuringrange'];
+    startdate = json['startdate'];
+    duedate = json['duedate'];
+    frequency = json['frequency'];
+    instrumentcalibrationscheduleId = json['instrumentcalibrationschedule_id'];
+    instrumentId = json['instrument_id'];
+    frequencyId = json['frequency_id'];
+    certificateMdocid = json['certificate_mdocid'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['instrumentname'] = instrumentname;
+    data['instrumenttype'] = instrumenttype;
+    data['cardnumber'] = cardnumber;
+    data['measuringrange'] = measuringrange;
+    data['startdate'] = startdate;
+    data['duedate'] = duedate;
+    data['frequency'] = frequency;
+    data['instrumentcalibrationschedule_id'] = instrumentcalibrationscheduleId;
+    data['instrument_id'] = instrumentId;
+    data['frequency_id'] = frequencyId;
+    data['certificate_mdocid'] = certificateMdocid;
+    return data;
+  }
+}
+
+// Instrument outsource history by contractor model
+class InstrumentOutsourceHistoryBySubcontractorModel {
+  String? vendorname;
+  int? outwardchallanNo;
+  List<String>? instrumentname;
+  List<String>? instrumenttype;
+  List<String>? cardnumber;
+  List<String>? measuringrange;
+  List<String>? startdate;
+  List<String>? duedate;
+  List<String>? outsourcedBy;
+  List<String>? historyId;
+  String? subcontractorId;
+  List<String>? updatedon;
+  List<String>? createdby;
+  List<String>? instrumentcalibrationscheduleId;
+  List<String>? certificateId;
+  List<String>? outsourceworkorderId;
+  List<String>? frequency;
+  List<String>? remark;
+
+  InstrumentOutsourceHistoryBySubcontractorModel(
+      {this.vendorname,
+      this.outwardchallanNo,
+      this.instrumentname,
+      this.instrumenttype,
+      this.cardnumber,
+      this.measuringrange,
+      this.startdate,
+      this.duedate,
+      this.outsourcedBy,
+      this.historyId,
+      this.subcontractorId,
+      this.updatedon,
+      this.createdby,
+      this.instrumentcalibrationscheduleId,
+      this.certificateId,
+      this.outsourceworkorderId,
+      this.frequency,
+      this.remark});
+
+  InstrumentOutsourceHistoryBySubcontractorModel.fromJson(
+      Map<String, dynamic> json) {
+    vendorname = json['vendorname'];
+    outwardchallanNo = json['outwardchallan_no'];
+    instrumentname = json['instrumentname'].cast<String>();
+    instrumenttype = json['instrumenttype'].cast<String>();
+    cardnumber = json['cardnumber'].cast<String>();
+    measuringrange = json['measuringrange'].cast<String>();
+    startdate = json['startdate'].cast<String>();
+    duedate = json['duedate'].cast<String>();
+    outsourcedBy = json['outsourced_by'].cast<String>();
+    historyId = json['history_id'].cast<String>();
+    subcontractorId = json['subcontractor_id'];
+    updatedon = json['updatedon'].cast<String>();
+    createdby = json['createdby'].cast<String>();
+    instrumentcalibrationscheduleId =
+        json['instrumentcalibrationschedule_id'].cast<String>();
+    certificateId = json['certificate_id'].cast<String>();
+    outsourceworkorderId = json['outsourceworkorder_id'].cast<String>();
+    frequency = json['frequency'].cast<String>();
+    remark = json['remark'].cast<String>();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['vendorname'] = vendorname;
+    data['outwardchallan_no'] = outwardchallanNo;
+    data['instrumentname'] = instrumentname;
+    data['instrumenttype'] = instrumenttype;
+    data['cardnumber'] = cardnumber;
+    data['measuringrange'] = measuringrange;
+    data['startdate'] = startdate;
+    data['duedate'] = duedate;
+    data['outsourced_by'] = outsourcedBy;
+    data['history_id'] = historyId;
+    data['subcontractor_id'] = subcontractorId;
+    data['updatedon'] = updatedon;
+    data['createdby'] = createdby;
+    data['instrumentcalibrationschedule_id'] = instrumentcalibrationscheduleId;
+    data['certificate_id'] = certificateId;
+    data['outsourceworkorder_id'] = outsourceworkorderId;
+    data['frequency'] = frequency;
     data['remark'] = remark;
     return data;
   }

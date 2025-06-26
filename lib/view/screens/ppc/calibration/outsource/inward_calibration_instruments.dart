@@ -30,7 +30,7 @@ class InwardInstruments extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final blocProvider = BlocProvider.of<CalibrationBloc>(context);
-    blocProvider.add(InwardInstrumentsEvent());
+    blocProvider.add(InwardInstrumentsForCalibrationEvent());
     return Scaffold(
       body: MakeMeResponsiveScreen(
           horixontaltab:
@@ -153,85 +153,6 @@ class InwardInstruments extends StatelessWidget {
     });
   }
 
-  // Future<dynamic> rejectInstrument(
-  //     {required BuildContext context,
-  //     required InwardInstrumentsState state,
-  //     required TextEditingController rejectedReason,
-  //     required OutsourcedInstrumentsModel e,
-  //     required CalibrationBloc blocProvider}) {
-  //   return showDialog(
-  //       context: context,
-  //       builder: (context) {
-  //         return AlertDialog(
-  //             title: const Text(
-  //               'Reject instrument',
-  //               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-  //             ),
-  //             content: DropdownSearch<InstrumentRejectionReasons>(
-  //               items: state.rejectionReasons,
-  //               itemAsString: (item) => item.reason.toString(),
-  //               onChanged: (value) {
-  //                 rejectedReason.text = value!.id.toString();
-  //               },
-  //             ),
-  //             actions: [
-  //               FilledButton(
-  //                   onPressed: () async {
-  //                     if (rejectedReason.text == '') {
-  //                       QuickFixUi().showCustomDialog(
-  //                           errorMessage: 'Select rejection reason first.',
-  //                           context: context);
-  //                     } else {
-  //                       String id = e.instrumentcalibrationscheduleId
-  //                               .toString()
-  //                               .trim(),
-  //                           startdate = e.startdate.toString().trim(),
-  //                           duedate = e.duedate.toString().trim(),
-  //                           certificateMdocid =
-  //                               e.certificateId.toString().trim();
-  //                       String deleteResponse = await CalibrationRepository()
-  //                           .rejectInstrument(token: state.token, payload: {
-  //                         'id': id.toString(),
-  //                         'isdeleted': true
-  //                       });
-
-  //                       if (deleteResponse == 'Updated successfully') {
-  //                         String response = await CalibrationRepository()
-  //                             .addrejectedInstrumentToHistory(
-  //                                 token: state.token,
-  //                                 payload: {
-  //                               'createdby': state.userId,
-  //                               'instrumentcalibrationschedule_id': id,
-  //                               'startdate': startdate,
-  //                               'duedate': duedate,
-  //                               'certificate_id': certificateMdocid,
-  //                               'rejectionreason': rejectedReason.text,
-  //                               'isdeleted': rejectedReason.text ==
-  //                                       '81180939c054478587d54fab54f585fd'
-  //                                   ? false
-  //                                   : true
-  //                             });
-
-  //                         if (response == 'Inserted successfully') {
-  //                           Navigator.of(context).pop();
-  //                           QuickFixUi.successMessage(response, context);
-  //                           Future.delayed(const Duration(seconds: 1), () {
-  //                             blocProvider.add(InwardInstrumentsEvent());
-  //                           });
-  //                         }
-  //                       }
-  //                     }
-  //                   },
-  //                   child: const Text('Confirm')),
-  //               FilledButton(
-  //                   onPressed: () {
-  //                     Navigator.of(context).pop();
-  //                   },
-  //                   child: const Text('Cancel'))
-  //             ]);
-  //       });
-  // }
-
   StreamBuilder<InwardInstrumentsModel> submitButton(
       {required StreamController<InwardInstrumentsModel> inwardingInstrument,
       required InwardInstrumentsState state,
@@ -280,10 +201,12 @@ class InwardInstruments extends StatelessWidget {
                               });
                           if (response == 'Updated successfully') {
                             Navigator.of(context).pop();
-                            blocProvider.add(OutwardInstrumentsEvent());
+                            blocProvider
+                                .add(OutwardInstrumentsForCalibrationEvent());
                             await file.delete();
                             Future.delayed(const Duration(seconds: 1), () {
-                              blocProvider.add(InwardInstrumentsEvent());
+                              blocProvider
+                                  .add(InwardInstrumentsForCalibrationEvent());
                             });
                           }
                         }
@@ -318,6 +241,7 @@ class InwardInstruments extends StatelessWidget {
               items: state.frequencyList,
               itemAsString: (item) => item.frequency.toString(),
               popupProps: PopupProps.menu(
+                showSearchBox: true,
                 itemBuilder: (context, item, isSelected) {
                   return ListTile(
                     title: Text(

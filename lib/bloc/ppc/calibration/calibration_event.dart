@@ -33,16 +33,16 @@ class OrderInstrumentEvent extends CalibrationEvent {}
 class AllInstrumentOrdersEvent extends CalibrationEvent {}
 
 // Outward instruments
-class OutwardInstrumentsEvent extends CalibrationEvent {
+class OutwardInstrumentsForCalibrationEvent extends CalibrationEvent {
   final CalibrationContractors? subcontactor;
-  OutwardInstrumentsEvent({this.subcontactor});
+  OutwardInstrumentsForCalibrationEvent({this.subcontactor});
 }
 
 // Inward instruments
-class InwardInstrumentsEvent extends CalibrationEvent {}
+class InwardInstrumentsForCalibrationEvent extends CalibrationEvent {}
 
 // Outsource work order event
-class OutsourceWorkorderEvent extends CalibrationEvent {}
+class CalibrationOutsourceWorkorderEvent extends CalibrationEvent {}
 
 // Instrument history event
 class InstrumentCalibrationHistoryEvent extends CalibrationEvent {
@@ -57,4 +57,32 @@ class InstrumentStoreEvent extends CalibrationEvent {}
 class RejectedInstrumentsEvent extends CalibrationEvent {
   final List<RejectedInstrumentsModel>? selectedInstrumentList;
   RejectedInstrumentsEvent({this.selectedInstrumentList = const []});
+}
+
+// Instrument issuance event
+class InstrumentIssuanceEvent extends CalibrationEvent {
+  AllSubContractor? selectedVendor;
+  AvailableInstrumentsModel? selectedInstrument;
+
+  List<AvailableInstrumentsModel> selectedInstumentsDataList;
+  InstrumentIssuanceEvent(
+      {this.selectedVendor,
+      this.selectedInstrument,
+      this.selectedInstumentsDataList = const []});
+}
+
+// Instrument reclaim event
+class InstrumentReclaimEvent extends CalibrationEvent {
+  InstrumentReclaimEvent();
+}
+
+// Instrument issuance receipt event
+class InstrumentIssuanceReceiptEvent extends CalibrationEvent {
+  InstrumentIssuanceReceiptEvent();
+}
+
+// Instrument outsource history by contractor event
+class InstrumentOutsourceHistoryByContractorEvent extends CalibrationEvent {
+  final AllSubContractor? selectedVendor;
+  InstrumentOutsourceHistoryByContractorEvent({this.selectedVendor});
 }

@@ -166,12 +166,21 @@ class CalibrationStatus extends StatelessWidget {
                     children: [
                       FilledButton(
                           onPressed: () {
-                            Navigator.pushNamed(
-                                context, RouteName.instrumentStore);
+                            Navigator.pushNamed(context,
+                                RouteName.instrumentOutsourceDashboard);
                           },
-                          child: Text('Store',
-                              style:
-                                  AppTheme.labelTextStyle(isFontBold: true))),
+                          child: const Text("Outsource Instruments")),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: FilledButton(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, RouteName.instrumentStore);
+                            },
+                            child: Text('Store',
+                                style:
+                                    AppTheme.labelTextStyle(isFontBold: true))),
+                      ),
                       StreamBuilder<List<CalibrationStatusModel>>(
                           stream: selectedInstrumentsListData.stream,
                           builder: (context, snapshot) {
@@ -203,11 +212,12 @@ class CalibrationStatus extends StatelessWidget {
                                                     .toString()
                                                     .trim(),
                                                 'frequency': record.frequencyid
-                                                    .toString()
+                                                    .toString(),
+                                                'remark':
+                                                    'Outsourced for calibration.'
                                               });
 
-                                          if (response ==
-                                              'Inserted successfully') {
+                                          if (response.length == 32) {
                                             await CalibrationRepository()
                                                 .sendInstrumentForCalibration(
                                                     token: state.token,
@@ -220,8 +230,8 @@ class CalibrationStatus extends StatelessWidget {
                                         blocProvider.add(
                                             InstrumentCalibrationStatusEvent());
                                         selectedInstrumentsListData.add([]);
-                                        blocProvider
-                                            .add(OutwardInstrumentsEvent());
+                                        blocProvider.add(
+                                            OutwardInstrumentsForCalibrationEvent());
                                         Navigator.of(context).pop();
                                         Navigator.popAndPushNamed(context,
                                             RouteName.outwardInstruments,
@@ -401,9 +411,6 @@ class CalibrationStatus extends StatelessWidget {
                                                 }
                                               });
                                         }),
-                                // e.startdate.toString() == '0000-00-00'
-                                //     ? const Text('')
-                                //     :
                                 IconButton(
                                     onPressed: () async {
                                       TextEditingController rejectedReason =
@@ -808,6 +815,7 @@ class CalibrationStatus extends StatelessWidget {
                     items: rejectionReasons,
                     itemAsString: (item) => item.reason.toString(),
                     popupProps: PopupProps.menu(
+                      showSearchBox: true,
                       itemBuilder: (context, item, isSelected) {
                         return ListTile(
                           title: Text(
