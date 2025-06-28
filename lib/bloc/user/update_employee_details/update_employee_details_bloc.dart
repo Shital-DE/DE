@@ -23,6 +23,8 @@ class UpdateEmployeeDetailsBloc
       List<String> columnNames = [
         'Index',
         'Action',
+        'Pan card number',
+        'Aadhar card number',
         'Employee Id',
         'Honirific',
         'First name',
@@ -49,8 +51,6 @@ class UpdateEmployeeDetailsBloc
         'Bank IFSC code',
         'Employee PF number',
         'Employee family PF number',
-        'Pan card number',
-        'Aadhar card number',
         'E-mail id',
         'Employee type',
         'Department',
@@ -59,10 +59,19 @@ class UpdateEmployeeDetailsBloc
         'Date of joining',
         'Date of leaving'
       ];
+
+      List<UpdateEmployeeSearchColumns> searchColumnsList = [
+        UpdateEmployeeSearchColumns(
+            displayValue: 'First name', searchValue: 'firstname'),
+        UpdateEmployeeSearchColumns(
+            displayValue: 'Middle name', searchValue: 'middlename'),
+        UpdateEmployeeSearchColumns(
+            displayValue: 'Last name', searchValue: 'lastname'),
+      ];
+
       List<UserDataModel> employeeDataList = await EmployeeDetailsUpdateRepo()
           .allEmployeeDetails(
-              token: saveddata['token'].toString(),
-              index: event.index); // All employee data
+              token: saveddata['token'].toString(), index: event.index);
 
       if (event.selectedEmp != '') {
         cityList = await SubcontractorRepository()
@@ -79,7 +88,8 @@ class UpdateEmployeeDetailsBloc
           selectedEmp: event.selectedEmp,
           cityList: cityList,
           stateList: stateList,
-          loggedInUser: saveddata['data'][0]['id'].toString()));
+          loggedInUser: saveddata['data'][0]['id'].toString(),
+          searchColumnsList: searchColumnsList));
     });
   }
 }

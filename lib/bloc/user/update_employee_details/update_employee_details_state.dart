@@ -17,7 +17,7 @@ class UpdateEmployee extends UpdateEmployeeDetailsState {
   List<String> columnNames;
   String token, selectedEmp, loggedInUser;
   int index;
-
+  List<UpdateEmployeeSearchColumns> searchColumnsList;
   UpdateEmployee(
       {required this.employeeDataList,
       required this.columnNames,
@@ -26,5 +26,6 @@ class UpdateEmployee extends UpdateEmployeeDetailsState {
       required this.selectedEmp,
       required this.cityList,
       required this.stateList,
-      required this.loggedInUser});
+      required this.loggedInUser,
+      required this.searchColumnsList});
 }

@@ -17,7 +17,9 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../../bloc/user/update_employee_details/update_employee_details_bloc.dart';
+import '../../../routes/route_names.dart';
 import '../../../services/model/common/city_model.dart';
 import '../../../services/model/common/state_model.dart';
 import '../../../services/repository/user/employee_details_update_repo.dart';
@@ -26,6 +28,7 @@ import '../../../services/repository/user/user_login_repo.dart';
 import '../../../utils/constant.dart';
 import '../../widgets/appbar.dart';
 import '../../widgets/image_utility.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class UpdateEmployeeDetails extends StatefulWidget {
   const UpdateEmployeeDetails({super.key});
@@ -71,6 +74,13 @@ class _UpdateEmployeeDetailsState extends State<UpdateEmployeeDetails> {
   StateModel currentState = StateModel();
   CityModel permanentCity = CityModel();
   StateModel permanentState = StateModel();
+
+  TextEditingController searchKey = TextEditingController();
+  TextEditingController searchValue = TextEditingController();
+
+  StreamController<List<UserDataModel>> searchedRecords =
+      StreamController<List<UserDataModel>>.broadcast();
+
   @override
   void initState() {
     super.initState();
@@ -87,6 +97,8 @@ class _UpdateEmployeeDetailsState extends State<UpdateEmployeeDetails> {
     panController.close();
     aadharid.close();
     aadharController.close();
+    searchValue.dispose();
+    searchKey.dispose();
     super.dispose();
   }
 
@@ -94,7 +106,7 @@ class _UpdateEmployeeDetailsState extends State<UpdateEmployeeDetails> {
   Widget build(BuildContext context) {
     final blocProvider = BlocProvider.of<UpdateEmployeeDetailsBloc>(context);
     Size size = MediaQuery.of(context).size;
-
+    int i = 0;
     return Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: CustomAppbar()
@@ -106,352 +118,508 @@ class _UpdateEmployeeDetailsState extends State<UpdateEmployeeDetails> {
             return const Center(child: CircularProgressIndicator());
           } else if (state is UpdateEmployee &&
               state.employeeDataList.isNotEmpty) {
-            double rowHeight = 50, columnWidth = 200, headerHeight = 50;
-            return Container(
+            return SizedBox(
                 width: size.width,
                 height: size.height,
-                margin: const EdgeInsets.all(5),
-                padding: const EdgeInsets.all(5),
-                child: CustomTable(
-                  tablewidth: size.width,
-                  tableheight: size.height,
-                  columnWidth: columnWidth,
-                  headerHeight: headerHeight,
-                  rowHeight: rowHeight,
-                  enableBorder: true,
-                  tableBorderColor: Theme.of(context).primaryColorDark,
-                  tableheaderColor: Theme.of(context).primaryColorLight,
-                  headerStyle: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColorDark),
-                  column: state.columnNames
-                      .map((e) => ColumnData(
-                          width: e == 'Index'
-                              ? 70
-                              : e == 'E-mail id'
-                                  ? columnWidth + 50
-                                  : e == 'Company'
-                                      ? columnWidth + 50
-                                      : e == 'Action'
-                                          ? columnWidth + 6
-                                          : columnWidth,
-                          label: e))
-                      .toList(),
-                  rows: state.employeeDataList.map((e) {
-                    return RowData(
-                        rowColor: state.selectedEmp == e.id
-                            ? Colors.grey.withOpacity(0.2)
-                            : Colors.white,
-                        cell: [
-                          TableDataCell(
-                              width: 70,
-                              label: Container(
-                                width: 70,
-                                height: rowHeight,
-                                decoration: cellDecoration(
-                                    e: e, state: state, context: context),
-                                child: Center(
-                                  child: Text(
-                                      ((state.employeeDataList.indexOf(e) + 1) +
-                                              state.index)
-                                          .toString(),
-                                      textAlign: TextAlign.center),
+                child: ListView(
+                  children: [
+                    Container(
+                      width: size.width,
+                      height: 50,
+                      margin: const EdgeInsets.all(7),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 300,
+                            child: DropdownSearch<UpdateEmployeeSearchColumns>(
+                              items: state.searchColumnsList,
+                              itemAsString: (item) =>
+                                  item.displayValue.toString(),
+                              popupProps: PopupProps.menu(
+                                showSearchBox: true,
+                                itemBuilder: (context, item, isSelected) {
+                                  return ListTile(
+                                    title: Text(
+                                      item.displayValue.toString(),
+                                    ),
+                                  );
+                                },
+                              ),
+                              dropdownDecoratorProps: DropDownDecoratorProps(
+                                dropdownSearchDecoration: InputDecoration(
+                                  labelText: 'Select column',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    borderSide: BorderSide(
+                                        color:
+                                            Theme.of(context).primaryColorDark),
+                                  ),
                                 ),
-                              )),
-                          TableDataCell(
-                              width: columnWidth + 6,
-                              label: Container(
-                                width: columnWidth + 6,
-                                height: rowHeight,
-                                decoration: cellDecoration(
-                                    e: e, state: state, context: context),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    profileButton(
-                                        e: e,
-                                        state: state,
-                                        context: context,
-                                        blocProvider: blocProvider),
-                                    IconButton(
-                                        onPressed: () {
-                                          if (state.selectedEmp == e.id) {
-                                            clearValues(
-                                                blocProvider: blocProvider,
-                                                state: state);
-                                          } else {
-                                            blocProvider.add(
-                                                GetEmployeeDetailsForUpdate(
-                                                    index: state.index,
-                                                    selectedEmp:
-                                                        e.id.toString()));
-                                          }
-                                        },
-                                        icon: buttonIcon(
-                                            icon: state.selectedEmp == e.id
-                                                ? Icons.cancel
-                                                : Icons.edit)),
-                                    state.selectedEmp == e.id
-                                        ? Padding(
-                                            padding:
-                                                const EdgeInsets.only(right: 6),
-                                            child: StreamBuilder<String>(
-                                                stream: dateOfBirth.stream,
-                                                builder: (context,
-                                                    dateOfBirthSnapshot) {
-                                                  return StreamBuilder<String>(
-                                                      stream:
-                                                          dateOfJoining.stream,
-                                                      builder: (context,
-                                                          dateOfJoiningSnapshot) {
-                                                        return StreamBuilder<
-                                                                String>(
-                                                            stream:
-                                                                dateOfLeaving
-                                                                    .stream,
-                                                            builder: (context,
-                                                                dateOfLeavingSnapshot) {
-                                                              return ElevatedButton(
-                                                                onPressed: () {
-                                                                  updateConfirmationDialog(
-                                                                      context:
-                                                                          context,
-                                                                      state:
-                                                                          state,
-                                                                      dateOfBirthSnapshot:
-                                                                          dateOfBirthSnapshot,
-                                                                      e: e,
-                                                                      dateOfJoiningSnapshot:
-                                                                          dateOfJoiningSnapshot,
-                                                                      dateOfLeavingSnapshot:
-                                                                          dateOfLeavingSnapshot,
-                                                                      blocProvider:
-                                                                          blocProvider);
-                                                                },
-                                                                child: Text(
-                                                                  'UPDATE',
-                                                                  style: TextStyle(
-                                                                      color: Theme.of(
-                                                                              context)
-                                                                          .primaryColorDark),
-                                                                ),
-                                                              );
-                                                            });
-                                                      });
-                                                }),
-                                          )
-                                        : const Text('')
-                                  ],
-                                ),
-                              )),
-                          TableDataCell(
-                              label: Container(
-                            width: columnWidth + 6,
-                            height: rowHeight,
-                            decoration: cellDecoration(
-                                e: e, state: state, context: context),
-                            child: Center(
-                              child: Text(e.employeeId.toString().trim(),
-                                  textAlign: align),
+                              ),
+                              onChanged: (value) {
+                                searchKey.text = value?.searchValue ?? '';
+                              },
                             ),
-                          )),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? honorificWidget(e: e)
-                                  : honorificCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? firstnameWidget(e: e)
-                                  : firstnameCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? middlenameWidget(e: e)
-                                  : middlenameCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? lastnameWidget(e: e)
-                                  : lastnameCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? birthdateWidget(e: e)
-                                  : birthdateCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? qualificationWidget(e: e)
-                                  : qualificationCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? mobileWidget(e: e)
-                                  : mobileCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? familymembernameWidget(e: e)
-                                  : familyMemberNameCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? relationWithFamilyMemeberWidget(e: e)
-                                  : relationWithFamMemCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? relativeMobileNumberWidget(e: e)
-                                  : relativeMobileCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? currentAddressLine1Widget(e: e)
-                                  : currentAddressLine1Cell(
-                                      e: e,
-                                      width: columnWidth,
-                                      height: rowHeight)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? currentAddressLine2Widget(e: e)
-                                  : currentAddressLine2Cell(
-                                      e: e,
-                                      width: columnWidth,
-                                      height: rowHeight)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? currentCityWidget(state: state, e: e)
-                                  : currentCityCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? currentPincodeWidget(e: e)
-                                  : currentpinCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? currentStateWidget(state: state, e: e)
-                                  : currentStateCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? permanentAddressline1Widget(e: e)
-                                  : permanentAddress1Cell(
-                                      e: e,
-                                      width: columnWidth,
-                                      height: rowHeight)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? permanentAddressLine2Widget(e: e)
-                                  : permanentAddress2Cell(
-                                      e: e,
-                                      width: columnWidth,
-                                      height: rowHeight)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? permanentCityWidget(state: state, e: e)
-                                  : permanentCityCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? permanentPinWidget(e: e)
-                                  : permanentPinCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? permanentStateWidget(state: state, e: e)
-                                  : permanentStateCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? bankAccountNumber(e: e)
-                                  : bankAcCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? banknameWidget(e: e)
-                                  : banknameCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? bankIFSCCodeWidget(e: e)
-                                  : bankIFSCCodeCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? employeePFWidget(e: e)
-                                  : employeePFCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? familyPFWidget(e: e)
-                                  : familyPFCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? pancardNumber(e: e)
-                                  : panCell(
-                                      e: e,
-                                      state: state,
-                                      context: context,
-                                      blocProvider: blocProvider)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? adharcardNumber(e: e)
-                                  : aadharCell(
-                                      e: e,
-                                      state: state,
-                                      context: context,
-                                      blocProvider: blocProvider)),
-                          TableDataCell(
-                              width: columnWidth + 50,
-                              label: state.selectedEmp == e.id
-                                  ? emailWidget(e: e)
-                                  : emailCell(e: e)),
-                          TableDataCell(
-                              label: Container(
-                                  width: columnWidth + 6,
-                                  height: rowHeight,
-                                  decoration: cellDecoration(
-                                      e: e, state: state, context: context),
-                                  child: employeeTypeCell(e: e))),
-                          TableDataCell(
-                              label: Container(
-                                  width: columnWidth + 6,
-                                  height: rowHeight,
-                                  decoration: cellDecoration(
-                                      e: e, state: state, context: context),
-                                  child: employeeDepartmentCell(e: e))),
-                          TableDataCell(
-                              label: Container(
-                                  width: columnWidth + 6,
-                                  height: rowHeight,
-                                  decoration: cellDecoration(
-                                      e: e, state: state, context: context),
-                                  child: employeeDesignationCell(e: e))),
-                          TableDataCell(
-                              width: columnWidth + 50,
-                              label: Container(
-                                  width: columnWidth + 50,
-                                  height: rowHeight,
-                                  decoration: cellDecoration(
-                                      e: e, state: state, context: context),
-                                  child: companyCell(e: e))),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? dateOfJoiningWidget(e: e)
-                                  : dateOfJoiningCell(e: e)),
-                          TableDataCell(
-                              label: state.selectedEmp == e.id
-                                  ? dateOfLeavingWidget(e: e)
-                                  : dateOfLeavingCell(e: e)),
-                        ]);
-                  }).toList(),
-                  footer: state.employeeDataList.isEmpty
-                      ? emptySizedbox()
-                      : SizedBox(
-                          width:
-                              (columnWidth * (state.columnNames.length - 2)) +
-                                  376,
-                          height: headerHeight,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              state.index >= 50
-                                  ? backButton(
-                                      blocProvider: blocProvider,
-                                      state: state,
-                                      context: context)
-                                  : emptySizedbox(),
-                              state.employeeDataList.length >= 50
-                                  ? nextButton(
-                                      blocProvider: blocProvider,
-                                      state: state,
-                                      context: context)
-                                  : emptySizedbox()
-                            ],
                           ),
-                        ),
+                          const SizedBox(width: 10),
+                          SizedBox(
+                              width: 300,
+                              child: TextField(
+                                controller: searchValue,
+                                decoration: InputDecoration(
+                                  labelText: 'Search',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    borderSide: BorderSide(
+                                        color:
+                                            Theme.of(context).primaryColorDark),
+                                  ),
+                                  prefixIcon: const Icon(Icons.search),
+                                ),
+                                onChanged: (value) {
+                                  searchValue.text = value.toString().trim();
+                                },
+                              )),
+                          const SizedBox(width: 10),
+                          FilledButton(
+                            onPressed: () {
+                              if (searchKey.text != '' &&
+                                  searchValue.text != '') {
+                                List<UserDataModel> filteredList =
+                                    state.employeeDataList.where((element) {
+                                  final searchField =
+                                      searchKey.text.toLowerCase();
+                                  final searchTerm =
+                                      searchValue.text.toLowerCase();
+
+                                  String fieldValue = '';
+
+                                  switch (searchField) {
+                                    case 'firstname':
+                                      fieldValue = element.firstname ?? '';
+                                      break;
+                                    case 'middlename':
+                                      fieldValue = element.middlename ?? '';
+                                      break;
+                                    case 'lastname':
+                                      fieldValue = element.lastname ?? '';
+                                      break;
+
+                                    default:
+                                      fieldValue = '';
+                                  }
+
+                                  return fieldValue
+                                      .toLowerCase()
+                                      .contains(searchTerm);
+                                }).toList();
+                                searchedRecords.add(filteredList);
+                              } else if (searchKey.text == '') {
+                                QuickFixUi.errorMessage(
+                                    'Select column first.', context);
+                              } else if (searchValue.text == '') {
+                                QuickFixUi.errorMessage(
+                                    'Enter search value.', context);
+                              } else {
+                                QuickFixUi.errorMessage(
+                                    'Select column and enter search value first.',
+                                    context);
+                              }
+                            },
+                            child: const Text('Search'),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: size.width,
+                      height: size.height - 150,
+                      margin: const EdgeInsets.only(left: 10, right: 10),
+                      child: StreamBuilder<List<UserDataModel>>(
+                          stream: searchedRecords.stream,
+                          builder: (context, snapshot) {
+                            double rowHeight = 50,
+                                columnWidth = 200,
+                                headerHeight = 50,
+                                tableHeight = snapshot.data != null &&
+                                        snapshot.data!.isNotEmpty
+                                    ? ((snapshot.data!.length + 1) * rowHeight)
+                                    : ((state.employeeDataList.length + 1) *
+                                        rowHeight);
+
+                            return CustomTable(
+                              tablewidth: size.width,
+                              tableheight: tableHeight,
+                              columnWidth: columnWidth,
+                              headerHeight: headerHeight,
+                              rowHeight: rowHeight,
+                              enableBorder: true,
+                              tableBorderColor:
+                                  Theme.of(context).primaryColorDark,
+                              tableheaderColor:
+                                  Theme.of(context).primaryColorLight,
+                              headerStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).primaryColorDark),
+                              column: state.columnNames
+                                  .map((e) => ColumnData(
+                                      width: e == 'Index'
+                                          ? 70
+                                          : e == 'E-mail id'
+                                              ? columnWidth + 50
+                                              : e == 'Company'
+                                                  ? columnWidth + 50
+                                                  : e == 'Action'
+                                                      ? columnWidth + 6
+                                                      : columnWidth,
+                                      label: e))
+                                  .toList(),
+                              rows: (snapshot.data != null &&
+                                          snapshot.data!.isNotEmpty
+                                      ? snapshot.data
+                                      : state.employeeDataList)!
+                                  .map((e) {
+                                i++;
+                                return RowData(
+                                    rowColor: state.selectedEmp == e.id
+                                        ? Colors.grey.withOpacity(0.2)
+                                        : Colors.white,
+                                    cell: [
+                                      TableDataCell(
+                                          width: 70,
+                                          label: Container(
+                                            width: 70,
+                                            height: rowHeight,
+                                            decoration: cellDecoration(
+                                                e: e,
+                                                state: state,
+                                                context: context),
+                                            child: Center(
+                                              child: Text(i.toString(),
+                                                  textAlign: TextAlign.center),
+                                            ),
+                                          )),
+                                      TableDataCell(
+                                          width: columnWidth + 6,
+                                          label: Container(
+                                            width: columnWidth + 6,
+                                            height: rowHeight,
+                                            decoration: cellDecoration(
+                                                e: e,
+                                                state: state,
+                                                context: context),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                profileButton(
+                                                    e: e,
+                                                    state: state,
+                                                    context: context,
+                                                    blocProvider: blocProvider),
+                                                IconButton(
+                                                    onPressed: () {
+                                                      if (state.selectedEmp ==
+                                                          e.id) {
+                                                        clearValues(
+                                                            blocProvider:
+                                                                blocProvider,
+                                                            state: state);
+                                                      } else {
+                                                        blocProvider.add(
+                                                            GetEmployeeDetailsForUpdate(
+                                                                index:
+                                                                    state.index,
+                                                                selectedEmp: e
+                                                                    .id
+                                                                    .toString()));
+                                                      }
+                                                    },
+                                                    icon: buttonIcon(
+                                                        icon:
+                                                            state.selectedEmp ==
+                                                                    e.id
+                                                                ? Icons.cancel
+                                                                : Icons.edit)),
+                                                state.selectedEmp == e.id
+                                                    ? Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(right: 6),
+                                                        child: StreamBuilder<
+                                                                String>(
+                                                            stream: dateOfBirth
+                                                                .stream,
+                                                            builder: (context,
+                                                                dateOfBirthSnapshot) {
+                                                              return StreamBuilder<
+                                                                      String>(
+                                                                  stream:
+                                                                      dateOfJoining
+                                                                          .stream,
+                                                                  builder: (context,
+                                                                      dateOfJoiningSnapshot) {
+                                                                    return StreamBuilder<
+                                                                            String>(
+                                                                        stream: dateOfLeaving
+                                                                            .stream,
+                                                                        builder:
+                                                                            (context,
+                                                                                dateOfLeavingSnapshot) {
+                                                                          return ElevatedButton(
+                                                                            onPressed:
+                                                                                () {
+                                                                              updateConfirmationDialog(context: context, state: state, dateOfBirthSnapshot: dateOfBirthSnapshot, e: e, dateOfJoiningSnapshot: dateOfJoiningSnapshot, dateOfLeavingSnapshot: dateOfLeavingSnapshot, blocProvider: blocProvider);
+                                                                            },
+                                                                            child:
+                                                                                Text(
+                                                                              'UPDATE',
+                                                                              style: TextStyle(color: Theme.of(context).primaryColorDark),
+                                                                            ),
+                                                                          );
+                                                                        });
+                                                                  });
+                                                            }),
+                                                      )
+                                                    : const Text('')
+                                              ],
+                                            ),
+                                          )),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? pancardNumber(e: e)
+                                              : panCell(
+                                                  e: e,
+                                                  state: state,
+                                                  context: context,
+                                                  blocProvider: blocProvider)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? adharcardNumber(e: e)
+                                              : aadharCell(
+                                                  e: e,
+                                                  state: state,
+                                                  context: context,
+                                                  blocProvider: blocProvider)),
+                                      TableDataCell(
+                                          label: Container(
+                                        width: columnWidth + 6,
+                                        height: rowHeight,
+                                        decoration: cellDecoration(
+                                            e: e,
+                                            state: state,
+                                            context: context),
+                                        child: Center(
+                                          child: Text(
+                                              e.employeeId.toString().trim(),
+                                              textAlign: align),
+                                        ),
+                                      )),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? honorificWidget(e: e)
+                                              : honorificCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? firstnameWidget(e: e)
+                                              : firstnameCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? middlenameWidget(e: e)
+                                              : middlenameCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? lastnameWidget(e: e)
+                                              : lastnameCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? birthdateWidget(e: e)
+                                              : birthdateCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? qualificationWidget(e: e)
+                                              : qualificationCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? mobileWidget(e: e)
+                                              : mobileCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? familymembernameWidget(e: e)
+                                              : familyMemberNameCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? relationWithFamilyMemeberWidget(
+                                                  e: e)
+                                              : relationWithFamMemCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? relativeMobileNumberWidget(e: e)
+                                              : relativeMobileCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? currentAddressLine1Widget(e: e)
+                                              : currentAddressLine1Cell(
+                                                  e: e,
+                                                  width: columnWidth,
+                                                  height: rowHeight)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? currentAddressLine2Widget(e: e)
+                                              : currentAddressLine2Cell(
+                                                  e: e,
+                                                  width: columnWidth,
+                                                  height: rowHeight)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? currentCityWidget(
+                                                  state: state, e: e)
+                                              : currentCityCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? currentPincodeWidget(e: e)
+                                              : currentpinCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? currentStateWidget(
+                                                  state: state, e: e)
+                                              : currentStateCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? permanentAddressline1Widget(
+                                                  e: e)
+                                              : permanentAddress1Cell(
+                                                  e: e,
+                                                  width: columnWidth,
+                                                  height: rowHeight)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? permanentAddressLine2Widget(
+                                                  e: e)
+                                              : permanentAddress2Cell(
+                                                  e: e,
+                                                  width: columnWidth,
+                                                  height: rowHeight)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? permanentCityWidget(
+                                                  state: state, e: e)
+                                              : permanentCityCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? permanentPinWidget(e: e)
+                                              : permanentPinCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? permanentStateWidget(
+                                                  state: state, e: e)
+                                              : permanentStateCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? bankAccountNumber(e: e)
+                                              : bankAcCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? banknameWidget(e: e)
+                                              : banknameCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? bankIFSCCodeWidget(e: e)
+                                              : bankIFSCCodeCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? employeePFWidget(e: e)
+                                              : employeePFCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? familyPFWidget(e: e)
+                                              : familyPFCell(e: e)),
+                                      TableDataCell(
+                                          width: columnWidth + 50,
+                                          label: state.selectedEmp == e.id
+                                              ? emailWidget(e: e)
+                                              : emailCell(e: e)),
+                                      TableDataCell(
+                                          label: Container(
+                                              width: columnWidth + 6,
+                                              height: rowHeight,
+                                              decoration: cellDecoration(
+                                                  e: e,
+                                                  state: state,
+                                                  context: context),
+                                              child: employeeTypeCell(e: e))),
+                                      TableDataCell(
+                                          label: Container(
+                                              width: columnWidth + 6,
+                                              height: rowHeight,
+                                              decoration: cellDecoration(
+                                                  e: e,
+                                                  state: state,
+                                                  context: context),
+                                              child: employeeDepartmentCell(
+                                                  e: e))),
+                                      TableDataCell(
+                                          label: Container(
+                                              width: columnWidth + 6,
+                                              height: rowHeight,
+                                              decoration: cellDecoration(
+                                                  e: e,
+                                                  state: state,
+                                                  context: context),
+                                              child: employeeDesignationCell(
+                                                  e: e))),
+                                      TableDataCell(
+                                          width: columnWidth + 50,
+                                          label: Container(
+                                              width: columnWidth + 50,
+                                              height: rowHeight,
+                                              decoration: cellDecoration(
+                                                  e: e,
+                                                  state: state,
+                                                  context: context),
+                                              child: companyCell(e: e))),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? dateOfJoiningWidget(e: e)
+                                              : dateOfJoiningCell(e: e)),
+                                      TableDataCell(
+                                          label: state.selectedEmp == e.id
+                                              ? dateOfLeavingWidget(e: e)
+                                              : dateOfLeavingCell(e: e)),
+                                    ]);
+                              }).toList(),
+                              footer: state.employeeDataList.length < 50 ||
+                                      (snapshot.data != null &&
+                                          snapshot.data!.length < 49)
+                                  ? emptySizedbox()
+                                  : SizedBox(
+                                      width: (columnWidth *
+                                              (state.columnNames.length - 2)) +
+                                          376,
+                                      height: headerHeight,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          state.index >= 50
+                                              ? backButton(
+                                                  blocProvider: blocProvider,
+                                                  state: state,
+                                                  context: context)
+                                              : emptySizedbox(),
+                                          state.employeeDataList.length >= 50
+                                              ? nextButton(
+                                                  blocProvider: blocProvider,
+                                                  state: state,
+                                                  context: context)
+                                              : emptySizedbox()
+                                        ],
+                                      ),
+                                    ),
+                            );
+                          }),
+                    ),
+                  ],
                 ));
           } else {
             return const Center(child: Text('No data found!'));
@@ -1904,12 +2072,14 @@ class _UpdateEmployeeDetailsState extends State<UpdateEmployeeDetails> {
       required UpdateEmployeeDetailsBloc blocProvider}) {
     return showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (context) {
           return StreamBuilder<ImageProvider<Object>>(
               stream: panController.stream,
               builder: (context, imageRefreshsnapshot) {
                 return AlertDialog(
                   alignment: Alignment.centerLeft,
+                  title: dialogTitle(context: context, title: 'Pan Card'),
                   content: SizedBox(
                       width: imageSize,
                       height: imageSize,
@@ -1926,38 +2096,74 @@ class _UpdateEmployeeDetailsState extends State<UpdateEmployeeDetails> {
                         stream: panid.stream,
                         builder: (context, panSnapshot) {
                           return Center(
-                              child: ElevatedButton.icon(
-                            label: Text(((pandata != null &&
-                                        pandata != 500.toString()) ||
-                                    imageRefreshsnapshot.data != null)
-                                ? 'Change'
-                                : 'Upload'),
-                            icon: Icon(
-                              Icons.cloud_upload,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            onPressed: () {
-                              final picker = ImagePicker();
-                              panImagePicker(
-                                  context: context,
-                                  picker: picker,
-                                  pandata: pandata,
-                                  imageRefreshsnapshot: imageRefreshsnapshot,
-                                  panResponse: panResponse,
-                                  state: state,
-                                  panSnapshot: panSnapshot,
-                                  e: e,
-                                  pan: pan,
-                                  panController: panController,
-                                  blocProvider: blocProvider,
-                                  panid: panid);
-                            },
+                              child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    final picker = ImagePicker();
+                                    panImagePicker(
+                                        context: context,
+                                        picker: picker,
+                                        pandata: pandata,
+                                        imageRefreshsnapshot:
+                                            imageRefreshsnapshot,
+                                        panResponse: panResponse,
+                                        state: state,
+                                        panSnapshot: panSnapshot,
+                                        e: e,
+                                        pan: pan,
+                                        panController: panController,
+                                        blocProvider: blocProvider,
+                                        panid: panid);
+                                  },
+                                  icon: const Icon(
+                                    Icons.edit,
+                                    color: AppColors.appTheme,
+                                    size: 30,
+                                  )),
+                              const SizedBox(width: 10),
+                              printPDFButton(
+                                  pdfData: pandata, context: context),
+                            ],
                           ));
                         })
                   ],
                 );
               });
         });
+  }
+
+  IconButton printPDFButton(
+      {required dynamic pdfData, required BuildContext context}) {
+    return IconButton(
+        onPressed: () async {
+          try {
+            final pdf = pw.Document();
+            pdf.addPage(
+              pw.Page(
+                build: (pw.Context context) {
+                  return pw.Image(pw.MemoryImage(pdfData));
+                },
+              ),
+            );
+            final Directory directory =
+                await getApplicationDocumentsDirectory();
+            final String path = directory.path;
+            final File file = File('$path/de_doc.pdf');
+            await file.writeAsBytes(await pdf.save());
+            final Uint8List bytes = file.readAsBytesSync();
+            Navigator.pushNamed(context, RouteName.pdf,
+                arguments: {'data': bytes});
+          } catch (e) {
+            QuickFixUi.errorMessage('Error generating PDF: $e', context);
+          }
+        },
+        icon: const Icon(
+          Icons.print,
+          color: AppColors.appTheme,
+          size: 30,
+        ));
   }
 
   Future<dynamic> panImagePicker(
@@ -2175,12 +2381,14 @@ class _UpdateEmployeeDetailsState extends State<UpdateEmployeeDetails> {
       required UpdateEmployeeDetailsBloc blocProvider}) {
     return showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (context) {
           return StreamBuilder<ImageProvider<Object>>(
               stream: aadharController.stream,
               builder: (context, imageRefreshsnapshot) {
                 return AlertDialog(
                   alignment: Alignment.centerLeft,
+                  title: dialogTitle(context: context, title: 'Aadhar Card'),
                   content: SizedBox(
                       width: imageSize,
                       height: imageSize,
@@ -2198,38 +2406,62 @@ class _UpdateEmployeeDetailsState extends State<UpdateEmployeeDetails> {
                         stream: aadharid.stream,
                         builder: (context, aadharSnapshot) {
                           return Center(
-                              child: ElevatedButton.icon(
-                            label: Text(((aadhardata != null &&
-                                        aadhardata != 500.toString()) ||
-                                    imageRefreshsnapshot.data != null)
-                                ? 'Change'
-                                : 'Upload'),
-                            icon: Icon(
-                              Icons.cloud_upload,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            onPressed: () {
-                              final picker = ImagePicker();
-                              aadharImagePicker(
-                                  context: context,
-                                  picker: picker,
-                                  aadhardata: aadhardata,
-                                  aadharResponse: aadharResponse,
-                                  state: state,
-                                  aadharSnapshot: aadharSnapshot,
-                                  e: e,
-                                  aadhar: aadhar,
-                                  aadharController: aadharController,
-                                  blocProvider: blocProvider,
-                                  aadharid: aadharid,
-                                  imageRefreshsnapshot: imageRefreshsnapshot);
-                            },
+                              child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    final picker = ImagePicker();
+                                    aadharImagePicker(
+                                        context: context,
+                                        picker: picker,
+                                        aadhardata: aadhardata,
+                                        aadharResponse: aadharResponse,
+                                        state: state,
+                                        aadharSnapshot: aadharSnapshot,
+                                        e: e,
+                                        aadhar: aadhar,
+                                        aadharController: aadharController,
+                                        blocProvider: blocProvider,
+                                        aadharid: aadharid,
+                                        imageRefreshsnapshot:
+                                            imageRefreshsnapshot);
+                                  },
+                                  icon: const Icon(
+                                    Icons.edit,
+                                    color: AppColors.appTheme,
+                                    size: 30,
+                                  )),
+                              const SizedBox(width: 10),
+                              printPDFButton(
+                                  pdfData: aadhardata, context: context),
+                            ],
                           ));
                         })
                   ],
                 );
               });
         });
+  }
+
+  Row dialogTitle({required BuildContext context, required String title}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
+              fontSize: 15),
+        ),
+        IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.cancel, color: Colors.red))
+      ],
+    );
   }
 
   double get imageSize => 600;

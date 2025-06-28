@@ -256,3 +256,11 @@ class UserDataModel {
     return data;
   }
 }
+
+class UpdateEmployeeSearchColumns {
+  String displayValue, searchValue;
+  UpdateEmployeeSearchColumns({
+    required this.displayValue,
+    required this.searchValue,
+  });
+}
